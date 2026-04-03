@@ -1,0 +1,154 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://travel-via.com/schemas/travel-plan.json",
+  "title": "ITravelPlan",
+  "description": "旅行计划数据结构",
+  "type": "object",
+  "required": [
+    "planName",
+    "totalDays",
+    "totalDistance",
+    "vehicleType",
+    "vehicleAdvice",
+    "bestSeason",
+    "essentialItems",
+    "weather",
+    "days"
+  ],
+  "properties": {
+    "planName": { "type": "string", "description": "计划名称" },
+    "totalDays": { "type": "number", "description": "总天数", "minimum": 1 },
+    "totalDistance": {
+      "type": "number",
+      "description": "大概距离（公里）",
+      "minimum": 0
+    },
+    "vehicleType": { "type": "string", "description": "出行方式" },
+    "vehicleAdvice": { "type": "string", "description": "出行建议" },
+    "bestSeason": { "type": "string", "description": "出行月份/季节" },
+    "essentialItems": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "必备物品列表"
+    },
+    "weather": {
+      "type": "array",
+      "description": "天气信息",
+      "items": { "$ref": "#/definitions/IWeather" }
+    },
+    "days": {
+      "type": "array",
+      "description": "每日行程",
+      "items": { "$ref": "#/definitions/ITravel" }
+    }
+  },
+  "definitions": {
+    "IWeatherDay": {
+      "type": "object",
+      "required": ["tempMax", "tempMin", "weather"],
+      "properties": {
+        "tempMax": { "type": "number", "description": "最高温度（摄氏度）" },
+        "tempMin": { "type": "number", "description": "最低温度（摄氏度）" },
+        "weather": { "type": "string", "description": "天气描述" }
+      }
+    },
+    "IWeather": {
+      "type": "object",
+      "required": ["area", "daytime", "nighttime", "clothing"],
+      "properties": {
+        "area": { "type": "string", "description": "区域" },
+        "daytime": { "$ref": "#/definitions/IWeatherDay", "description": "白天天气" },
+        "nighttime": { "$ref": "#/definitions/IWeatherDay", "description": "夜间天气" },
+        "clothing": { "type": "string", "description": "穿衣建议" }
+      }
+    },
+    "IAccommodation": {
+      "type": "object",
+      "required": ["name", "address", "feature"],
+      "properties": {
+        "name": { "type": "string", "description": "名称" },
+        "address": { "type": "string", "description": "地址" },
+        "feature": { "type": "string", "description": "特色" },
+        "booking": { "type": "string", "description": "预定建议" },
+        "price": { "type": "number", "description": "价格（消费）" }
+      }
+    },
+    "IActivity": {
+      "type": "object",
+      "required": [
+        "name",
+        "description",
+        "suggestedHours",
+        "ticketPriceCny",
+        "openingHours",
+        "images"
+      ],
+      "properties": {
+        "name": { "type": "string", "description": "名称" },
+        "description": { "type": "string", "description": "描述" },
+        "suggestedHours": { "type": "string", "description": "建议游玩时间" },
+        "ticketPriceCny": { "type": "number", "description": "门票价格（元）" },
+        "openingHours": { "type": "string", "description": "开放时间" },
+        "images": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "description": { "type": "string", "description": "图片描述" },
+              "imgSrc": { "type": "string", "description": "图片地址" }
+            },
+            "required": ["description", "imgSrc"]
+          }
+        }
+      }
+    },
+    "ITravel": {
+      "type": "object",
+      "required": [
+        "day",
+        "title",
+        "waypoints",
+        "description",
+        "accommodation",
+        "foodRecommendation",
+        "activities",
+        "distance",
+        "drivingHours"
+      ],
+      "properties": {
+        "day": { "type": "number", "description": "第几天", "minimum": 1 },
+        "title": { "type": "string", "description": "标题" },
+        "waypoints": { "type": "string", "description": "路线途径点" },
+        "description": { "type": "string", "description": "行程描述" },
+        "accommodation": {
+          "type": "array",
+          "description": "推荐住宿（1-3个）",
+          "minItems": 1,
+          "maxItems": 3,
+          "items": { "$ref": "#/definitions/IAccommodation" }
+        },
+        "foodRecommendation": {
+          "type": "array",
+          "description": "推荐美食（1-3个）",
+          "minItems": 1,
+          "maxItems": 3,
+          "items": { "type": "string" }
+        },
+        "commentTips": {
+          "type": "string",
+          "description": "特别提示、注意事项等特殊描述"
+        },
+        "activities": {
+          "type": "array",
+          "description": "活动景点",
+          "items": { "$ref": "#/definitions/IActivity" }
+        },
+        "distance": { "type": "number", "description": "距离（公里）" },
+        "drivingHours": {
+          "type": "number",
+          "description": "驾车/路程时间（小时）"
+        }
+      }
+    }
+  }
+}

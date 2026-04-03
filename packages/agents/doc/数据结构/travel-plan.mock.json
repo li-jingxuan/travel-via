@@ -1,0 +1,1031 @@
+{
+  "planName": "15天新疆大环线自驾游",
+  "totalDays": 15,
+  "totalDistance": 5500,
+  "vehicleType": "SUV/越野车",
+  "vehicleAdvice": "建议租用四驱SUV，部分路段路况复杂，需具备一定越野能力。出发前检查轮胎、备胎、机油、防冻液等，准备拖车绳、充气泵等应急工具。",
+  "bestSeason": "6-9月（夏季/初秋）",
+  "essentialItems": [
+    "防晒霜SPF50+",
+    "太阳镜、遮阳帽",
+    "保暖外套（早晚温差大）",
+    "身份证、驾驶证、行驶证",
+    "充电宝、车载充电器",
+    "常用药品（感冒药、肠胃药、创可贴）",
+    "现金（部分地区信号不好）",
+    "地图离线包"
+  ],
+  "weather": [
+    {
+      "area": "乌鲁木齐",
+      "daytime": { "tempMax": 30, "tempMin": 25, "weather": "晴" },
+      "nighttime": { "tempMax": 18, "tempMin": 15, "weather": "多云" },
+      "clothing": "短袖+薄外套，早晚加衣"
+    },
+    {
+      "area": "富蕴/可可托海",
+      "daytime": { "tempMax": 28, "tempMin": 22, "weather": "晴" },
+      "nighttime": { "tempMax": 14, "tempMin": 10, "weather": "凉爽" },
+      "clothing": "长袖+冲锋衣"
+    },
+    {
+      "area": "布尔津/喀纳斯",
+      "daytime": { "tempMax": 24, "tempMin": 18, "weather": "多云" },
+      "nighttime": { "tempMax": 10, "tempMin": 5, "weather": "冷" },
+      "clothing": "厚外套+毛衣"
+    },
+    {
+      "area": "克拉玛依/乌尔禾",
+      "daytime": { "tempMax": 35, "tempMin": 30, "weather": "晴热" },
+      "nighttime": { "tempMax": 22, "tempMin": 18, "weather": "温和" },
+      "clothing": "防晒衣物，注意补水"
+    },
+    {
+      "area": "赛里木湖/伊宁",
+      "daytime": { "tempMax": 26, "tempMin": 20, "weather": "晴" },
+      "nighttime": { "tempMax": 12, "tempMin": 8, "weather": "凉" },
+      "clothing": "薄羽绒服或抓绒外套"
+    },
+    {
+      "area": "那拉提/巴音布鲁克",
+      "daytime": { "tempMax": 22, "tempMin": 16, "weather": "晴转多云" },
+      "nighttime": { "tempMax": 8, "tempMin": 3, "weather": "冷" },
+      "clothing": "厚外套必备，高海拔地区风大"
+    },
+    {
+      "area": "独库公路沿线",
+      "daytime": { "tempMax": 25, "tempMin": 15, "weather": "多变" },
+      "nighttime": { "tempMax": 8, "tempMin": 0, "weather": "很冷" },
+      "clothing": "四季衣物都要带！一天过四季"
+    },
+    {
+      "area": "库车/库尔勒",
+      "daytime": { "tempMax": 38, "tempMin": 32, "weather": "炎热" },
+      "nighttime": { "tempMax": 24, "tempMin": 20, "weather": "温暖" },
+      "clothing": "轻薄透气衣物"
+    },
+    {
+      "area": "吐鲁番",
+      "daytime": { "tempMax": 45, "tempMin": 38, "weather": "酷热" },
+      "nighttime": { "tempMax": 28, "tempMin": 25, "weather": "温热" },
+      "clothing": "防晒！避免正午出行"
+    }
+  ],
+  "days": [
+    {
+      "day": 1,
+      "title": "抵达乌鲁木齐 - 市区适应",
+      "waypoints": "['乌鲁木齐地窝堡机场', '国际大巴扎', '红山公园']",
+      "description": "抵达乌鲁木齐，办理租车手续。下午游览国际大巴扎感受异域风情，晚上登红山公园俯瞰城市夜景。调整时差，为后续行程做准备。",
+      "accommodation": [
+        {
+          "name": "乌鲁木齐希尔顿酒店",
+          "address": "乌鲁木齐市沙依巴克区友好北路669号",
+          "feature": "五星级，位置便利，服务优质",
+          "booking": "建议提前1周预订，旺季价格约800-1200元/晚",
+          "price": 980
+        }
+      ],
+      "foodRecommendation": ["大盘鸡", "手抓羊肉", "烤包子", "馕坑肉"],
+      "commentTips": "乌鲁木齐与内地有2小时时差，日落较晚（约22:00），注意休息调整。市区停车较难，建议使用停车场。",
+      "activities": [
+        {
+          "name": "新疆国际大巴扎",
+          "description": "世界规模最大的大巴扎，集伊斯兰文化、建筑、民族商贸于一体，可购买干果、手工艺品等特产。",
+          "suggestedHours": "2-3小时",
+          "ticketPriceCny": 0,
+          "openingHours": "10:00-21:30",
+          "images": [
+            {
+              "description": "大巴扎标志性建筑",
+              "imgSrc": "https://example.com/images/dabazha-main.jpg"
+            },
+            {
+              "description": "内部商铺街景",
+              "imgSrc": "https://example.com/images/dabazha-street.jpg"
+            }
+          ]
+        },
+        {
+          "name": "红山公园",
+          "description": "乌鲁木齐地标性公园，位于市中心制高点，可俯瞰整个城市全景，是观赏日落的绝佳地点。",
+          "suggestedHours": "1-2小时",
+          "ticketPriceCny": 0,
+          "openingHours": "06:00-23:00",
+          "images": [
+            {
+              "description": "红山塔远景",
+              "imgSrc": "https://example.com/images/hongshan-tower.jpg"
+            },
+            {
+              "description": "城市夜景俯瞰",
+              "imgSrc": "https://example.com/images/hongshan-night.jpg"
+            }
+          ]
+        }
+      ],
+      "distance": 20,
+      "drivingHours": 0.5
+    },
+    {
+      "day": 2,
+      "title": "乌鲁木齐 → 可可托海",
+      "waypoints": "['乌鲁木齐', '古尔班通古特沙漠边缘', '富蕴县', '可可托海镇']",
+      "description": "早餐后出发前往可可托海，途经古尔班通古特沙漠边缘，欣赏戈壁风光。下午抵达可可托海景区，参观三号矿坑和额尔齐斯河大峡谷。",
+      "accommodation": [
+        {
+          "name": "可可托海镇宾馆",
+          "address": "阿勒泰地区富蕴县可可托海镇",
+          "feature": "小镇住宿条件有限但干净整洁",
+          "booking": "提前预订，旺季房源紧张",
+          "price": 280
+        },
+        {
+          "name": "额尔齐斯大峡谷酒店",
+          "address": "可可托海景区内",
+          "feature": "景区内住宿，方便次日游玩",
+          "price": 450
+        }
+      ],
+      "foodRecommendation": ["冷水鱼", "哈萨克奶茶", "手抓饭"],
+      "activities": [
+        {
+          "name": "可可托海三号矿坑",
+          "description": "国家功勋矿坑，曾为国家偿还外债做出巨大贡献，被誉为'地质矿产博物馆'，极具历史教育意义。",
+          "suggestedHours": "1.5-2小时",
+          "ticketPriceCny": 80,
+          "openingHours": "09:00-19:00",
+          "images": [
+            {
+              "description": "三号矿坑全貌",
+              "imgSrc": "https://example.com/images/mine-pit.jpg"
+            },
+            {
+              "description": "矿坑博物馆展品",
+              "imgSrc": "https://example.com/images/mine-museum.jpg"
+            }
+          ]
+        },
+        {
+          "name": "额尔齐斯大峡谷",
+          "description": "额尔齐斯河源头峡谷，花岗岩山峰奇特壮观，河水清澈见底，秋季层林尽染美不胜收。",
+          "suggestedHours": "3-4小时",
+          "ticketPriceCny": 116,
+          "openingHours": "08:30-19:00",
+          "images": [
+            {
+              "description": "神钟山标志性景观",
+              "imgSrc": "https://example.com/images/shenzhongshan.jpg"
+            },
+            {
+              "description": "峡谷秋色",
+              "imgSrc": "https://example.com/images/erqisi-canyon.jpg"
+            }
+          ]
+        }
+      ],
+      "distance": 520,
+      "drivingHours": 7
+    },
+    {
+      "day": 3,
+      "title": "可可托海 → 布尔津",
+      "waypoints": "['可可托海', '五彩滩', '布尔津县城']",
+      "description": "上午继续游览可可托海或前往周边牧场体验哈萨克风情。午后驱车前往布尔津，傍晚抵达五彩滩观赏雅丹地貌日落美景。",
+      "accommodation": [
+        {
+          "name": "布尔津金山书院",
+          "address": "阿勒泰地区布尔津县神湖路",
+          "feature": "俄式风格建筑，文艺气息浓厚",
+          "booking": "网红民宿，需提前很久预订",
+          "price": 520
+        },
+        {
+          "name": "布尔津友谊峰大酒店",
+          "address": "布尔津县中心城区",
+          "feature": "当地较好的商务酒店",
+          "price": 320
+        }
+      ],
+      "foodRecommendation": ["布尔津烤鱼", "冷水鱼一鱼多吃", "格瓦斯饮料"],
+      "commentTips": "五彩滩最佳观赏时间为日落前1小时到达，夕阳下的彩色岩石非常震撼。布尔津夜市很有特色，推荐品尝当地冷水鱼。",
+      "activities": [
+        {
+          "name": "五彩滩",
+          "description": "典型的雅丹地貌景区，岩石因矿物质含量不同呈现红、黄、绿等多种色彩，毗邻额尔齐斯河，景色壮丽。",
+          "suggestedHours": "2小时",
+          "ticketPriceCny": 50,
+          "openingHours": "06:00-21:30",
+          "images": [
+            {
+              "description": "五彩滩日落全景",
+              "imgSrc": "https://example.com/images/wucaitan-sunset.jpg"
+            },
+            {
+              "description": "多彩岩层特写",
+              "imgSrc": "https://example.com/images/wucaitan-rocks.jpg"
+            }
+          ]
+        }
+      ],
+      "distance": 300,
+      "drivingHours": 4.5
+    },
+    {
+      "day": 4,
+      "title": "布尔津 → 喀纳斯",
+      "waypoints": "['布尔津', '喀纳斯景区', '喀纳斯湖', '观鱼台']",
+      "description": "驱车进入喀纳斯景区，换乘区间车沿喀纳斯河一路向上，途中欣赏神仙湾、月亮湾、卧龙湾。下午登观鱼台俯瞰喀纳斯湖全貌，寻找传说中的'湖怪'。",
+      "accommodation": [
+        {
+          "name": "喀纳斯阅湖酒店",
+          "address": "喀纳斯景区内",
+          "feature": "景区内较好住宿，推窗见湖景",
+          "booking": "非常抢手，至少提前2周预订",
+          "price": 1280
+        },
+        {
+          "name": "喀纳斯民宿",
+          "address": "喀纳斯老村",
+          "feature": "图瓦人木屋民宿，体验原生态",
+          "price": 480
+        }
+      ],
+      "foodRecommendation": ["土火锅", "野生菌汤", "图瓦人奶茶"],
+      "commentTips": "喀纳斯海拔较高（约1400m），注意预防高反。景区内物价较高，建议自备零食和水。观鱼台需要爬1068级台阶，量力而行。",
+      "activities": [
+        {
+          "name": "喀纳斯三湾",
+          "description": "神仙湾、月亮湾、卧龙湾并称喀纳斯三湾，是喀纳斯河谷最精华的景观带，晨雾中的神仙湾如仙境般梦幻。",
+          "suggestedHours": "2-3小时（含拍照）",
+          "ticketPriceCny": 0,
+          "openingHours": "08:00-20:00",
+          "images": [
+            {
+              "description": "神仙湾晨雾",
+              "imgSrc": "https://example.com/images/shenxianwan-fog.jpg"
+            },
+            {
+              "description": "月亮湾S形河道",
+              "imgSrc": "https://example.com/images/yueliangwan-river.jpg"
+            },
+            {
+              "description": "卧龙湾中心岛屿",
+              "imgSrc": "https://example.com/images/wolongwan-island.jpg"
+            }
+          ]
+        },
+        {
+          "name": "观鱼台",
+          "description": "喀纳斯湖畔最高观景点，需攀登1068级台阶到达，可360°俯瞰喀纳斯湖全貌及周围雪山森林，是拍摄湖怪的最佳位置。",
+          "suggestedHours": "2小时",
+          "ticketPriceCny": 60,
+          "openingHours": "09:00-18:00",
+          "images": [
+            {
+              "description": "观鱼台俯瞰喀纳斯湖",
+              "imgSrc": "https://example.com/images/guanyutai-lake.jpg"
+            },
+            {
+              "description": "登顶台阶",
+              "imgSrc": "https://example.com/images/guanyutai-stairs.jpg"
+            }
+          ]
+        },
+        {
+          "name": "喀纳斯湖",
+          "description": "中国最深的高山湖泊，湖水颜色随季节和天气变化呈现不同的蓝绿色调，神秘而美丽，传说中有巨型'湖怪'出没。",
+          "suggestedHours": "1.5-2小时（乘船游览）",
+          "ticketPriceCny": 120,
+          "openingHours": "09:00-17:30",
+          "images": [
+            {
+              "description": "喀纳斯湖碧水蓝天",
+              "imgSrc": "https://example.com/images/kanas-lake-blue.jpg"
+            },
+            {
+              "description": "双湖码头",
+              "imgSrc": "https://example.com/images/kanas-dock.jpg"
+            }
+          ]
+        }
+      ],
+      "distance": 140,
+      "drivingHours": 3
+    },
+    {
+      "day": 5,
+      "title": "喀纳斯 → 禾木",
+      "waypoints": "['喀纳斯', '禾木村', '禾木观景台', '禾木河']",
+      "description": "早起在喀纳斯看晨雾后前往禾木村。禾木被称为'神的后花园'，是中国最美的村庄之一。下午在禾木河畔漫步，傍晚登上观景台等待日落。",
+      "accommodation": [
+        {
+          "name": "禾木星空营地",
+          "address": "禾木村内",
+          "feature": "小木屋民宿，环境清幽",
+          "booking": "旺季极难订，需提前一个月",
+          "price": 680
+        },
+        {
+          "name": "禾木山庄",
+          "address": "禾木新村",
+          "feature": "条件相对较好的住宿",
+          "price": 580
+        }
+      ],
+      "foodRecommendation": ["禾木牛肉面", "烤羊排", "酥油茶"],
+      "commentTips": "禾木最著名的是晨雾和星空，一定要早起去观景台看日出晨雾！夜晚的禾木可以看到满天繁星。村内道路狭窄，停车需听从指挥。",
+      "activities": [
+        {
+          "name": "禾木观景台",
+          "description": "禾木村的最佳观景点，清晨可观看到整个禾木村被晨雾笼罩的绝美景象，炊烟袅袅、原始木屋错落有致，宛如童话世界。",
+          "suggestedHours": "2-3小时（含往返）",
+          "ticketPriceCny": 0,
+          "openingHours": "全天开放（建议06:00-09:00）",
+          "images": [
+            {
+              "description": "禾木晨雾全景",
+              "imgSrc": "https://example.com/images/hemu-foggy-morning.jpg"
+            },
+            {
+              "description": "禾木村日落",
+              "imgSrc": "https://example.com/images/hemu-sunset.jpg"
+            }
+          ]
+        },
+        {
+          "name": "禾木河白桦林",
+          "description": "流经禾木村的清澈河流，河两岸生长着茂密的白桦林，秋季金黄色的树叶倒映水中，是摄影爱好者的天堂。",
+          "suggestedHours": "1.5-2小时",
+          "ticketPriceCny": 0,
+          "openingHours": "全天",
+          "images": [
+            {
+              "description": "禾木河白桦林秋色",
+              "imgSrc": "https://example.com/images/hemu-birch-forest.jpg"
+            },
+            {
+              "description": "河上援疆桥",
+              "imgSrc": "https://example.com/images/hemu-bridge.jpg"
+            }
+          ]
+        },
+        {
+          "name": "禾木老村",
+          "description": "保存完好的图瓦人原始村落，全部由原木搭建的小木屋组成，保留了最原始的游牧民族生活气息和文化传统。",
+          "suggestedHours": "1-2小时",
+          "ticketPriceCny": 0,
+          "openingHours": "全天",
+          "images": [
+            {
+              "description": "禾木村木屋群",
+              "imgSrc": "https://example.com/images/hemu-village-houses.jpg"
+            },
+            {
+              "description": "图瓦人生活场景",
+              "imgSrc": "https://example.com/images/hemu-tuva-life.jpg"
+            }
+          ]
+        }
+      ],
+      "distance": 65,
+      "drivingHours": 2
+    },
+    {
+      "day": 6,
+      "title": "禾木 → 克拉玛依（乌尔禾魔鬼城）",
+      "waypoints": "['禾木', '布尔津', '克拉玛依', '乌尔禾魔鬼城']",
+      "description": "告别北疆最美村落，一路向南穿越准噶尔盆地。下午抵达世界魔鬼城——乌尔禾风城，欣赏大自然的鬼斧神工造就的雅丹奇观。",
+      "accommodation": [
+        {
+          "name": "乌尔禾大酒店",
+          "address": "克拉玛依市乌尔禾区龙脊路",
+          "feature": "当地最好的酒店之一",
+          "price": 380
+        },
+        {
+          "name": "魔鬼城度假酒店",
+          "address": "乌尔禾魔鬼城景区旁",
+          "feature": "位置便利，步行可达景区",
+          "price": 420
+        }
+      ],
+      "foodRecommendation": ["克拉玛依凉皮", "椒麻鸡", "大盘鸡"],
+      "commentTips": "魔鬼城夏季地表温度极高，务必做好防晒措施。建议乘坐景区小火车游览，既省力又能听到详细讲解。日落时分的光线最适合摄影。",
+      "activities": [
+        {
+          "name": "乌尔禾世界魔鬼城",
+          "description": "典型的雅丹地貌区域，因风吹蚀形成各种形态各异的土丘，似城堡、似怪兽、似舰船，是《卧虎藏龙》《七剑下天山》等多部影视作品取景地。",
+          "suggestedHours": "2-3小时",
+          "ticketPriceCny": 62,
+          "openingHours": "09:00-20:00（季节性调整）",
+          "images": [
+            {
+              "description": "魔鬼城全景",
+              "imgSrc": "https://example.com/images/moguicheng-panorama.jpg"
+            },
+            {
+              "description": "孔雀迎宾石像",
+              "imgSrc": "https://example.com/images/moguicheng-peacock.jpg"
+            },
+            {
+              "description": "艾里克湖畔风光",
+              "imgSrc": "https://example.com/images/moguicheng-lake.jpg"
+            }
+          ]
+        }
+      ],
+      "distance": 400,
+      "drivingHours": 6
+    },
+    {
+      "day": 7,
+      "title": "克拉玛依 → 赛里木湖",
+      "waypoints": "['克拉玛依', '精河县', '赛里木湖', '果子沟大桥']",
+      "description": "穿越天山北麓，沿途经过广阔的农田和牧场。下午抵达'大西洋最后一滴眼泪'——赛里木湖，环湖自驾欣赏高原湖泊的纯净之美，远眺果子沟大桥的雄伟身姿。",
+      "accommodation": [
+        {
+          "name": "赛里木湖亲水湾房车营地",
+          "address": "博州博乐市赛里木湖景区内",
+          "feature": "湖边住宿，推门即见湖景星空",
+          "booking": "需提前预订，旺季紧张",
+          "price": 680
+        },
+        {
+          "name": "果子沟森林公园酒店",
+          "address": "果子沟内",
+          "feature": "森林环绕，空气清新",
+          "price": 520
+        }
+      ],
+      "foodRecommendation": ["高白鲑（赛里木湖特产鱼）", "手抓羊肉", "烤全羊"],
+      "commentTips": "赛里木湖海拔2071m，气温较低且风大，即使夏天也要穿厚外套。环湖公路约90公里，建议预留半天时间慢慢开。湖边可以露营但需提前申请。",
+      "activities": [
+        {
+          "name": "赛里木湖",
+          "description": "新疆海拔最高、面积最大的高山湖泊，湖水清澈湛蓝，四周雪山草原环绕，被誉为'大西洋最后一滴眼泪'，是新疆最美的湖泊之一。",
+          "suggestedHours": "3-4小时（环湖游览）",
+          "ticketPriceCny": 70,
+          "openingHours": "全天开放",
+          "images": [
+            {
+              "description": "赛里木湖蓝色湖水",
+              "imgSrc": "https://example.com/images/sayram-lake-blue.jpg"
+            },
+            {
+              "description": "湖边天鹅嬉戏",
+              "imgSrc": "https://example.com/images/sayram-swans.jpg"
+            },
+            {
+              "description": "远处雪山倒影",
+              "imgSrc": "https://example.com/images/sayram-snow-mountain.jpg"
+            }
+          ]
+        },
+        {
+          "name": "果子沟大桥",
+          "description": "国内第一座公路双塔双索面斜拉桥，全长700米，桥面距谷底200多米，如巨龙盘旋于山谷之间，工程宏伟壮观。",
+          "suggestedHours": "0.5-1小时（停车观景）",
+          "ticketPriceCny": 0,
+          "openingHours": "全天",
+          "images": [
+            {
+              "description": "果子沟大桥全景",
+              "imgSrc": "https://example.com/images/guozi-gou-bridge.jpg"
+            },
+            {
+              "description": "桥梁细节",
+              "imgSrc": "https://example.com/images/guozi-gou-detail.jpg"
+            }
+          ]
+        }
+      ],
+      "distance": 450,
+      "drivingHours": 5.5
+    },
+    {
+      "day": 8,
+      "title": "赛里木湖 → 伊宁市（薰衣草庄园）",
+      "waypoints": "['赛里木湖', '霍城县', '解忧公主薰衣草庄园', '伊宁市', '喀赞其民俗旅游区']",
+      "description": "离开赛里木湖前往伊犁河谷。如果正值6月中下旬至8月初，可在霍城欣赏万亩薰衣草花海。下午抵达伊宁市，游览喀赞其民俗旅游区，感受浓郁的维吾尔族风情，品尝手工冰淇淋。",
+      "accommodation": [
+        {
+          "name": "伊宁瑞阳皇冠假日酒店",
+          "address": "伊宁市解放西路380号",
+          "feature": "五星级，设施完善",
+          "price": 650
+        },
+        {
+          "name": "喀赞其民宿",
+          "address": "伊宁市喀赞其民俗旅游区内",
+          "feature": "维吾尔族庭院式民宿，体验当地生活",
+          "price": 320
+        }
+      ],
+      "foodRecommendation": [
+        "手工冰淇淋（兰兰手工冰淇淋）",
+        "纳仁（手抓面条肉）",
+        "鸽子汤",
+        "馕"
+      ],
+      "commentTips": "霍城薰衣草花期通常为6月中旬到7月中下旬，具体每年略有差异，出发前查询最新花期信息。喀赞其可以坐马车游览街区，体验很好。",
+      "activities": [
+        {
+          "name": "解忧公主薰衣草庄园",
+          "description": "中国最大的薰衣草种植基地之一，每年6-8月紫色花海绽放，空气中弥漫着薰衣草的芬芳，如同置身普罗旺斯。",
+          "suggestedHours": "2-3小时",
+          "ticketPriceCny": 35,
+          "openingHours": "09:00-20:00",
+          "images": [
+            {
+              "description": "紫色薰衣草花海",
+              "imgSrc": "https://example.com/images/lavender-field.jpg"
+            },
+            {
+              "description": "庄园欧式建筑",
+              "imgSrc": "https://example.com/images/lavender-manor.jpg"
+            }
+          ]
+        },
+        {
+          "name": "喀赞其民俗旅游区",
+          "description": "伊宁市最具代表性的维吾尔族聚居区，保留着数百年的历史建筑，蓝色的门窗墙壁是其标志，可乘坐马车穿梭于大街小巷。",
+          "suggestedHours": "2-3小时",
+          "ticketPriceCny": 0,
+          "openingHours": "全天",
+          "images": [
+            {
+              "description": "蓝色民居建筑群",
+              "imgSrc": "https://example.com/images/kazanqi-blue-house.jpg"
+            },
+            {
+              "description": "马车游览",
+              "imgSrc": "https://example.com/images/kazanqi-carriage.jpg"
+            },
+            {
+              "description": "手工冰淇淋制作",
+              "imgSrc": "https://example.com/images/kazanqi-icecream.jpg"
+            }
+          ]
+        }
+      ],
+      "distance": 150,
+      "drivingHours": 2.5
+    },
+    {
+      "day": 9,
+      "title": "伊宁市 → 那拉提草原",
+      "waypoints": "['伊宁市', '那拉提镇', '那拉提空中草原', '河谷草原']",
+      "description": "前往世界四大草原之一的那拉提草原。这里是哈萨克族的夏牧场，空中草原海拔2200米，视野开阔，牛羊成群，毡房点点，是体验草原风情的绝佳之地。",
+      "accommodation": [
+        {
+          "name": "那拉提草原度假酒店",
+          "address": "新源县那拉提镇",
+          "feature": "景区附近，条件较好",
+          "booking": "旺季需提前预订",
+          "price": 580
+        },
+        {
+          "name": "那拉提毡房体验",
+          "address": "那拉提草原景区内",
+          "feature": "住进哈萨克族传统毡房，体验游牧生活",
+          "price": 350
+        }
+      ],
+      "foodRecommendation": ["马肠子", "熏马肉", "奶茶", "馕包肉"],
+      "commentTips": "那拉提草原面积很大，建议购买通票游览空中草原、河谷草原和盘龙谷道三个主要区域。骑马项目很多，选择正规马队确保安全。草原紫外线强，务必防晒。",
+      "activities": [
+        {
+          "name": "那拉提空中草原",
+          "description": "那拉提最著名的景点，平均海拔2200米，站在草原上仿佛伸手就能摸到天空。这里地势起伏平缓，视野极为开阔，是摄影和发呆的绝佳去处。",
+          "suggestedHours": "3-4小时",
+          "ticketPriceCny": 135,
+          "openingHours": "08:30-20:00",
+          "images": [
+            {
+              "description": "空中草原辽阔景色",
+              "imgSrc": "https://example.com/images/nalati-air-grassland.jpg"
+            },
+            {
+              "description": "雪山映衬下的草原",
+              "imgSrc": "https://example.com/images/nalati-snow-grass.jpg"
+            },
+            {
+              "description": "哈萨克毡房群落",
+              "imgSrc": "https://example.com/images/nalati-yurts.jpg"
+            }
+          ]
+        },
+        {
+          "name": "那拉提河谷草原",
+          "description": "位于巩乃斯河谷地带，植被更加丰茂，河流蜿蜒其中，是观看哈萨克族民俗表演和参与草原活动的主要区域。",
+          "suggestedHours": "2-3小时",
+          "ticketPriceCny": 0,
+          "openingHours": "08:30-20:00",
+          "images": [
+            {
+              "description": "河谷草原河流",
+              "imgSrc": "https://example.com/images/nalati-valley-river.jpg"
+            },
+            {
+              "description": "草原骑马体验",
+              "imgSrc": "https://example.com/images/nalati-horse-riding.jpg"
+            }
+          ]
+        }
+      ],
+      "distance": 280,
+      "drivingHours": 4
+    },
+    {
+      "day": 10,
+      "title": "那拉提 → 巴音布鲁克",
+      "waypoints": "['那拉提', '独库公路中段', '巴音布鲁克草原', '天鹅湖', '九曲十八弯']",
+      "description": "沿独库公路翻越天山，途经乔尔玛烈士陵园缅怀筑路英雄。下午抵达中国第二大草原——巴音布鲁克，参观天鹅湖自然保护区，傍晚在九曲十八弯等待落日映照九个太阳的奇观。",
+      "accommodation": [
+        {
+          "name": "巴音布鲁克龙兴国际酒店",
+          "address": "和静县巴音布鲁克镇",
+          "feature": "镇上条件较好的酒店",
+          "booking": "旺季非常紧张",
+          "price": 480
+        },
+        {
+          "name": "巴音布鲁克蒙古包",
+          "address": "巴音布鲁克草原景区内",
+          "feature": "体验蒙古族风情",
+          "price": 280
+        }
+      ],
+      "foodRecommendation": ["黑头羊肉", "草原蘑菇", "酸奶", "手扒肉"],
+      "commentTips": "巴音布鲁克海拔约2500m，比那拉提更高更冷，一定要带厚衣服！九曲十八弯的最佳观赏时间是日落前1小时到达观景台。天鹅湖保护区请勿大声喧哗惊扰鸟类。",
+      "activities": [
+        {
+          "name": "巴音布鲁克天鹅湖",
+          "description": "中国最大的天鹅栖息地，每年春夏季节有数以万计的天鹅在此繁衍生息，是国家级自然保护区，也是观鸟爱好者圣地。",
+          "suggestedHours": "1.5-2小时",
+          "ticketPriceCny": 0,
+          "openingHours": "08:30-18:00",
+          "images": [
+            {
+              "description": "湖面上的天鹅群",
+              "imgSrc": "https://example.com/images/bayinbuluke-swans.jpg"
+            },
+            {
+              "description": "湿地生态环境",
+              "imgSrc": "https://example.com/images/bayinbuluke-wetland.jpg"
+            }
+          ]
+        },
+        {
+          "name": "九曲十八弯（开都河）",
+          "description": "开都河在平坦的草原上蜿蜒流淌形成九曲十八弯的壮丽景观，日落时分河水反射阳光，据说运气好能看到'九个太阳'的奇景。",
+          "suggestedHours": "2-3小时（含等待日落）",
+          "ticketPriceCny": 0,
+          "openingHours": "08:30-21:00",
+          "images": [
+            {
+              "description": "九曲十八弯日落全景",
+              "imgSrc": "https://example.com/images/jiuqu-sunset.jpg"
+            },
+            {
+              "description": "蜿蜒的开都河",
+              "imgSrc": "https://example.com/images/kaidu-river.jpg"
+            }
+          ]
+        }
+      ],
+      "distance": 90,
+      "drivingHours": 2.5
+    },
+    {
+      "day": 11,
+      "title": "巴音布鲁克 → 库车（独库公路南段）",
+      "waypoints": "['巴音布鲁克', '大东木池', '铁力买提达坂', '大小龙池', '天山神秘大峡谷', '库车市']",
+      "description": "今天将走完独库公路最精彩的天山段！翻越海拔3700米的铁力买提达坂，经过大小龙池，穿越天山神秘大峡谷，最终抵达古龟兹国所在地——库车。这一天会经历从草原到荒漠的巨大自然景观变化。",
+      "accommodation": [
+        {
+          "name": "库车天缘国际酒店",
+          "address": "阿克苏地区库车市天山路",
+          "feature": "当地较好酒店",
+          "price": 380
+        },
+        {
+          "name": "库车饭店",
+          "address": "库车市中心",
+          "feature": "老牌酒店，交通便利",
+          "price": 280
+        }
+      ],
+      "foodRecommendation": ["库车大馕", "库车小白杏", "烤全羊", "手抓饭"],
+      "commentTips": "独库公路南段弯多路陡，谨慎驾驶！铁力买提达坂可能有积雪，注意行车安全。天山神秘大峡谷夏季非常炎热，带足饮水。库车是古代龟兹国故地，历史文化深厚。",
+      "activities": [
+        {
+          "name": "天山神秘大峡谷",
+          "description": "由红褐色巨型山体群组成的峡谷，集人间峡谷之妙，兼天山奇景之长，蕴万古之灵气，融神、奇、险、雄、幽为一体。",
+          "suggestedHours": "2-3小时",
+          "ticketPriceCny": 41,
+          "openingHours": "10:00-19:00",
+          "images": [
+            {
+              "description": "红色峡谷岩壁",
+              "imgSrc": "https://example.com/images/tianshan-canyon-red.jpg"
+            },
+            {
+              "description": "峡谷深处光影",
+              "imgSrc": "https://example.com/images/tianshan-canyon-light.jpg"
+            },
+            {
+              "description": "阿艾石窟",
+              "imgSrc": "https://example.com/images/tianshan-cave.jpg"
+            }
+          ]
+        },
+        {
+          "name": "大小龙池",
+          "description": "镶嵌在天山崇山峻岭间的两颗碧绿宝石，大龙池面积约2平方公里，小龙池如明镜般小巧精致，四周雪峰环绕，景色秀美。",
+          "suggestedHours": "0.5-1小时",
+          "ticketPriceCny": 0,
+          "openingHours": "全天",
+          "images": [
+            {
+              "description": "大龙池全景",
+              "imgSrc": "https://example.com/images/dalongchi-lake.jpg"
+            },
+            {
+              "description": "小龙池倒影",
+              "imgSrc": "https://example.com/images/xiaolongchi-lake.jpg"
+            }
+          ]
+        },
+        {
+          "name": "库车王府",
+          "description": "中国最后一个王爷——库车王的府邸，融合了中原和西域建筑风格，内有龟兹博物馆，可了解古龟兹国的历史文化。",
+          "suggestedHours": "1-2小时",
+          "ticketPriceCny": 55,
+          "openingHours": "09:30-20:00",
+          "images": [
+            {
+              "description": "库车王府大门",
+              "imgSrc": "https://example.com/images/kuche-palace-gate.jpg"
+            },
+            {
+              "description": "王府内部庭院",
+              "imgSrc": "https://example.com/images/kuche-palace-yard.jpg"
+            }
+          ]
+        }
+      ],
+      "distance": 260,
+      "drivingHours": 5
+    },
+    {
+      "day": 12,
+      "title": "库车 → 库尔勒（罗布人村寨）",
+      "waypoints": "['库车', '轮台县', '罗布人村寨', '塔里木胡杨林', '库尔勒市']",
+      "description": "从库车前往库尔勒，中途探访神秘的罗布人村寨，了解这个濒临消失的古老部落。秋季的话还可以顺路看看塔里木河流域的世界最大原始胡杨林。晚上抵达梨城库尔勒休整。",
+      "accommodation": [
+        {
+          "name": "库尔勒康城建国国际酒店",
+          "address": "库尔勒市人民东路",
+          "feature": "五星级，设施齐全",
+          "price": 450
+        },
+        {
+          "name": "库尔勒银星酒店",
+          "address": "库尔勒市中心",
+          "feature": "性价比高，位置好",
+          "price": 280
+        }
+      ],
+      "foodRecommendation": ["库尔勒香梨", "博湖辣椒", "烤鱼", "大盘鸡"],
+      "commentTips": "罗布人村寨可以体验沙漠、河流、胡杨林共存的独特景观。库尔勒香梨非常有名，当季的话一定要尝尝。库尔勒城市现代化程度较高，补给方便。",
+      "activities": [
+        {
+          "name": "罗布人村寨",
+          "description": "生活在塔里木河下游的罗布人（又称罗布泊人）是中国最古老的部族之一，村寨展示了他们独特的捕鱼文化和沙漠生存智慧。",
+          "suggestedHours": "2-3小时",
+          "ticketPriceCny": 40,
+          "openingHours": "09:00-19:00",
+          "images": [
+            {
+              "description": "罗布人传统捕鱼",
+              "imgSrc": "https://example.com/images/luobu-fishing.jpg"
+            },
+            {
+              "description": "村寨沙漠背景",
+              "imgSrc": "https://example.com/images/luobu-desert.jpg"
+            },
+            {
+              "description": "卡盆船（独木舟）",
+              "imgSrc": "https://example.com/images/luobu-canoe.jpg"
+            }
+          ]
+        },
+        {
+          "name": "塔里木胡杨林公园",
+          "description": "世界上面积最大、分布最密集的原始胡杨林区，每年10月中下旬金黄色的胡杨林与沙漠交相辉映，构成绝美的秋日画卷。",
+          "suggestedHours": "2-3小时",
+          "ticketPriceCny": 45,
+          "openingHours": "09:00-18:00",
+          "images": [
+            {
+              "description": "金色胡杨林大道",
+              "imgSrc": "https://example.com/images/populus-golden.jpg"
+            },
+            {
+              "description": "沙漠中的胡杨树",
+              "imgSrc": "https://example.com/images/populus-in-desert.jpg"
+            }
+          ]
+        }
+      ],
+      "distance": 290,
+      "drivingHours": 4
+    },
+    {
+      "day": 13,
+      "title": "库尔勒 → 吐鲁番",
+      "waypoints": "['库尔勒', '托克逊县', '吐鲁番市', '火焰山', '葡萄沟', '坎儿井']",
+      "description": "离开南疆进入东疆火洲吐鲁番。这里是全国海拔最低、气温最高的地方。参观《西游记》中著名的火焰山，走进清凉的葡萄沟品尝甜美瓜果，探索中国古代三大工程之一的坎儿井地下水利系统。",
+      "accommodation": [
+        {
+          "name": "吐鲁番双城宾馆",
+          "address": "吐鲁番市高昌区",
+          "feature": "当地较好酒店",
+          "price": 320
+        },
+        {
+          "name": "葡萄沟民宿",
+          "address": "吐鲁番葡萄沟景区内",
+          "feature": "住在葡萄架下，体验维吾尔农家",
+          "price": 260
+        }
+      ],
+      "foodRecommendation": ["吐鲁番葡萄", "哈密瓜", "烤全羊", "架子肉"],
+      "commentTips": "吐鲁番夏季极端高温（可达45°C以上），尽量避开中午时段户外活动。火焰山地表温度可达70-80°C，注意防暑降温。葡萄沟和坎儿井相对凉爽，适合午后游览。",
+      "activities": [
+        {
+          "name": "火焰山",
+          "description": "因《西游记》而闻名天下，赤红色的山体在烈日下犹如燃烧的火焰，景区内有巨大的温度计显示实时地表温度，是中国最热的地方。",
+          "suggestedHours": "1-1.5小时",
+          "ticketPriceCny": 40,
+          "openingHours": "09:00-20:00",
+          "images": [
+            {
+              "description": "火焰山红色山体",
+              "imgSrc": "https://example.com/images/huoyanshan-red.jpg"
+            },
+            {
+              "description": "金箍棒造型温度计",
+              "imgSrc": "https://example.com/images/huoyanshan-thermometer.jpg"
+            }
+          ]
+        },
+        {
+          "name": "葡萄沟",
+          "description": "火焰山脚下的一处绿色天堂，沟内遍植无核白葡萄，遮天蔽日的葡萄架下清凉宜人，是品尝新鲜葡萄和葡萄干的绝佳去处。",
+          "suggestedHours": "2-3小时",
+          "ticketPriceCny": 75,
+          "openingHours": "08:30-21:00",
+          "images": [
+            {
+              "description": "葡萄沟葡萄架长廊",
+              "imgSrc": "https://example.com/images/putao-gou-vines.jpg"
+            },
+            {
+              "description": "晾晒葡萄干的荫房",
+              "imgSrc": "https://example.com/images/putao-drying-room.jpg"
+            },
+            {
+              "description": "维吾尔族歌舞表演",
+              "imgSrc": "https://example.com/images/putao-dance.jpg"
+            }
+          ]
+        },
+        {
+          "name": "坎儿井",
+          "description": "中国古代三大工程之一（与长城、京杭运河并列），是新疆特有的地下水利工程，通过地下渠道将高山雪水引至地面灌溉绿洲，已有2000多年历史。",
+          "suggestedHours": "1-1.5小时",
+          "ticketPriceCny": 40,
+          "openingHours": "09:00-19:00",
+          "images": [
+            {
+              "description": "坎儿井竖井口",
+              "imgSrc": "https://example.com/images/kanerjing-well.jpg"
+            },
+            {
+              "description": "地下暗渠",
+              "imgSrc": "https://example.com/images/kanerjing-tunnel.jpg"
+            },
+            {
+              "description": "坎儿井结构示意图",
+              "imgSrc": "https://example.com/images/kanerjing-diagram.jpg"
+            }
+          ]
+        }
+      ],
+      "distance": 380,
+      "drivingHours": 4.5
+    },
+    {
+      "day": 14,
+      "title": "吐鲁番 → 乌鲁木齐",
+      "waypoints": "['吐鲁番', '达坂城风力发电站', '盐湖', '乌鲁木齐', '新疆博物馆']",
+      "description": "踏上归途返回乌鲁木齐。途中经过亚洲最大的风力发电场——达坂城风电场，成千上万的风力发电机蔚为壮观。下午回到乌鲁木齐后参观新疆博物馆，深入了解西域历史文化。晚上享用一顿丰盛的告别晚餐。",
+      "accommodation": [
+        {
+          "name": "乌鲁木齐喜来登酒店",
+          "address": "乌鲁木齐市沙依巴克区西北路",
+          "feature": "五星级国际连锁品牌",
+          "price": 750
+        },
+        {
+          "name": "乌鲁木齐野马丝路驿站",
+          "address": "乌鲁木齐市鲤鱼山南路",
+          "feature": "特色主题酒店，有汗血宝马展示",
+          "price": 580
+        }
+      ],
+      "foodRecommendation": [
+        "烤羊肉串",
+        "新疆炒米粉",
+        "纳仁",
+        "果盘（各种干果）"
+      ],
+      "commentTips": "达坂城风力发电站非常适合停车拍照，是公路大片取景地。新疆博物馆免费但需预约，镇馆之宝是'楼兰美女'干尸。这是行程最后一天，好好享受新疆最后的时光。",
+      "activities": [
+        {
+          "name": "达坂城风力发电站",
+          "description": "亚洲最大的风力发电基地，连绵数十公里的白色风机阵列矗立在戈壁滩上，气势恢宏，是G30国道上的一道独特风景线。",
+          "suggestedHours": "0.5-1小时（路边停车观景）",
+          "ticketPriceCny": 0,
+          "openingHours": "全天",
+          "images": [
+            {
+              "description": "风力发电机阵列",
+              "imgSrc": "https://example.com/images/dabancheng-windfarm.jpg"
+            },
+            {
+              "description": "G30国道上的风车阵",
+              "imgSrc": "https://example.com/images/dabancheng-highway.jpg"
+            }
+          ]
+        },
+        {
+          "name": "新疆维吾尔自治区博物馆",
+          "description": "新疆最大的综合性博物馆，馆藏文物丰富，包括举世闻名的'楼兰美女'干尸、五星出东方利中国织锦等国宝级文物，是了解西域历史的必访之地。",
+          "suggestedHours": "2-3小时",
+          "ticketPriceCny": 0,
+          "openingHours": "10:00-18:00（周一闭馆）",
+          "images": [
+            {
+              "description": "博物馆外观",
+              "imgSrc": "https://example.com/images/xinjiang-museum-exterior.jpg"
+            },
+            {
+              "description": "楼兰美女干尸展厅",
+              "imgSrc": "https://example.com/images/loulan-beauty.jpg"
+            },
+            {
+              "description": "古代丝绸织物展品",
+              "imgSrc": "https://example.com/images/xinjiang-silk-exhibit.jpg"
+            }
+          ]
+        }
+      ],
+      "distance": 180,
+      "drivingHours": 3
+    },
+    {
+      "day": 15,
+      "title": "乌鲁木齐返程",
+      "waypoints": "['乌鲁木齐市区', '机场/火车站']",
+      "description": "根据航班或火车时间安排最后半天的活动。可以去二道桥市场采购干果特产作为伴手礼，或者在天山大峡谷做最后的游览。之后前往机场或车站，结束难忘的新疆之旅。",
+      "accommodation": [],
+      "foodRecommendation": ["机场/车站快餐", "路上零食"],
+      "commentTips": "记得提前2-3小时到达机场（乌鲁木齐机场较大）。干果可以在机场免税店购买也可以快递回家。检查随身物品不要遗漏证件。期待下次再来新疆！",
+      "activities": [
+        {
+          "name": "二道桥国际大巴扎购物",
+          "description": "如果还有时间，可以在二道桥国际大巴扎最后采购一些新疆特产：红枣、葡萄干、核桃、杏仁、干果礼盒等，作为送给亲友的伴手礼。",
+          "suggestedHours": "1-2小时",
+          "ticketPriceCny": 0,
+          "openingHours": "10:00-21:30",
+          "images": [
+            {
+              "description": "大巴扎干果摊位",
+              "imgSrc": "https://example.com/images/dried-fruits-market.jpg"
+            },
+            {
+              "description": "特色纪念品",
+              "imgSrc": "https://example.com/images/souvenirs-shop.jpg"
+            }
+          ]
+        }
+      ],
+      "distance": 30,
+      "drivingHours": 0.5
+    }
+  ]
+}
