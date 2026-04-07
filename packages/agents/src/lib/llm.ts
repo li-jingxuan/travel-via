@@ -14,9 +14,29 @@
  */
 
 import { ChatOpenAI } from "@langchain/openai"
+import { config as loadDotenv } from "dotenv"
+import { existsSync } from "node:fs"
+import { dirname, resolve } from "node:path"
+import { fileURLToPath } from "node:url"
 
-const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY ?? ""
-const DEEPSEEK_BASE_URL = process.env.DEEPSEEK_BASE_URL ?? "https://api.deepseek.com"
+function loadAgentsEnv() {
+  const currentFileDir = dirname(fileURLToPath(import.meta.url))
+  const envCandidates = [
+    resolve(process.cwd(), ".env"),
+    resolve(process.cwd(), "packages/agents/.env"),
+    resolve(currentFileDir, "../../.env"),
+    resolve(currentFileDir, "../../../.env"),
+  ]
+
+  const envPath = envCandidates.find((path) => existsSync(path))
+  if (envPath) {
+    loadDotenv({ path: envPath })
+  }
+}
+
+loadAgentsEnv()
+
+const DEEPSEEK_BASE_URL = process.env.DEEPSEEK_BASE_URL
 
 /**
  * 创建 DeepSeek-V3 模型实例（通用任务）
@@ -31,7 +51,6 @@ export function createDeepSeekV3(overrides?: { temperature?: number }) {
   return new ChatOpenAI({
     modelName: "deepseek-chat",
     temperature: overrides?.temperature ?? 0.3,
-    openAIApiKey: DEEPSEEK_API_KEY,
     configuration: { baseURL: DEEPSEEK_BASE_URL },
   })
 }
@@ -53,7 +72,6 @@ export function createDeepSeekReasoner(overrides?: { temperature?: number }) {
   return new ChatOpenAI({
     modelName: "deepseek-reasoner",
     temperature: overrides?.temperature ?? 0.7,
-    openAIApiKey: DEEPSEEK_API_KEY,
     configuration: { baseURL: DEEPSEEK_BASE_URL },
   })
 }

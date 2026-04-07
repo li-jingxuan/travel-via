@@ -69,6 +69,7 @@ export async function intentAgentNode(
     // JSON 解析失败时使用兜底默认值，避免整个管线崩溃
     // 这种情况通常是因为 LLM 输出了额外文字而非纯 JSON
     intent = {
+      departurePoint: "未知",
       destination: "未知",
       days: 5,
       month: "未指定",

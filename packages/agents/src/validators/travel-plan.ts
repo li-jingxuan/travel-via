@@ -15,14 +15,11 @@
  * 校验策略
  * ============================================================================
  *
- * 采用"字段存在性检查"策略（非 Zod runtime validation）：
- * - 检查顶层 9 个必填字段是否都存在且非 null
- * - 检查 days 数组中每一天的所有必填字段
- * - 检查每天 activities 数组中每个活动的所有必填字段
- * - 收集所有缺失字段为错误列表
- *
- * 未来可升级为使用 z.inferFromSchema() 从 travel-plan.schema.json 自动生成
- * Zod schema 进行更严格的类型+格式双重校验。
+ * 采用 Zod runtime validation：
+ * - 使用 Zod schema 描述 ITravelPlan 的完整字段结构
+ * - 通过 safeParse 一次性完成类型+字段存在性校验
+ * - 使用 strict() 拒绝额外未知字段
+ * - 收集并格式化所有 issue 为错误列表
  *
  * ============================================================================
  * 在 Graph 中的位置与重试逻辑
@@ -41,47 +38,11 @@
  */
 
 import type { ITravelPlan } from "@repo/shared-types/travel"
+import { z } from "zod"
 import type { TravelStateAnnotation } from "../graph/state.js"
 
-// ==================== 校验规则定义 ====================
-// 这些常量数组定义了每一层级的必填字段名
-// 与 ITravelPlan / ITravel / IActivity 接口定义保持同步
-
-/** ITravelPlan 顶层必填字段 */
-const REQUIRED_TOP_LEVEL_FIELDS = [
-  "planName",
-  "totalDays",
-  "totalDistance",
-  "vehicleType",
-  "vehicleAdvice",
-  "bestSeason",
-  "essentialItems",
-  "weather",
-  "days",
-] as const
-
-/** ITravel（单日行程）必填字段 */
-const REQUIRED_DAY_FIELDS = [
-  "day",
-  "title",
-  "waypoints",
-  "description",
-  "accommodation",
-  "foodRecommendation",
-  "activities",
-  "distance",
-  "drivingHours",
-] as const
-
-/** IActivity（景点活动）必填字段 */
-const REQUIRED_ACTIVITY_FIELDS = [
-  "name",
-  "description",
-  "suggestedHours",
-  "ticketPriceCny",
-  "openingHours",
-  "images",
-] as const
+// ==================== Zod Schema 定义 ====================
+// 与 @repo/shared-types/travel 中的接口保持一致
 
 /** 校验结果类型 */
 interface ValidationResult {
@@ -90,76 +51,99 @@ interface ValidationResult {
   errors: string[]
 }
 
+const activityImageSchema = z
+  .object({
+    description: z.string(),
+    imgSrc: z.string(),
+  })
+  .strict()
+
+const activitySchema = z
+  .object({
+    name: z.string(),
+    description: z.string(),
+    suggestedHours: z.string(),
+    ticketPriceCny: z.number(),
+    openingHours: z.string(),
+    images: z.array(activityImageSchema),
+  })
+  .strict()
+
+const accommodationSchema = z
+  .object({
+    name: z.string(),
+    address: z.string(),
+    feature: z.string(),
+    booking: z.string().optional(),
+    price: z.number().optional(),
+  })
+  .strict()
+
+const weatherDaySchema = z
+  .object({
+    tempMax: z.number(),
+    tempMin: z.number(),
+    weather: z.string(),
+  })
+  .strict()
+
+const weatherSchema = z
+  .object({
+    area: z.string(),
+    daytime: weatherDaySchema,
+    nighttime: weatherDaySchema,
+    clothing: z.string(),
+  })
+  .strict()
+
+const travelDaySchema = z
+  .object({
+    day: z.number(),
+    title: z.string(),
+    waypoints: z.string(),
+    description: z.string(),
+    accommodation: z.array(accommodationSchema),
+    foodRecommendation: z.array(z.string()),
+    commentTips: z.string().optional(),
+    activities: z.array(activitySchema),
+    distance: z.number(),
+    drivingHours: z.number(),
+  })
+  .strict()
+
+const travelPlanSchema = z
+  .object({
+    planName: z.string(),
+    totalDays: z.number(),
+    totalDistance: z.number(),
+    vehicleType: z.string(),
+    vehicleAdvice: z.string(),
+    bestSeason: z.string(),
+    essentialItems: z.array(z.string()),
+    weather: z.array(weatherSchema),
+    days: z.array(travelDaySchema).nonempty("days 必须是非空数组"),
+  })
+  .strict()
+
 /**
- * 核心校验函数 — 逐层检查 ITravelPlan 的字段完整性
- *
- * 校验层级（从外到内）：
- *   Level 1: 顶层字段（planName, totalDays 等 9 个）
- *   Level 2: days[] 数组非空检查
- *   Level 3: 每个 day 的字段（day, title, waypoints 等 9 个）
- *   Level 4: 每个 day.activities[] 数组检查
- *   Level 5: 每个 activity 的字段（name, ticketPriceCny 等 6 个）
+ * 核心校验函数 — 使用 Zod 对 ITravelPlan 做运行时校验
  *
  * @param plan - 待校验的 ITravelPlan 对象
  * @returns 校验结果（valid=true 表示全部通过）
  */
 function validateITravelPlan(plan: ITravelPlan): ValidationResult {
-  const errors: string[] = []
+  const parseResult = travelPlanSchema.safeParse(plan)
 
-  // --- Level 1: 顶层字段检查 ---
-  for (const field of REQUIRED_TOP_LEVEL_FIELDS) {
-    if (plan[field] === undefined || plan[field] === null) {
-      errors.push(`缺少必填字段: ${field}`)
-    }
+  if (parseResult.success) {
+    return { valid: true, errors: [] }
   }
 
-  // --- Level 2: days 数组非空 ---
-  if (!Array.isArray(plan.days) || plan.days.length === 0) {
-    errors.push("days 必须是非空数组")
-  } else {
-    // --- Level 3-5: 逐天逐活动递归检查 ---
-    for (let i = 0; i < plan.days.length; i++) {
-      const day = plan.days[i]
+  const errors = parseResult.error.issues.map((issue) => {
+    const path = issue.path.length > 0 ? issue.path.join(".") : "root"
+    return `字段校验失败 (${path}): ${issue.message}`
+  })
 
-      // 防御性空值检查（TypeScript strictNullChecks 要求）
-      if (!day) {
-        errors.push(`days[${i}] 为空`)
-        continue
-      }
-
-      // Level 3: 单日字段检查
-      for (const field of REQUIRED_DAY_FIELDS) {
-        if (day[field] === undefined || day[field] === null) {
-          errors.push(`days[${i}] 缺少必填字段: ${field}`)
-        }
-      }
-
-      // Level 4: activities 数组检查
-      if (!Array.isArray(day.activities)) {
-        errors.push(`days[${i}].activities 必须是数组`)
-      } else {
-        for (let j = 0; j < day.activities.length; j++) {
-          const activity = day.activities[j]
-
-          if (!activity) {
-            errors.push(`days[${i}].activities[${j}] 为空`)
-            continue
-          }
-
-          // Level 5: 单个活动字段检查
-          for (const field of REQUIRED_ACTIVITY_FIELDS) {
-            if (activity[field] === undefined || activity[field] === null) {
-              errors.push(
-                `days[${i}].activities[${j}] 缺少必填字段: ${field}`,
-              )
-            }
-          }
-        }
-      }
-    }
-  }
-
-  return { valid: errors.length === 0, errors }
+  return { valid: false, errors }
 }
 
 /**

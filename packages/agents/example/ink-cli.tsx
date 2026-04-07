@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react"
 import { Box, Text, useInput, useApp, useStdin, render } from "ink"
 import Spinner from "ink-spinner"
+import { travelPlannerGraph } from "../src/index.js"
 
 type MessageRole = "user" | "assistant"
 
@@ -10,10 +11,6 @@ interface Message {
   content: string
   timestamp: Date
 }
-
-const DEEPSEEK_API_URL = "https://api.deepseek.com/chat/completions"
-const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY ?? ""
-const MODEL = process.env.DEEPSEEK_MODEL ?? "deepseek-chat"
 
 function App() {
   const { exit } = useApp()
@@ -47,16 +44,12 @@ function App() {
       setIsLoading(true)
 
       try {
-        if (!DEEPSEEK_API_KEY) {
-          await mockReply(text)
-        } else {
-          await callDeepSeek([...messages, userMsg])
-        }
+        await callTravelPlannerGraph(text)
       } catch (error) {
         const errorMsg: Message = {
           id: msgIdRef.current++,
           role: "assistant",
-          content: `❌ 请求失败: ${error instanceof Error ? error.message : String(error)}\n\n请检查 DEEPSEEK_API_KEY 环境变量是否设置正确。`,
+          content: `❌ 请求失败: ${error instanceof Error ? error.message : String(error)}\n\n请检查模型环境变量配置（如 OPENAI_API_KEY / DEEPSEEK_BASE_URL）。`,
           timestamp: new Date(),
         }
         setMessages((prev) => [...prev, errorMsg])
@@ -67,43 +60,9 @@ function App() {
     [messages, isLoading]
   )
 
-  async function mockReply(userText: string) {
-    await new Promise((r) => setTimeout(r, 800 + Math.random() * 1200))
-    const reply: Message = {
-      id: msgIdRef.current++,
-      role: "assistant",
-      content: `[Mock Mode - 未配置 DEEPSEEK_API_KEY]\n\n收到你的消息: "${userText}"\n\n这是一个模拟回复。要接入真实的 DeepSeek 对话，请设置环境变量：\n\n  export DEEPSEEK_API_KEY="your-api-key"\n\n然后重新运行此命令。`,
-      timestamp: new Date(),
-    }
-    setMessages((prev) => [...prev, reply])
-  }
-
-  async function callDeepSeek(history: Message[]) {
-    const response = await fetch(DEEPSEEK_API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${DEEPSEEK_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: MODEL,
-        messages: history.map((m) => ({ role: m.role, content: m.content })),
-        temperature: 0.7,
-        max_tokens: 2048,
-        stream: false,
-      }),
-    })
-
-    if (!response.ok) {
-      const errBody = await response.json().catch(() => ({}))
-      throw new Error(
-        `HTTP ${response.status}: ${errBody?.error?.message ?? response.statusText}`
-      )
-    }
-
-    const data = await response.json()
-    const content = data.choices?.[0]?.message?.content ?? "（空回复）"
-
+  async function callTravelPlannerGraph(userText: string) {
+    const result = await travelPlannerGraph.invoke({ userInput: userText })
+    const content = formatGraphResult(result)
     const reply: Message = {
       id: msgIdRef.current++,
       role: "assistant",
@@ -111,6 +70,25 @@ function App() {
       timestamp: new Date(),
     }
     setMessages((prev) => [...prev, reply])
+  }
+
+  function formatGraphResult(
+    result: Awaited<ReturnType<typeof travelPlannerGraph.invoke>>
+  ): string {
+    if (!result.finalPlan) {
+      const errors = result.errors.length
+        ? result.errors.map((err) => `- ${err}`).join("\n")
+        : "- 未返回具体错误"
+
+      return `⚠️ 规划未生成可用结果。\n\n错误信息:\n${errors}`
+    }
+
+    const errorSection =
+      result.errors.length > 0
+        ? `\n\n校验/执行日志:\n${result.errors.map((err) => `- ${err}`).join("\n")}`
+        : ""
+
+    return `✅ 已生成行程方案：\n\n${JSON.stringify(result.finalPlan, null, 2)}${errorSection}`
   }
 
   useInput((inputChar, key) => {
@@ -136,7 +114,7 @@ function App() {
       return
     }
 
-    if (inputChar && inputChar.length === 1 && inputChar >= " ") {
+    if (inputChar && inputChar >= " ") {
       const next = inputRef.current + inputChar
       inputRef.current = next
       setInput(next)

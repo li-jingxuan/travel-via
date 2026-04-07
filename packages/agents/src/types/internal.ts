@@ -21,6 +21,8 @@
 export interface TravelIntent {
   /** 目的地，如 "新疆"、"云南"、"日本关西" */
   destination: string
+  /** 出发地，如 "北京"、"上海"、"广州" */
+  departurePoint: string,
   /** 计划天数 */
   days: number
   /** 出行月份/季节，如 "6月"、"夏季"、"国庆期间" */
