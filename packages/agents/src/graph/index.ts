@@ -76,6 +76,75 @@ import { validatorNode } from "../validators/travel-plan.js"
 const MAX_RETRIES = 2
 
 /**
+ * 获取意图中缺失的必填字段
+ *
+ * 当前在 route_planner 前强制要求：
+ * - destination: 目的地
+ * - departurePoint: 出发地
+ *
+ * 说明：
+ * 这里用字符串非空校验（trim 后不能为空），
+ * 避免出现 "未知" / 空白 / undefined 直接进入规划阶段。
+ */
+function getMissingRequiredFields(
+  state: typeof TravelStateAnnotation.State,
+): string[] {
+  const intent = state.intent
+  if (!intent) return ["destination", "departurePoint"]
+
+  const missing: string[] = []
+  if (!intent.destination?.trim()) {
+    missing.push("destination")
+  }
+  if (!intent.departurePoint?.trim()) {
+    missing.push("departurePoint")
+  }
+
+  return missing
+}
+
+/**
+ * intent_agent 之后的条件路由：
+ * - 信息完整：进入 route_planner
+ * - 信息缺失：进入 ask_clarification，提醒用户补充必要字段
+ */
+function routeAfterIntent(
+  state: typeof TravelStateAnnotation.State,
+): "ask_clarification" | "route_planner" {
+  const missing = getMissingRequiredFields(state)
+  return missing.length > 0 ? "ask_clarification" : "route_planner"
+}
+
+/**
+ * 追问节点：
+ * 当意图缺失必要字段时，不继续规划，直接写入可读错误信息并结束流程。
+ *
+ * 注意：
+ * - 这里写入 errors，方便 CLI/API 统一处理。
+ * - 使用 "NEED_USER_INPUT:" 前缀，调用方可据此做结构化分支显示。
+ */
+async function askClarificationNode(
+  state: typeof TravelStateAnnotation.State,
+) {
+  const missing = getMissingRequiredFields(state)
+
+  console.log('----: ', state.intent)
+  const readable = missing
+    .map((field) =>
+      field === "destination"
+        ? "目的地（destination）"
+        : "出发地（departurePoint）",
+    )
+    .join("、")
+
+  return {
+    errors: [
+      `NEED_USER_INPUT: 缺少必要信息：${readable}。请补充后重新提交。`,
+    ],
+  }
+}
+
+/**
  * 条件路由函数 — 决定 Validator 之后走哪条路
  *
  * 由 addConditionalEdges("validator", thisFunc, {...}) 调用，
@@ -129,6 +198,12 @@ const travelPlannerGraph = new StateGraph(TravelStateAnnotation)
   /** 意图理解节点 — 解析用户自然语言为结构化 TravelIntent */
   .addNode("intent_agent", intentAgentNode)
 
+  /**
+   * 补充信息节点 — 当 intent 缺失关键字段时给用户明确提示
+   * 该节点不会继续进入 route_planner，而是直接 END。
+   */
+  .addNode("ask_clarification", askClarificationNode)
+
   /** 行程规划节点 — 基于 TravelIntent 生成多天行程骨架 */
   .addNode("route_planner", routePlannerNode)
 
@@ -144,8 +219,18 @@ const travelPlannerGraph = new StateGraph(TravelStateAnnotation)
   /** 图入口：START → 第一个节点 intent_agent */
   .addEdge(START, "intent_agent")
 
-  /** 意图理解完成后进入行程规划 */
-  .addEdge("intent_agent", "route_planner")
+  /**
+   * 意图理解后先做必填信息分流：
+   * - 信息完整    → route_planner
+   * - 信息不完整  → ask_clarification（提醒补充）
+   */
+  .addConditionalEdges("intent_agent", routeAfterIntent, {
+    ask_clarification: "ask_clarification",
+    route_planner: "route_planner",
+  })
+
+  /** 追问节点执行后直接结束，等待用户补充输入再发起下一轮 invoke */
+  .addEdge("ask_clarification", END)
 
   /** 行程规划完成后进入格式化（MVP阶段；Phase2会改为fan-out到3个并行Agent） */
   .addEdge("route_planner", "formatter")

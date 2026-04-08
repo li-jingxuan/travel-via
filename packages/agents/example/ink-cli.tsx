@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from "react"
-import { Box, Text, useInput, useApp, useStdin, render } from "ink"
+import { Box, Text, useInput, useApp, useStdin, render, useStdout } from "ink"
 import Spinner from "ink-spinner"
 import { travelPlannerGraph } from "../src/index.js"
+import { HumanMessage } from "@langchain/core/messages"
 
 type MessageRole = "user" | "assistant"
 
@@ -12,6 +13,43 @@ interface Message {
   timestamp: Date
 }
 
+// const DEBUG = process.env.TRAVELVIA_DEBUG !== "0"
+
+type GraphResult = Awaited<ReturnType<typeof travelPlannerGraph.invoke>>
+
+function safeStringify(value: unknown): string {
+  try {
+    return JSON.stringify(value)
+  } catch {
+    return String(value)
+  }
+}
+
+function debugLog(stage: string, payload?: unknown) {
+  // if (!DEBUG) return
+  const ts = new Date().toISOString()
+  const suffix = payload === undefined ? "" : ` ${safeStringify(payload)}`
+  process.stderr.write(`[travelvia][${ts}] ${stage}${suffix}\n`)
+}
+
+function extractNeedUserInput(errors: string[]): {
+  raw: string
+  missingFields: string[]
+} | null {
+  const raw = errors.find((err) => err.startsWith("NEED_USER_INPUT:"))
+  if (!raw) return null
+
+  const matched = raw.match(/destination|departurePoint/g) ?? []
+  const missingFields = Array.from(new Set(matched))
+  return { raw, missingFields }
+}
+
+function toFriendlyField(field: string): string {
+  if (field === "destination") return "目的地（destination）"
+  if (field === "departurePoint") return "出发地（departurePoint）"
+  return field
+}
+
 function App() {
   const { exit } = useApp()
   const { isRawModeSupported } = useStdin()
@@ -20,76 +58,30 @@ function App() {
       id: 0,
       role: "assistant",
       content:
-        "👋 你好！我是 TravelVia 智能旅行规划助手（基于 DeepSeek）。\n\n你可以告诉我你的旅行需求，例如：\n• \"我想去新疆自驾游，15天，6月份出发\"\n• \"帮我规划一个云南7天自由行\"\n• \"带父母去日本关西10天\"\n\n输入 /quit 或按 Ctrl+C 退出。",
+        "👋 你好！我是 TravelVia 智能旅行规划助手",
       timestamp: new Date(),
     },
   ])
   const [input, setInput] = useState("")
+  const {write} = useStdout();
+
   const [isLoading, setIsLoading] = useState(false)
   const inputRef = useRef<string>("")
-  const msgIdRef = useRef(1)
 
-  const sendMessage = useCallback(
-    async (text: string) => {
-      if (!text.trim() || isLoading) return
-
-      const userMsg: Message = {
-        id: msgIdRef.current++,
+  const sendMessage = useCallback(async (text: string) => {
+    setMessages(prev => {
+      return [...prev, {
+        id: prev.length,
         role: "user",
-        content: text.trim(),
+        content: text,
         timestamp: new Date(),
-      }
-      setMessages((prev) => [...prev, userMsg])
-      setInput("")
-      setIsLoading(true)
+      }]
+    })
+    const res = await travelPlannerGraph.invoke({ messages: [new HumanMessage(text)] })
 
-      try {
-        await callTravelPlannerGraph(text)
-      } catch (error) {
-        const errorMsg: Message = {
-          id: msgIdRef.current++,
-          role: "assistant",
-          content: `❌ 请求失败: ${error instanceof Error ? error.message : String(error)}\n\n请检查模型环境变量配置（如 OPENAI_API_KEY / DEEPSEEK_BASE_URL）。`,
-          timestamp: new Date(),
-        }
-        setMessages((prev) => [...prev, errorMsg])
-      } finally {
-        setIsLoading(false)
-      }
-    },
-    [messages, isLoading]
-  )
-
-  async function callTravelPlannerGraph(userText: string) {
-    const result = await travelPlannerGraph.invoke({ userInput: userText })
-    const content = formatGraphResult(result)
-    const reply: Message = {
-      id: msgIdRef.current++,
-      role: "assistant",
-      content,
-      timestamp: new Date(),
-    }
-    setMessages((prev) => [...prev, reply])
-  }
-
-  function formatGraphResult(
-    result: Awaited<ReturnType<typeof travelPlannerGraph.invoke>>
-  ): string {
-    if (!result.finalPlan) {
-      const errors = result.errors.length
-        ? result.errors.map((err) => `- ${err}`).join("\n")
-        : "- 未返回具体错误"
-
-      return `⚠️ 规划未生成可用结果。\n\n错误信息:\n${errors}`
-    }
-
-    const errorSection =
-      result.errors.length > 0
-        ? `\n\n校验/执行日志:\n${result.errors.map((err) => `- ${err}`).join("\n")}`
-        : ""
-
-    return `✅ 已生成行程方案：\n\n${JSON.stringify(result.finalPlan, null, 2)}${errorSection}`
-  }
+    // console.log("Graph Result:", res)
+    debugLog("GraphResult", res)
+  }, [])
 
   useInput((inputChar, key) => {
     if ((key.ctrl && inputChar === "c") || input.toLowerCase() === "/quit") {
@@ -100,9 +92,13 @@ function App() {
     if (isLoading) return
 
     if (key.return) {
-      const text = inputRef.current
-      if (text.trim()) {
-        void sendMessage(text)
+      const text = inputRef.current?.trim()
+      if (text) {
+        // debugLog("sendMessage", text)
+        sendMessage(text)
+        setInput("")
+
+        debugLog("sendMessage", text)
       }
       return
     }
@@ -120,10 +116,6 @@ function App() {
       setInput(next)
     }
   })
-
-  useEffect(() => {
-    inputRef.current = input
-  }, [input])
 
   if (!isRawModeSupported) {
     return (
@@ -177,7 +169,7 @@ function App() {
         </Box>
         <Box>
           <Text dimColor>
-            按 Enter 发送 · Backspace 删除 · Ctrl+C 退出
+            按 Enter 发送 · /reset 重置上下文 · Ctrl+C 退出
           </Text>
         </Box>
       </Box>

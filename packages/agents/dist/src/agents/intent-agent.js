@@ -32,6 +32,52 @@ import { INTENT_SYSTEM_PROMPT } from "../prompts/intent.js";
 /** 意图理解专用 LLM 实例 — 低温度保证输出稳定可预测 */
 const llm = createDeepSeekV3({ temperature: 0.3 });
 /**
+ * 将 LLM 输出标准化为 TravelIntent，保证字段类型稳定：
+ * - 必填字符串字段缺失时返回空字符串（交由 graph 分流到补充信息节点）
+ * - days 非法时回退为 5
+ * - 可选字段仅在类型匹配时保留
+ */
+function normalizeIntent(raw) {
+    const obj = (typeof raw === "object" && raw !== null
+        ? raw
+        : {});
+    const toCleanString = (value) => typeof value === "string" ? value.trim() : "";
+    const toDays = (value) => {
+        if (typeof value === "number" && Number.isFinite(value) && value > 0) {
+            return Math.round(value);
+        }
+        if (typeof value === "string") {
+            const parsed = Number.parseInt(value, 10);
+            if (Number.isFinite(parsed) && parsed > 0)
+                return parsed;
+        }
+        return 5;
+    };
+    const normalized = {
+        destination: toCleanString(obj.destination),
+        departurePoint: toCleanString(obj.departurePoint),
+        days: toDays(obj.days),
+        month: toCleanString(obj.month) || "未指定",
+        travelType: toCleanString(obj.travelType) || "自由行",
+    };
+    if (typeof obj.budget === "string" && obj.budget.trim()) {
+        normalized.budget = obj.budget.trim();
+    }
+    if (typeof obj.travelers === "string" && obj.travelers.trim()) {
+        normalized.travelers = obj.travelers.trim();
+    }
+    if (Array.isArray(obj.preferences)) {
+        const prefs = obj.preferences
+            .filter((item) => typeof item === "string")
+            .map((item) => item.trim())
+            .filter(Boolean);
+        if (prefs.length > 0) {
+            normalized.preferences = prefs;
+        }
+    }
+    return normalized;
+}
+/**
  * IntentAgent 节点函数
  *
  * LangGraph 调用约定：
@@ -55,18 +101,13 @@ export async function intentAgentNode(state) {
     try {
         // 清理可能的 markdown 代码块包裹（LLM 有时会在 JSON 外面包 ```json ... ```）
         const jsonStr = content.replace(/```json\n?|\n?```/g, "").trim();
-        intent = JSON.parse(jsonStr);
+        intent = normalizeIntent(JSON.parse(jsonStr));
     }
     catch {
         // JSON 解析失败时使用兜底默认值，避免整个管线崩溃
-        // 这种情况通常是因为 LLM 输出了额外文字而非纯 JSON
-        intent = {
-            departurePoint: "未知",
-            destination: "未知",
-            days: 5,
-            month: "未指定",
-            travelType: "自由行",
-        };
+        // 这种情况通常是因为 LLM 输出了额外文字而非纯 JSON。
+        // 注意必填字段使用空字符串，后续由 graph 分流给用户补充信息。
+        intent = normalizeIntent({});
     }
     // 返回部分更新 —— LangGraph 会用各字段的 reducer 合并到当前 State
     return {

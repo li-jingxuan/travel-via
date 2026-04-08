@@ -101,7 +101,7 @@ declare const travelPlannerGraph: import("@langchain/langgraph").CompiledStateGr
     retryCount?: number | import("@langchain/langgraph").OverwriteValue<number> | undefined;
     errors?: string[] | import("@langchain/langgraph").OverwriteValue<string[]> | undefined;
     messages?: import("@langchain/core/messages").BaseMessage<import("@langchain/core/messages").MessageStructure<import("@langchain/core/messages").MessageToolSet>, import("@langchain/core/messages").MessageType>[] | import("@langchain/langgraph").OverwriteValue<import("@langchain/core/messages").BaseMessage<import("@langchain/core/messages").MessageStructure<import("@langchain/core/messages").MessageToolSet>, import("@langchain/core/messages").MessageType>[]> | undefined;
-}, "__start__" | "intent_agent" | "route_planner" | "formatter" | "validator", {
+}, "__start__" | "intent_agent" | "ask_clarification" | "route_planner" | "formatter" | "validator", {
     userInput: import("@langchain/langgraph").BaseChannel<string, string | import("@langchain/langgraph").OverwriteValue<string>, unknown>;
     intent: import("@langchain/langgraph").BaseChannel<import("../index.js").TravelIntent | null, import("../index.js").TravelIntent | import("@langchain/langgraph").OverwriteValue<import("../index.js").TravelIntent | null> | null, unknown>;
     routeSkeleton: import("@langchain/langgraph").BaseChannel<import("../index.js").RouteSkeletonDay[] | null, import("../index.js").RouteSkeletonDay[] | import("@langchain/langgraph").OverwriteValue<import("../index.js").RouteSkeletonDay[] | null> | null, unknown>;
@@ -127,6 +127,9 @@ declare const travelPlannerGraph: import("@langchain/langgraph").CompiledStateGr
     intent_agent: {
         intent: import("../index.js").TravelIntent;
         messages: import("@langchain/core/messages").AIMessageChunk<import("@langchain/core/messages").MessageStructure<import("@langchain/core/messages").MessageToolSet>>[];
+    };
+    ask_clarification: {
+        errors: string[];
     };
     route_planner: {
         routeSkeleton: import("../index.js").RouteSkeletonDay[];
