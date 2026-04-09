@@ -1,68 +1,10 @@
 /**
  * TravelPlanner Graph — 主编排图定义
  *
- * ============================================================================
- * 架构总览
- * ============================================================================
- *
- * 本文件定义了 LangGraph StateGraph 的完整拓扑结构，包括：
- * 1. 节点注册（addNode）— 每个 Agent 对应一个节点
- * 2. 边定义（addEdge）— 固定的流转路径
- * 3. 条件边（addConditionalEdges）— 根据状态动态决定下一步
- * 4. 编译（compile）— 生成可执行的 Graph 实例
- *
- * MVP 阶段的拓扑（Phase 1，无 Tool Agent）：
- *
- *   START
- *     │
- *     ▼
- *   ┌──────────────┐
- *   │  intent_agent │  ← deepseek-v3, 用户文本 → TravelIntent
- *   └──────┬───────┘
- *          │
- *          ▼
- *   ┌───────────────┐
- *   │ route_planner │  ← deepseek-reasoner, intent → RouteSkeletonDay[]
- *   └───────┬───────┘
- *           │
- *           ▼
- *   ┌──────────────┐
- *   │   formatter   │  ← deepseek-reasoner, 所有中间数据 → ITravelPlan
- *   └──────┬───────┘
- *          │
- *          ▼
- *   ┌──────────────┐
- *   │   validator   │  ← Zod 校验 finalPlan 是否符合 Schema
- *   └──────┬───────┘
- *          │
- *     ┌────┴────┐
- *     ▼         ▼
- *   END    retry (回退到 route_planner，最多 2 次)
- *
- * ============================================================================
- * Phase 2 将扩展为 Fan-out/Fan-in 并行拓扑：
- *
- *   route_planner ──┬→ poi_agent      ─┐
- *                   ├→ weather_agent  ├──→ formatter → validator
- *                   └→ hotel_agent    ─┘
- *
- * ============================================================================
- * 核心概念说明
- * ============================================================================
- *
- * StateGraph vs 函数式调用：
- *   - 函数式：手动 A(B(args)) 传参，自己控制循环
- *   - StateGraph：声明式定义节点和边，框架控制流转
- *
- * 节点函数签名：
- *   async (state: typeof TravelStateAnnotation.State) => Promise<Partial<State>>
- *   - 输入：当前完整的 State
- *   - 返回：需要更新的字段（未返回的字段保持不变）
- *
- * compile() 之后：
- *   - graph.invoke(initialState)   — 同步执行，返回最终 State
- *   - graph.stream(initialState)  — 流式执行，逐 node 推送事件
- *   - graph.getState(config)      — 获取某个 checkpoint 的状态
+ * 设计目标：
+ * 1. 让本文件聚焦“拓扑结构”本身（节点注册 + 连边）
+ * 2. 把路由判定、常量、系统节点实现拆到独立模块
+ * 3. 在不改变行为的前提下提高可读性与可维护性
  */
 
 import { StateGraph, START, END } from "@langchain/langgraph"
@@ -75,234 +17,123 @@ import {
   weatherEnricherNode,
   hotelEnricherNode,
   formatterNode,
+  askClarificationNode,
+  routePlannerFailedNode,
+  routeEnrichEntryNode,
 } from "../nodes/index.js"
 import { validatorNode } from "../validators/travel-plan.js"
-import { agentLog } from "../lib/logger.js"
-
-/** 最大重试次数 — Validator 校验失败后最多回退重新规划这么多次 */
-const MAX_RETRIES = 2
+import {
+  routeAfterIntent,
+  routeAfterRoutePlanner,
+  shouldRetryOrEnd,
+} from "./routing.js"
 
 /**
- * 获取意图中缺失的必填字段
- *
- * 当前在 route_planner 前强制要求：
- * - destination: 目的地
- * - departurePoint: 出发地
+ * Graph Builder 类型别名。
  *
  * 说明：
- * 这里用字符串非空校验（trim 后不能为空），
- * 避免出现 "未知" / 空白 / undefined 直接进入规划阶段。
+ * LangGraph 的 fluent API 在拆分为多个 helper 函数后，节点名字面量类型
+ * 很容易在函数边界丢失，导致 addEdge/addConditionalEdges 报类型错误。
+ * 这里显式声明为“string 节点名的 StateGraph 构建器”，
+ * 保留类型约束的同时避免 `any`。
  */
-function getMissingRequiredFields(
-  state: typeof TravelStateAnnotation.State,
-): string[] {
-  const intent = state.intent
-  if (!intent) return ["destination", "departurePoint"]
+type TravelGraphBuilder = StateGraph<
+  typeof TravelStateAnnotation,
+  typeof TravelStateAnnotation.State,
+  Partial<typeof TravelStateAnnotation.State>,
+  string
+>
 
-  const missing: string[] = []
-  if (!intent.destination?.trim()) {
-    missing.push("destination")
-  }
-  if (!intent.departurePoint?.trim()) {
-    missing.push("departurePoint")
-  }
-
-  return missing
+/**
+ * 注册所有节点。
+ *
+ * 说明：
+ * 把 addNode 聚合在一个函数里，便于快速浏览“图里有什么节点”。
+ */
+function registerNodes(graph: TravelGraphBuilder): TravelGraphBuilder {
+  return graph
+    .addNode("intent_agent", intentAgentNode)
+    .addNode("ask_clarification", askClarificationNode)
+    .addNode("route_planner", routerPlannerNode)
+    .addNode("route_planner_failed", routePlannerFailedNode)
+    .addNode("route_enrich_entry", routeEnrichEntryNode)
+    .addNode("driving_distance", drivingDistanceNode)
+    .addNode("poi_enricher", poiEnricherNode)
+    .addNode("weather_enricher", weatherEnricherNode)
+    .addNode("hotel_enricher", hotelEnricherNode)
+    .addNode("formatter", formatterNode)
+    .addNode("validator", validatorNode)
 }
 
 /**
- * intent_agent 之后的条件路由：
- * - 信息完整：进入 route_planner
- * - 信息缺失：进入 ask_clarification，提醒用户补充必要字段
+ * 连接入口阶段：
+ * START -> intent_agent -> (ask_clarification | route_planner)
  */
-function routeAfterIntent(
-  state: typeof TravelStateAnnotation.State,
-): "ask_clarification" | "route_planner" {
-  const missing = getMissingRequiredFields(state)
-  return missing.length > 0 ? "ask_clarification" : "route_planner"
+function connectEntry(graph: TravelGraphBuilder): TravelGraphBuilder {
+  return graph
+    .addEdge(START, "intent_agent")
+    .addConditionalEdges("intent_agent", routeAfterIntent, {
+      ask_clarification: "ask_clarification",
+      route_planner: "route_planner",
+    })
+    .addEdge("ask_clarification", END)
 }
 
 /**
- * 追问节点：
- * 当意图缺失必要字段时，不继续规划，直接写入可读错误信息并结束流程。
- *
- * 注意：
- * - 这里写入 errors，方便 CLI/API 统一处理。
- * - 使用 "NEED_USER_INPUT:" 前缀，调用方可据此做结构化分支显示。
+ * 连接 route_planner 阶段：
+ * route_planner -> (retry | continue | giveup)
  */
-async function askClarificationNode(
-  state: typeof TravelStateAnnotation.State,
-) {
-  const missing = getMissingRequiredFields(state)
-
-  agentLog("ask_clarification", state.userInput, missing)
-  const readable = missing
-    .map((field) =>
-      field === "destination"
-        ? "目的地（destination）"
-        : "出发地（departurePoint）",
-    )
-    .join("、")
-
-  return {
-    errors: [
-      `NEED_USER_INPUT: 缺少必要信息：${readable}。请补充后重新提交。`,
-    ],
-  }
+function connectRoutePlannerStage(
+  graph: TravelGraphBuilder,
+): TravelGraphBuilder {
+  return graph
+    .addConditionalEdges("route_planner", routeAfterRoutePlanner, {
+      retry: "route_planner",
+      continue: "route_enrich_entry",
+      giveup: "route_planner_failed",
+    })
+    .addEdge("route_planner_failed", END)
 }
 
 /**
- * 条件路由函数 — 决定 Validator 之后走哪条路
- *
- * 由 addConditionalEdges("validator", thisFunc, {...}) 调用，
- * LangGraph 会在 validator 节点执行完毕后自动调用此函数，
- * 根据返回值决定下一步跳转到哪个节点。
- *
- * @param state - 当前完整 State（包含 finalPlan、retryCount、errors 等）
- * @returns "retry" 回到 route_planner 重新生成 | "success" 结束流程
+ * 连接增强阶段（Fan-out / Fan-in）：
+ * route_enrich_entry -> driving/poi/weather/hotel -> formatter
  */
-function shouldRetryOrEnd(
-  state: typeof TravelStateAnnotation.State,
-): "retry" | "success" {
-  // 如果 finalPlan 为空，必须重试
-  if (!state.finalPlan) return "retry"
-
-  // 达到最大重试次数 → 强制成功（降级模式，返回已有的部分结果 + 错误警告）
-  if (state.retryCount >= MAX_RETRIES) {
-    return "success"
-  }
-
-  // 有新的校验错误且未超限 → 重试
-  // 注意：errors.length > retryCount 说明本轮产生了新的错误
-  if (state.errors.length > 0 && state.errors.length > state.retryCount) {
-    return "retry"
-  }
-
-  // 无错误 → 校验通过，正常结束
-  return "success"
+function connectEnrichment(graph: TravelGraphBuilder): TravelGraphBuilder {
+  return graph
+    .addEdge("route_enrich_entry", "driving_distance")
+    .addEdge("route_enrich_entry", "poi_enricher")
+    .addEdge("route_enrich_entry", "weather_enricher")
+    .addEdge("route_enrich_entry", "hotel_enricher")
+    .addEdge("driving_distance", "formatter")
+    .addEdge("poi_enricher", "formatter")
+    .addEdge("weather_enricher", "formatter")
+    .addEdge("hotel_enricher", "formatter")
 }
 
 /**
- * 编译后的 TravelPlanner Graph 实例
- *
- * 使用方式：
- * ```ts
- * import { travelPlannerGraph } from "@repo/agents"
- *
- * const result = await travelPlannerGraph.invoke({
- *   userInput: "我想去新疆自驾游，15天，6月份",
- * })
- *
- * console.log(result.finalPlan)  // ITravelPlan | null
- * console.log(result.errors)     // string[] 错误日志
- * ```
+ * 连接收敛阶段：
+ * formatter -> validator -> (retry | success)
  */
-const travelPlannerGraph = new StateGraph(TravelStateAnnotation)
-  // ========== 节点注册 ==========
-  // 每个 addNode 注册一个命名节点，参数为 (节点名, 节点函数)
-  // 节点函数签名固定：async (state) => Promise<Partial<State>>
+function connectValidationLoop(graph: TravelGraphBuilder): TravelGraphBuilder {
+  return graph
+    .addEdge("formatter", "validator")
+    .addConditionalEdges("validator", shouldRetryOrEnd, {
+      retry: "route_planner",
+      success: END,
+    })
+}
 
-  /** 意图理解节点 — 解析用户自然语言为结构化 TravelIntent */
-  .addNode("intent_agent", intentAgentNode)
-
-  /**
-   * 补充信息节点 — 当 intent 缺失关键字段时给用户明确提示
-   * 该节点不会继续进入 route_planner，而是直接 END。
-   */
-  .addNode("ask_clarification", askClarificationNode)
-
-  /** 路线规划节点 — 基于 TravelIntent 生成多天行程骨架 */
-  .addNode("route_planner", routerPlannerNode)
-
-  /** 驾车增强节点 — 基于高德补 distance/drivingHours */
-  .addNode("driving_distance", drivingDistanceNode)
-
-  /** 景点增强节点 — 查询评分/人均消费/开放时间/图片等信息 */
-  .addNode("poi_enricher", poiEnricherNode)
-
-  /** 天气增强节点 — 查询城市天气并生成穿衣建议 */
-  .addNode("weather_enricher", weatherEnricherNode)
-
-  /** 住宿增强节点 — 查询酒店候选并补充地址与特征 */
-  .addNode("hotel_enricher", hotelEnricherNode)
-
-  /** 格式化组装节点 — 将所有中间数据组装为符合 Schema 的 ITravelPlan */
-  .addNode("formatter", formatterNode)
-
-  /** 校验节点 — Zod Schema 校验，控制重试逻辑 */
-  .addNode("validator", validatorNode)
-
-  // ========== 边定义 ==========
-  // addEdge(a, b) 表示从节点 a 执行完后无条件转移到 b
-
-  /** 图入口：START → 第一个节点 intent_agent */
-  .addEdge(START, "intent_agent")
-
-  /**
-   * 意图理解后先做必填信息分流：
-   * - 信息完整    → route_planner
-   * - 信息不完整  → ask_clarification（提醒补充）
-   */
-  .addConditionalEdges("intent_agent", routeAfterIntent, {
-    ask_clarification: "ask_clarification",
-    route_planner: "route_planner",
-  })
-
-  /** 追问节点执行后直接结束，等待用户补充输入再发起下一轮 invoke */
-  .addEdge("ask_clarification", END)
-
-  /**
-   * route_planner 后进入 4 个并行增强节点（Fan-out）。
-   * LangGraph 会并发执行这四条分支，各自写入不同 state 字段。
-   */
-  .addEdge("route_planner", "driving_distance")
-  .addEdge("route_planner", "poi_enricher")
-  .addEdge("route_planner", "weather_enricher")
-  .addEdge("route_planner", "hotel_enricher")
-
-  /**
-   * 四个增强节点汇聚到 formatter（Fan-in）。
-   * formatter 会在依赖分支都完成后执行，读取 enrich 后的状态。
-   */
-  .addEdge("driving_distance", "formatter")
-  .addEdge("poi_enricher", "formatter")
-  .addEdge("weather_enricher", "formatter")
-  .addEdge("hotel_enricher", "formatter")
-
-  /** 格式化完成后进入校验 */
-  .addEdge("formatter", "validator")
-
-  // ========== 条件边 ==========
-  // addConditionalEdges(source, routerFn, pathMap)
-  //   source   : 源节点名
-  //   routerFn : 路由函数，返回目标节点名字符串或特殊常量 END
-  //   pathMap  : 路由返回值 → 目标节点的映射表
-
-  /**
-   * Validator 之后的条件路由：
-   * - "retry"   → 回到 route_planner 重新规划（会保留之前的 retryCount+1）
-   * - "success" → 流程结束，返回最终结果
-   *
-   * 这形成了一个"带重试的闭环"：
-   *   route_planner → formatter → validator ──→ (失败) → route_planner ...
-   *                                           └─→ (成功) → END
-   */
-  .addConditionalEdges("validator", shouldRetryOrEnd, {
-    retry: "route_planner",
-    success: END,
-  })
-
-  // ========== 编译 ==========
-  // compile() 将图定义转换为可执行对象。
-  // 编译后可以进行 invoke() / stream() / getState() 等操作。
-  //
-  // 未来可在 compile({ ... }) 中配置：
-  //   - interruptBefore / interruptAfter : Human-in-the-loop 断点
-  //   - checkpointer                  : CheckpointStore 持久化支持
-  //   - store                         : 自定义状态存储
-  .compile()
+const travelPlannerGraph = connectValidationLoop(
+  connectEnrichment(
+    connectRoutePlannerStage(
+      connectEntry(
+        registerNodes(
+          new StateGraph(TravelStateAnnotation) as TravelGraphBuilder,
+        ),
+      ),
+    ),
+  ),
+).compile()
 
 export { travelPlannerGraph }
-
-
-// travelPlannerGraph.invoke({ userInput: '你好' })

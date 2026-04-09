@@ -6,12 +6,14 @@ loadAgentsEnv()
 const AMAP_BASE_URL = "https://restapi.amap.com"
 const AMAP_TIMEOUT_MS = 8000
 
+/** 高德地理编码接口响应（仅保留当前业务会用到的字段） */
 interface AmapGeocodeResponse {
   status?: string
   info?: string
   geocodes?: Array<{ location?: string }>
 }
 
+/** 高德驾车路径接口响应（仅保留当前业务会用到的字段） */
 interface AmapDrivingResponse {
   status?: string
   info?: string
@@ -23,6 +25,7 @@ interface AmapDrivingResponse {
   }
 }
 
+/** 高德 POI 文本搜索接口响应（仅保留当前业务会用到的字段） */
 interface AmapPlaceTextResponse {
   status?: string
   info?: string
@@ -42,6 +45,7 @@ interface AmapPlaceTextResponse {
   }>
 }
 
+/** 高德天气接口响应（仅保留当前业务会用到的字段） */
 interface AmapWeatherResponse {
   status?: string
   info?: string
@@ -56,11 +60,13 @@ interface AmapWeatherResponse {
   }>
 }
 
+/** 路径规划结果：统一输出为公里/小时，减少上游重复换算。 */
 export interface DrivingMetrics {
   distanceKm: number
   drivingHours: number
 }
 
+/** POI 候选：景点与酒店检索共用的结构化输出。 */
 export interface AmapPoiCandidate {
   name: string
   address: string
@@ -74,6 +80,7 @@ export interface AmapPoiCandidate {
   }>
 }
 
+/** 天气快照：用于行程展示和穿衣建议。 */
 export interface AmapWeatherSnapshot {
   area: string
   dayWeather: string
@@ -133,6 +140,10 @@ function toNumberOrNull(value: string | undefined): number | null {
   return Number.isFinite(parsed) ? parsed : null
 }
 
+/**
+ * 解析高德 `location`（lng,lat）并做合法性校验。
+ * 返回标准化坐标字符串，失败则返回 null。
+ */
 function parseLocation(location: string | undefined): string | null {
   if (!location) return null
   const [lng, lat] = location.split(",")
@@ -143,6 +154,11 @@ function parseLocation(location: string | undefined): string | null {
   return `${lngNum},${latNum}`
 }
 
+/**
+ * 地址转经纬度：
+ * - 输入：地址 + 可选城市提示（提高命中率）
+ * - 输出：`lng,lat`；失败时返回 null（不抛错）
+ */
 async function geocodeAddress(
   address: string,
   cityHint?: string,
@@ -160,6 +176,7 @@ async function geocodeAddress(
   return parseLocation(data.geocodes?.[0]?.location)
 }
 
+/** 根据高低温生成简单穿衣建议。 */
 function buildClothingAdvice(tempMax: number, tempMin: number): string {
   if (tempMax >= 32) return "天气炎热，建议短袖+防晒，及时补水。"
   if (tempMax >= 25) return "气温较高，建议轻薄透气着装。"
@@ -175,6 +192,7 @@ export async function planDrivingByLocations(
   locations: string[],
   cityHint?: string,
 ): Promise<DrivingMetrics | null> {
+  // 至少要有起点和终点，否则无法规划驾车路径。
   if (locations.length < 2) return null
 
   const coordinateList: string[] = []
@@ -190,6 +208,7 @@ export async function planDrivingByLocations(
   const origin = coordinateList[0]
   const destination = coordinateList[coordinateList.length - 1]
   if (!origin || !destination) return null
+  // 中间点通过 waypoints（a|b|c）传给高德。
   const midPoints = coordinateList.slice(1, -1)
 
   const data = (await fetchAmap("/v3/direction/driving", {
@@ -204,6 +223,7 @@ export async function planDrivingByLocations(
   }
 
   const firstPath = data.route?.paths?.[0]
+  // 高德返回单位：distance=米，duration=秒。
   const distanceMeters = Number(firstPath?.distance ?? "0")
   const durationSeconds = Number(firstPath?.duration ?? "0")
   if (!Number.isFinite(distanceMeters) || !Number.isFinite(durationSeconds)) {
@@ -234,9 +254,11 @@ export async function searchScenicPois(
 
   if (!data || data.status !== "1" || !Array.isArray(data.pois)) {
     agentLog("高德", "景点检索失败", city, keyword, data?.info ?? "unknown")
+    // 检索失败时返回空数组，避免影响主流程可用性。
     return []
   }
 
+  // 统一做字段清洗，图片最多保留 3 张，控制输出体积。
   return data.pois
     .filter((poi) => typeof poi.name === "string" && poi.name.trim().length > 0)
     .slice(0, limit)
@@ -266,6 +288,7 @@ export async function searchHotels(
   keyword: string,
   limit = 3,
 ): Promise<AmapPoiCandidate[]> {
+  // 酒店检索复用 POI 文本搜索，通过关键词约束到酒店语义。
   const hotelKeyword = keyword.trim() ? `${keyword} 酒店` : `${city} 酒店`
   return searchScenicPois(city, hotelKeyword, limit)
 }
@@ -286,8 +309,10 @@ export async function getWeatherSnapshot(city: string): Promise<AmapWeatherSnaps
 
   const firstForecast = data.forecasts?.[0]
   const firstCast = firstForecast?.casts?.[0]
+  // 若缺少核心天气数据，交给上游做降级策略。
   if (!firstForecast || !firstCast) return null
 
+  // 缺值时给温和默认值，保证穿衣建议始终可生成。
   const tempMax = toNumberOrNull(firstCast.daytemp) ?? 26
   const tempMin = toNumberOrNull(firstCast.nighttemp) ?? 18
 

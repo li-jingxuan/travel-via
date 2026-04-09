@@ -58,4 +58,5 @@ export const ROUTE_PLANNER_SYSTEM_PROMPT = `你是一位资深旅行规划师，
 - foodRecommendation 每天1-3个
 - waypoints 是JSON字符串格式的数组
 - day 从 1 开始递增
-- 只输出纯 JSON 数组，不要有 markdown 包裹`
+- 只输出纯 JSON 数组，不要有 markdown 包裹
+- 所有符号必须为英文半角（包括引号、逗号、冒号等）`

@@ -192,6 +192,22 @@ export const TravelStateAnnotation = Annotation.Root({
   }),
 
   /**
+   * 路线骨架重试计数器 — router_planner 更新
+   *
+   * 用途：
+   * - 专门统计“route_planner 结构化输出失败”的重试次数
+   * - 与 Validator 的 retryCount 分离，避免两个阶段互相干扰
+   *
+   * 约定：
+   * - router_planner 解析失败时 +1
+   * - router_planner 成功产出有效骨架时重置为 0
+   */
+  routePlannerRetryCount: Annotation<number>({
+    reducer: (_, update) => update,
+    default: () => 0,
+  }),
+
+  /**
    * 错误日志累积 — 所有 Agent/Validator 都可能写入
    *
    * 使用追加型 reducer，每次有新错误时追加到数组末尾。

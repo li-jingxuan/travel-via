@@ -21,6 +21,30 @@ import { agentLog } from "../lib/logger.js"
 const llm = createDeepSeekReasoner({ temperature: 0.7 })
 
 /**
+ * 骨架最小有效性校验：
+ * - 必须是非空数组
+ * - 每天至少包含 day(数字) 和 title(非空字符串)
+ *
+ * 说明：
+ * 这里做“轻校验”，目的是尽早拦截明显坏数据，
+ * 更严格的最终结构校验仍由 validator 节点负责。
+ */
+function isValidRouteSkeleton(value: unknown): value is RouteSkeletonDay[] {
+  if (!Array.isArray(value) || value.length === 0) return false
+
+  return value.every((day) => {
+    if (!day || typeof day !== "object") return false
+    const item = day as Partial<RouteSkeletonDay>
+    return (
+      typeof item.day === "number" &&
+      Number.isFinite(item.day) &&
+      typeof item.title === "string" &&
+      item.title.trim().length > 0
+    )
+  })
+}
+
+/**
  * 路线骨架生成节点：
  * - 输入：intent
  * - 输出：routeSkeleton + messages
@@ -47,26 +71,39 @@ export async function routerPlannerNode(
   ])
 
   const content = response.content as string
-  let routeSkeleton: RouteSkeletonDay[]
+  let routeSkeleton: RouteSkeletonDay[] | null = null
 
   agentLog("路线规划", "模型返回骨架原文", content)
 
   try {
     const jsonStr = content.replace(/```\w*\n?|\n?```/g, "").trim()
-    routeSkeleton = JSON.parse(jsonStr)
+    const parsed = JSON.parse(jsonStr) as unknown
 
-    if (!Array.isArray(routeSkeleton)) {
-      throw new Error("routeSkeleton is not an array")
+    if (!isValidRouteSkeleton(parsed)) {
+      throw new Error("routeSkeleton is invalid or empty")
     }
+    routeSkeleton = parsed
   } catch (parseError) {
-    agentLog("路线规划", "骨架解析失败，已降级为空数组")
+    /**
+     * 解析失败策略：
+     * - 不继续把坏骨架传给下游节点
+     * - 累加 routePlannerRetryCount，交由 graph 条件边决定是否重试
+     */
+    agentLog("路线规划", "骨架解析失败，等待 graph 决策重试")
     console.error("RouterPlanner JSON parse failed:", parseError)
     console.error("Raw LLM output:", content)
-    routeSkeleton = []
+
+    return {
+      routeSkeleton: null,
+      routePlannerRetryCount: state.routePlannerRetryCount + 1,
+      messages: [response],
+    }
   }
 
+  // 成功产出有效骨架后，重置 route_planner 专用重试计数。
   return {
     routeSkeleton,
+    routePlannerRetryCount: 0,
     messages: [response],
   }
 }
