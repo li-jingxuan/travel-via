@@ -72,10 +72,10 @@ export const TravelStateAnnotation = Annotation.Root({
    *
    * 写入时机：Graph.invoke() 时由外部传入
    * 读取者：IntentAgent
-   * Reducer：(current) => current — 只取初始值，后续不覆盖
+   * Reducer：首次为空时写入 invoke 传入值，后续不覆盖
    */
   userInput: Annotation<string>({
-    reducer: (current) => current,
+    reducer: (current, update) => (current === "" ? update : current),
     default: () => "",
   }),
 

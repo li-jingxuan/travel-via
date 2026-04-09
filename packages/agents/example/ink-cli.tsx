@@ -77,10 +77,13 @@ function App() {
         timestamp: new Date(),
       }]
     })
-    const res = await travelPlannerGraph.invoke({ messages: [new HumanMessage(text)] })
+
+    console.log('------------', text)
+    const res = await travelPlannerGraph.invoke({ userInput: text })
 
     // console.log("Graph Result:", res)
-    debugLog("GraphResult", res)
+    debugLog("GraphResult", text)
+    debugLog('GraphResult', res)
   }, [])
 
   useInput((inputChar, key) => {
@@ -96,7 +99,7 @@ function App() {
       if (text) {
         // debugLog("sendMessage", text)
         sendMessage(text)
-        setInput("")
+        // setInput("")
 
         debugLog("sendMessage", text)
       }
@@ -207,4 +210,5 @@ function formatTime(date: Date): string {
   })
 }
 
-render(<App />)
+const AppMemo = React.memo(App)
+render(<AppMemo />, { incrementalRendering: true })

@@ -67,10 +67,17 @@
 
 import { StateGraph, START, END } from "@langchain/langgraph"
 import { TravelStateAnnotation } from "./state.js"
-import { intentAgentNode } from "../agents/intent-agent.js"
-import { routePlannerNode } from "../agents/route-planner-agent.js"
-import { formatterNode } from "../agents/formatter-agent.js"
+import {
+  intentAgentNode,
+  routerPlannerNode,
+  drivingDistanceNode,
+  poiEnricherNode,
+  weatherEnricherNode,
+  hotelEnricherNode,
+  formatterNode,
+} from "../nodes/index.js"
 import { validatorNode } from "../validators/travel-plan.js"
+import { agentLog } from "../lib/logger.js"
 
 /** 最大重试次数 — Validator 校验失败后最多回退重新规划这么多次 */
 const MAX_RETRIES = 2
@@ -128,7 +135,7 @@ async function askClarificationNode(
 ) {
   const missing = getMissingRequiredFields(state)
 
-  console.log('----: ', state.intent)
+  agentLog("ask_clarification", state.userInput, missing)
   const readable = missing
     .map((field) =>
       field === "destination"
@@ -204,8 +211,20 @@ const travelPlannerGraph = new StateGraph(TravelStateAnnotation)
    */
   .addNode("ask_clarification", askClarificationNode)
 
-  /** 行程规划节点 — 基于 TravelIntent 生成多天行程骨架 */
-  .addNode("route_planner", routePlannerNode)
+  /** 路线规划节点 — 基于 TravelIntent 生成多天行程骨架 */
+  .addNode("route_planner", routerPlannerNode)
+
+  /** 驾车增强节点 — 基于高德补 distance/drivingHours */
+  .addNode("driving_distance", drivingDistanceNode)
+
+  /** 景点增强节点 — 查询评分/人均消费/开放时间/图片等信息 */
+  .addNode("poi_enricher", poiEnricherNode)
+
+  /** 天气增强节点 — 查询城市天气并生成穿衣建议 */
+  .addNode("weather_enricher", weatherEnricherNode)
+
+  /** 住宿增强节点 — 查询酒店候选并补充地址与特征 */
+  .addNode("hotel_enricher", hotelEnricherNode)
 
   /** 格式化组装节点 — 将所有中间数据组装为符合 Schema 的 ITravelPlan */
   .addNode("formatter", formatterNode)
@@ -232,8 +251,23 @@ const travelPlannerGraph = new StateGraph(TravelStateAnnotation)
   /** 追问节点执行后直接结束，等待用户补充输入再发起下一轮 invoke */
   .addEdge("ask_clarification", END)
 
-  /** 行程规划完成后进入格式化（MVP阶段；Phase2会改为fan-out到3个并行Agent） */
-  .addEdge("route_planner", "formatter")
+  /**
+   * route_planner 后进入 4 个并行增强节点（Fan-out）。
+   * LangGraph 会并发执行这四条分支，各自写入不同 state 字段。
+   */
+  .addEdge("route_planner", "driving_distance")
+  .addEdge("route_planner", "poi_enricher")
+  .addEdge("route_planner", "weather_enricher")
+  .addEdge("route_planner", "hotel_enricher")
+
+  /**
+   * 四个增强节点汇聚到 formatter（Fan-in）。
+   * formatter 会在依赖分支都完成后执行，读取 enrich 后的状态。
+   */
+  .addEdge("driving_distance", "formatter")
+  .addEdge("poi_enricher", "formatter")
+  .addEdge("weather_enricher", "formatter")
+  .addEdge("hotel_enricher", "formatter")
 
   /** 格式化完成后进入校验 */
   .addEdge("formatter", "validator")
@@ -269,3 +303,6 @@ const travelPlannerGraph = new StateGraph(TravelStateAnnotation)
   .compile()
 
 export { travelPlannerGraph }
+
+
+// travelPlannerGraph.invoke({ userInput: '你好' })

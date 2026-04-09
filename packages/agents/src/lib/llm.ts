@@ -14,25 +14,7 @@
  */
 
 import { ChatOpenAI } from "@langchain/openai"
-import { config as loadDotenv } from "dotenv"
-import { existsSync } from "node:fs"
-import { dirname, resolve } from "node:path"
-import { fileURLToPath } from "node:url"
-
-function loadAgentsEnv() {
-  const currentFileDir = dirname(fileURLToPath(import.meta.url))
-  const envCandidates = [
-    resolve(process.cwd(), ".env"),
-    resolve(process.cwd(), "packages/agents/.env"),
-    resolve(currentFileDir, "../../.env"),
-    resolve(currentFileDir, "../../../.env"),
-  ]
-
-  const envPath = envCandidates.find((path) => existsSync(path))
-  if (envPath) {
-    loadDotenv({ path: envPath })
-  }
-}
+import { loadAgentsEnv } from "./env.js"
 
 loadAgentsEnv()
 

@@ -77,4 +77,8 @@ export interface RouteSkeletonDay {
   foodRecommendation: string[]
   /** 注意事项/穿衣建议等 */
   commentTips?: string
+  /** 高德计算得到的当日总里程（公里） */
+  distance?: number
+  /** 高德计算得到的当日驾车时长（小时） */
+  drivingHours?: number
 }
