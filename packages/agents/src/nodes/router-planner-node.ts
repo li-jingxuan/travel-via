@@ -16,6 +16,7 @@ import type { TravelStateAnnotation } from "../graph/state.js"
 import type { RouteSkeletonDay } from "../types/internal.js"
 import { ROUTE_PLANNER_SYSTEM_PROMPT } from "../prompts/route-planner.js"
 import { agentLog } from "../lib/logger.js"
+import { parseRouteWaypoints } from "../lib/waypoint.js"
 
 /** 行程规划专用 LLM 实例 */
 const llm = createDeepSeekReasoner({ temperature: 0.7 })
@@ -41,6 +42,37 @@ function isValidRouteSkeleton(value: unknown): value is RouteSkeletonDay[] {
       typeof item.title === "string" &&
       item.title.trim().length > 0
     )
+  })
+}
+
+/**
+ * 统一规范 waypoints：
+ * - 优先保留模型给出的结构化 waypoint（alias/name/city/province）
+ * - 若模型返回旧格式 string[]，自动转为新结构
+ * - 若完全不可用，兜底注入目的地，避免后续高德参数为空
+ */
+function normalizeSkeletonWaypoints(
+  skeleton: RouteSkeletonDay[],
+  fallbackCity: string,
+): RouteSkeletonDay[] {
+  return skeleton.map((dayPlan) => {
+    const parsed = parseRouteWaypoints(dayPlan.waypoints, fallbackCity)
+    const normalized =
+      parsed.length > 0
+        ? parsed
+        : [
+            {
+              alias: fallbackCity,
+              name: fallbackCity,
+              city: fallbackCity,
+              province: "",
+            },
+          ]
+
+    return {
+      ...dayPlan,
+      waypoints: normalized,
+    }
   })
 }
 
@@ -82,7 +114,7 @@ export async function routerPlannerNode(
     if (!isValidRouteSkeleton(parsed)) {
       throw new Error("routeSkeleton is invalid or empty")
     }
-    routeSkeleton = parsed
+    routeSkeleton = normalizeSkeletonWaypoints(parsed, intent.destination)
   } catch (parseError) {
     /**
      * 解析失败策略：

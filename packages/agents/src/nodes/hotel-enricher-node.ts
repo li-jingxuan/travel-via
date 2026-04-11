@@ -1,7 +1,8 @@
 import type { IAccommodation } from "@repo/shared-types/travel"
 import type { TravelStateAnnotation } from "../graph/state.js"
-import { searchHotels } from "../lib/amap.js"
+import { searchHotels } from "../lib/amap/index.js"
 import { agentLog } from "../lib/logger.js"
+import { parseRouteWaypoints } from "../lib/waypoint.js"
 
 /**
  * 住宿 enrich 节点：
@@ -25,10 +26,15 @@ export async function hotelEnricherNode(
 
   for (const dayPlan of skeleton) {
     const dayIndex = Math.max(dayPlan.day - 1, 0)
+    const waypoints = parseRouteWaypoints(dayPlan.waypoints, intent.destination)
+    const cityHint =
+      waypoints[waypoints.length - 1]?.city ||
+      waypoints[0]?.city ||
+      intent.destination
     const seedHotelName =
       dayPlan.accommodation[0]?.name || `${intent.destination} 住宿`
 
-    const candidates = await searchHotels(intent.destination, seedHotelName, 3)
+    const candidates = await searchHotels(cityHint, seedHotelName, 3)
     if (candidates.length === 0) {
       errors.push(`HOTEL_ENRICH: 酒店检索失败 - day${dayPlan.day} ${seedHotelName}`)
       hotelMap.set(

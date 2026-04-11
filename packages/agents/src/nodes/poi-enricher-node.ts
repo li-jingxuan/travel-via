@@ -1,20 +1,8 @@
 import type { IActivity } from "@repo/shared-types/travel"
 import type { TravelStateAnnotation } from "../graph/state.js"
-import { searchScenicPois } from "../lib/amap.js"
+import { searchScenicPois } from "../lib/amap/index.js"
 import { agentLog } from "../lib/logger.js"
-
-function parseWaypointNames(waypointsRaw: string): string[] {
-  try {
-    const parsed = JSON.parse(waypointsRaw)
-    if (!Array.isArray(parsed)) return []
-    return parsed
-      .filter((item): item is string => typeof item === "string")
-      .map((item) => item.trim())
-      .filter(Boolean)
-  } catch {
-    return []
-  }
-}
+import { parseRouteWaypoints } from "../lib/waypoint.js"
 
 /**
  * POI enrich 节点：
@@ -41,8 +29,8 @@ export async function poiEnricherNode(
   for (const dayPlan of skeleton) {
     const dayIndex = Math.max(dayPlan.day - 1, 0)
     const dayActivities: IActivity[] = []
-    const waypointNames = parseWaypointNames(dayPlan.waypoints)
-    const cityHint = waypointNames[0] || intent.destination
+    const waypoints = parseRouteWaypoints(dayPlan.waypoints, intent.destination)
+    const cityHint = waypoints[0]?.city || intent.destination
 
     for (const activity of dayPlan.activities) {
       const candidates = await searchScenicPois(cityHint, activity.name, 3)

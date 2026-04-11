@@ -49,6 +49,23 @@ export interface RouteSkeletonAccommodation {
   name: string
   address: string
   feature: string
+  /** 市级行政区（如“成都市”“乌鲁木齐市”） */
+  city: string
+  /** 省级行政区（如“四川省”“新疆维吾尔自治区”） */
+  province: string
+}
+
+/**
+ * waypoint 结构化信息：
+ * - alias: 简称（口语化）
+ * - name: 标准地点名（用于检索）
+ * - city/province: 行政区信息（用于高德 city 参数稳定化）
+ */
+export interface RouteWaypoint {
+  alias: string
+  name: string
+  city: string
+  province: string
 }
 
 /**
@@ -65,8 +82,11 @@ export interface RouteSkeletonDay {
   day: number
   /** 当天标题，如 "第1天 | 抵达乌鲁木齐" */
   title: string
-  /** 途经点（JSON 字符串格式的数组），如 '["乌鲁木齐","天山天池"]' */
-  waypoints: string
+  /**
+   * 途经点（结构化 JSON 数组）：
+   * - RouteWaypoint[]
+   */
+  waypoints: RouteWaypoint[]
   /** 当天整体描述 */
   description: string
   /** 当天的景点列表（骨架版，无门票/开放时间等详情） */

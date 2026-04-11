@@ -11,29 +11,11 @@
  * - 整体失败返回原始 skeleton（可降级）
  */
 
-import { planDrivingByLocations } from "../lib/amap.js"
+import { planDrivingByLocations } from "../lib/amap/index.js"
 import { agentLog } from "../lib/logger.js"
+import { parseRouteWaypoints } from "../lib/waypoint.js"
 import type { TravelStateAnnotation } from "../graph/state.js"
 import type { RouteSkeletonDay } from "../types/internal.js"
-
-/**
- * 将 waypoints JSON 字符串解析为地点数组。
- *
- * 输入示例：
- *   "[\"乌鲁木齐\",\"天山天池\"]"
- */
-function parseWaypointNames(waypointsRaw: string): string[] {
-  try {
-    const parsed = JSON.parse(waypointsRaw)
-    if (!Array.isArray(parsed)) return []
-    return parsed
-      .filter((item): item is string => typeof item === "string")
-      .map((item) => item.trim())
-      .filter(Boolean)
-  } catch {
-    return []
-  }
-}
 
 /**
  * 单独增强 routeSkeleton 的驾驶里程与时长字段。
@@ -45,7 +27,9 @@ async function attachDrivingMetrics(
   const enriched: RouteSkeletonDay[] = []
 
   for (const dayPlan of routeSkeleton) {
-    const waypointNames = parseWaypointNames(dayPlan.waypoints)
+    const waypoints = parseRouteWaypoints(dayPlan.waypoints, destinationHint)
+    const waypointNames = waypoints.map((point) => point.name || point.alias)
+    const cityHint = waypoints[0]?.city || destinationHint
 
     // 少于两个地点无法规划驾驶路线，保持原数据。
     if (waypointNames.length < 2) {
@@ -53,7 +37,7 @@ async function attachDrivingMetrics(
       continue
     }
 
-    const metrics = await planDrivingByLocations(waypointNames, destinationHint)
+    const metrics = await planDrivingByLocations(waypointNames, cityHint)
     if (!metrics) {
       agentLog("驾驶里程增强", `第${dayPlan.day}天高德查询失败，保留原始骨架`)
       enriched.push(dayPlan)

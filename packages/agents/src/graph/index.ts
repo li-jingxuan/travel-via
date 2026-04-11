@@ -44,7 +44,7 @@ type TravelGraphBuilder = StateGraph<
   string
 >
 
-/**
+/** 奎屯市 奎屯豪丰国际大酒店
  * 注册所有节点。
  *
  * 说明：
@@ -53,15 +53,27 @@ type TravelGraphBuilder = StateGraph<
 function registerNodes(graph: TravelGraphBuilder): TravelGraphBuilder {
   return graph
     .addNode("intent_agent", intentAgentNode)
+    // 条件节点
     .addNode("ask_clarification", askClarificationNode)
+    // 规划 骨架
     .addNode("route_planner", routerPlannerNode)
+    // 条件节点
     .addNode("route_planner_failed", routePlannerFailedNode)
+    // 空节点，用于并发节点入口
     .addNode("route_enrich_entry", routeEnrichEntryNode)
+
+    // 驾车/路线规划增强
     .addNode("driving_distance", drivingDistanceNode)
+    // 景点增强
     .addNode("poi_enricher", poiEnricherNode)
-    .addNode("weather_enricher", weatherEnricherNode)
+    // 天气增强
+    // .addNode("weather_enricher", weatherEnricherNode)
+    // 酒店增强
     .addNode("hotel_enricher", hotelEnricherNode)
+
+    // 格式化数据节点
     .addNode("formatter", formatterNode)
+    // 数据校验节点
     .addNode("validator", validatorNode)
 }
 
@@ -103,11 +115,11 @@ function connectEnrichment(graph: TravelGraphBuilder): TravelGraphBuilder {
   return graph
     .addEdge("route_enrich_entry", "driving_distance")
     .addEdge("route_enrich_entry", "poi_enricher")
-    .addEdge("route_enrich_entry", "weather_enricher")
+    // .addEdge("route_enrich_entry", "weather_enricher")
     .addEdge("route_enrich_entry", "hotel_enricher")
     .addEdge("driving_distance", "formatter")
     .addEdge("poi_enricher", "formatter")
-    .addEdge("weather_enricher", "formatter")
+    // .addEdge("weather_enricher", "formatter")
     .addEdge("hotel_enricher", "formatter")
 }
 

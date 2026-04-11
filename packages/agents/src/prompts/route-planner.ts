@@ -3,14 +3,131 @@
  *
  * 设计要点：
  * - 强调 5 大规划原则（地理相邻、强度平衡、节奏感、当地特色、实用贴士）
- * - 明确输出 JSON 数组格式，每个元素对应一天
+ * - 明确输出 JSON 数组格式，并给出简化 JSON Schema 约束
  * - 使用 {totalDays} 占位符由代码动态替换，让 Prompt 更具体
  * - 约束 activities/accommodation/foodRecommendation 的数量范围
- * - waypoints 要求 JSON 字符串格式（方便后续解析）
+ * - waypoints 要求 JSON 对象数组格式（含省市信息）
  *
  * 这是整个管线中 Prompt 最复杂的 Agent，
  * 因为它需要同时考虑：路线合理性、时间分配、地理逻辑、内容丰富度。
  */
+
+const ROUTE_PLANNER_OUTPUT_SCHEMA = JSON.stringify({
+  "type": "array",
+  "minItems": '{totalDays}',
+  "maxItems": '{totalDays}',
+  "items": {
+    "type": "object",
+    "required": [
+      "day",
+      "title",
+      "waypoints",
+      "description",
+      "activities",
+      "accommodation",
+      "foodRecommendation",
+      "commentTips"
+    ],
+    "properties": {
+      "day": { "type": "integer", "minimum": 1 },
+      "title": { "type": "string", "minLength": 1 },
+      "waypoints": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "object",
+          "required": ["alias", "name", "city", "province"],
+          "properties": {
+            "alias": { "type": "string", "minLength": 1 },
+            "name": { "type": "string", "minLength": 1 },
+            "city": { "type": "string", "minLength": 1, "description": "必须为‘市’级单位" },
+            "province": { "type": "string", "minLength": 1, "description": "必须为‘省’级单位" }
+          }
+        }
+      },
+      "description": { "type": "string", "minLength": 1 },
+      "activities": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 5,
+        "items": {
+          "type": "object",
+          "required": ["name", "description", "suggestedHours"],
+          "properties": {
+            "name": { "type": "string", "minLength": 1 },
+            "description": { "type": "string", "minLength": 1 },
+            "suggestedHours": { "type": "string", "minLength": 1 }
+          }
+        }
+      },
+      "accommodation": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 3,
+        "items": {
+          "type": "object",
+          "required": ["name", "address", "feature", "city", "province"],
+          "properties": {
+            "name": { "type": "string", "minLength": 1 },
+            "address": { "type": "string", "minLength": 1 },
+            "feature": { "type": "string", "minLength": 1 },
+            "city": {
+              "type": "string",
+              "minLength": 2,
+              "description": "必须是市级行政区名称，如‘乌鲁木齐市’‘成都市’，不得写县/区/旗"
+            },
+            "province": {
+              "type": "string",
+              "minLength": 2,
+              "description": "必须是省级行政区名称，如‘四川省’‘浙江省’‘新疆维吾尔自治区’"
+            }
+          }
+        }
+      },
+      "foodRecommendation": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 3,
+        "items": { "type": "string", "minLength": 1 }
+      },
+      "commentTips": { "type": "string", "minLength": 1 }
+    }
+  }
+})
+
+const ROUTE_PLANNER_MIN_EXAMPLE = JSON.stringify([
+  {
+    "day": 1,
+    "title": "第1天 | 抵达乌鲁木齐，城市适应",
+    "waypoints": [
+      {
+        "alias": "大巴扎",
+        "name": "新疆国际大巴扎",
+        "city": "乌鲁木齐市",
+        "province": "新疆维吾尔自治区"
+      }
+    ],
+    "description": "上午抵达并办理入住，下午在市区轻松游览，适应气候与时差，晚间以休整为主。",
+    "activities": [
+      {
+        "name": "新疆国际大巴扎",
+        "description": "体验新疆民俗建筑与特色集市，适合首日轻量步行。",
+        "suggestedHours": "2-3小时"
+      }
+    ],
+    "accommodation": [
+      {
+        "name": "乌鲁木齐市中心商务酒店",
+        "address": "天山区解放北路附近",
+        "feature": "交通便利，适合次日出发",
+        "city": "乌鲁木齐市",
+        "province": "新疆维吾尔自治区"
+      }
+    ],
+    "foodRecommendation": ["大盘鸡", "烤羊肉串"],
+    "commentTips": "首日避免过度奔波，注意补水与早晚温差。"
+  }
+])
 
 export const ROUTE_PLANNER_SYSTEM_PROMPT = `你是一位资深旅行规划师，擅长设计合理、有趣、可执行的旅行行程。
 
@@ -25,38 +142,23 @@ export const ROUTE_PLANNER_SYSTEM_PROMPT = `你是一位资深旅行规划师，
 6. **住宿安排**：每天结束时推荐住宿区域或具体酒店名称+地址+特色描述。
 
 输出格式要求：
-严格输出一个 JSON 数组，每个元素代表一天，格式如下：
+严格输出一个 JSON 数组，并满足以下简化 JSON Schema：
 
-[
-  {
-    "day": 1,
-    "title": "第1天标题",
-    "waypoints": "[\"地点A\",\"地点B\"]",
-    "description": "当天整体行程描述（2-3句话）",
-    "activities": [
-      {
-        "name": "景点名称",
-        "description": "景点详细描述（特色、看点）",
-        "suggestedHours": "建议游玩时长"
-      }
-    ],
-    "accommodation": [
-      {
-        "name": "酒店/民宿名称",
-        "address": "大致地址或区域",
-        "feature": "特色描述"
-      }
-    ],
-    "foodRecommendation": ["美食1", "美食2"],
-    "commentTips": "注意事项"
-  }
-]
+${ROUTE_PLANNER_OUTPUT_SCHEMA}
+
+最小合法示例（仅示例 1 天，实际需输出 {totalDays} 天）：
+
+${ROUTE_PLANNER_MIN_EXAMPLE}
 
 重要约束：
-- activities 每天至少1个，最多5个
+- activities 每天至少1-5个
 - accommodation 每天1-3个
 - foodRecommendation 每天1-3个
-- waypoints 是JSON字符串格式的数组
+- waypoints 是 JSON 对象数组，且数组元素必须是对象，包含 alias/name/city/province
+- waypoints 中每个对象的 name 与 city 必须非空
+- accommodation 中每个对象必须包含 city、province；city 必须为市级（例如“成都市”），禁止使用县/区/旗
+- province 必须为省级行政区（例如“四川省”“新疆维吾尔自治区”）
 - day 从 1 开始递增
 - 只输出纯 JSON 数组，不要有 markdown 包裹
-- 所有符号必须为英文半角（包括引号、逗号、冒号等）`
+- 所有符号必须为英文半角（包括引号、逗号、冒号等）
+`

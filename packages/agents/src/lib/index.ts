@@ -5,4 +5,5 @@ export {
   searchScenicPois,
   searchHotels,
   getWeatherSnapshot,
-} from "./amap.js"
+} from "./amap/index.js"
+export { parseRouteWaypoints, stringifyRouteWaypoints } from "./waypoint.js"

@@ -1,20 +1,8 @@
 import type { IWeather } from "@repo/shared-types/travel"
 import type { TravelStateAnnotation } from "../graph/state.js"
-import { getWeatherSnapshot } from "../lib/amap.js"
+import { getWeatherSnapshot } from "../lib/amap/index.js"
 import { agentLog } from "../lib/logger.js"
-
-function parseWaypointNames(waypointsRaw: string): string[] {
-  try {
-    const parsed = JSON.parse(waypointsRaw)
-    if (!Array.isArray(parsed)) return []
-    return parsed
-      .filter((item): item is string => typeof item === "string")
-      .map((item) => item.trim())
-      .filter(Boolean)
-  } catch {
-    return []
-  }
-}
+import { parseRouteWaypoints } from "../lib/waypoint.js"
 
 /**
  * 天气 enrich 节点：
@@ -37,9 +25,11 @@ export async function weatherEnricherNode(
   cityCandidates.add(intent.destination)
 
   for (const dayPlan of skeleton) {
-    const waypoints = parseWaypointNames(dayPlan.waypoints)
+    const waypoints = parseRouteWaypoints(dayPlan.waypoints, intent.destination)
     for (const point of waypoints.slice(0, 2)) {
-      cityCandidates.add(point)
+      if (point.city) {
+        cityCandidates.add(point.city)
+      }
     }
   }
 

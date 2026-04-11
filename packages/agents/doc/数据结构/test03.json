@@ -1,0 +1,551 @@
+{
+    "code": 0,
+    "message": "ok",
+    "data": {
+        "finalPlan": {
+            "planName": "新疆15天深度自驾游",
+            "totalDays": 15,
+            "totalDistance": 3000,
+            "vehicleType": "SUV或越野车",
+            "vehicleAdvice": "新疆地域辽阔，路况复杂，部分路段为山路或非铺装路面，建议驾驶四驱车辆；出行前务必检查车辆状况（轮胎、备胎、刹车、机油等）；提前下载离线地图，部分区域信号弱；注意沿途加油站分布，及时加油；遵守交通规则，注意区间测速和牲畜穿行。",
+            "bestSeason": "夏季（6月-8月）",
+            "essentialItems": [
+                "防晒霜、太阳镜、遮阳帽（紫外线强）",
+                "冲锋衣或薄羽绒服（山区及早晚温差大）",
+                "常用药品（如感冒药、肠胃药、晕车药、创可贴）",
+                "身份证、驾驶证、行驶证等证件",
+                "相机、充电宝及各类充电器",
+                "充足的饮用水和高能量零食",
+                "少量现金（部分地区可能不支持移动支付）"
+            ],
+            "weather": [
+                {
+                    "area": "北疆及伊犁地区",
+                    "daytime": {
+                        "tempMax": 28,
+                        "tempMin": 18,
+                        "weather": "晴朗或多云"
+                    },
+                    "nighttime": {
+                        "tempMax": 15,
+                        "tempMin": 8,
+                        "weather": "晴朗"
+                    },
+                    "clothing": "白天以短袖、长袖衬衫为主，注意防晒；夜晚或进入山区需加穿外套或薄羽绒服。"
+                }
+            ],
+            "days": [
+                {
+                    "day": 1,
+                    "title": "第1天：长沙飞乌鲁木齐，初识新疆",
+                    "waypoints": "[{\"alias\":\"大巴扎\",\"name\":\"新疆国际大巴扎\",\"city\":\"乌鲁木齐市\",\"province\":\"新疆维吾尔自治区\"}]",
+                    "description": "从长沙飞抵乌鲁木齐，下午参观国际大巴扎，感受新疆的多元文化，晚上品尝当地美食。",
+                    "accommodation": [
+                        {
+                            "name": "富力万达文华酒店",
+                            "address": "经济技术开发区玄武湖路567号",
+                            "feature": "住宿服务;宾馆酒店;五星级宾馆｜评分4.7"
+                        }
+                    ],
+                    "foodRecommendation": [
+                        "大盘鸡",
+                        "烤羊肉串",
+                        "手抓饭"
+                    ],
+                    "commentTips": "抵达后注意休息，适应时差；新疆夏季紫外线强，注意防晒；晚上可漫步市区，体验夜生活。",
+                    "activities": [
+                        {
+                            "name": "新疆国际大巴扎",
+                            "description": "世界规模最大的大巴扎，集伊斯兰文化、建筑、民族商贸于一体，适合购买纪念品和体验当地氛围。",
+                            "suggestedHours": "2-3小时",
+                            "ticketPriceCny": 0,
+                            "openingHours": "待查询",
+                            "images": []
+                        }
+                    ],
+                    "distance": 0,
+                    "drivingHours": 0
+                },
+                {
+                    "day": 2,
+                    "title": "第2天：乌鲁木齐市区探索",
+                    "waypoints": "[{\"alias\":\"红山公园\",\"name\":\"红山公园\",\"city\":\"乌鲁木齐市\",\"province\":\"新疆维吾尔自治区\"},{\"alias\":\"新疆博物馆\",\"name\":\"新疆维吾尔自治区博物馆\",\"city\":\"乌鲁木齐市\",\"province\":\"新疆维吾尔自治区\"},{\"alias\":\"二道桥\",\"name\":\"二道桥市场\",\"city\":\"乌鲁木齐市\",\"province\":\"新疆维吾尔自治区\"}]",
+                    "description": "在乌鲁木齐市区轻松游玩，参观博物馆了解新疆历史，登红山俯瞰城市全景，体验当地市场。",
+                    "accommodation": [
+                        {
+                            "name": "乌鲁木齐环球国际大酒店",
+                            "address": "北京南路76号",
+                            "feature": "住宿服务;宾馆酒店;五星级宾馆｜评分4.6"
+                        }
+                    ],
+                    "foodRecommendation": [
+                        "拌面",
+                        "烤包子",
+                        "酸奶"
+                    ],
+                    "commentTips": "市区游玩步行较多，穿舒适鞋子；博物馆周一可能闭馆，提前查询；注意保管贵重物品。",
+                    "activities": [
+                        {
+                            "name": "红山公园",
+                            "description": "城市地标公园，可登高望远，俯瞰乌鲁木齐全景，了解当地历史。",
+                            "suggestedHours": "1-2小时",
+                            "ticketPriceCny": 0,
+                            "openingHours": "待查询",
+                            "images": []
+                        },
+                        {
+                            "name": "新疆维吾尔自治区博物馆",
+                            "description": "展示新疆历史、文化和丝绸之路文物，包括著名的楼兰女尸。",
+                            "suggestedHours": "2-3小时",
+                            "ticketPriceCny": 0,
+                            "openingHours": "待查询",
+                            "images": []
+                        },
+                        {
+                            "name": "二道桥市场",
+                            "description": "传统民族市场，售卖工艺品、干果和服饰，体验浓郁的维吾尔风情。",
+                            "suggestedHours": "1-2小时",
+                            "ticketPriceCny": 0,
+                            "openingHours": "待查询",
+                            "images": []
+                        }
+                    ],
+                    "distance": 11.8,
+                    "drivingHours": 0.6
+                },
+                {
+                    "day": 3,
+                    "title": "第3天：乌鲁木齐至富蕴，游览天山天池",
+                    "waypoints": "[{\"alias\":\"天池\",\"name\":\"天山天池风景区\",\"city\":\"阜康市\",\"province\":\"新疆维吾尔自治区\"}]",
+                    "description": "自驾前往富蕴，途中游览天山天池，欣赏高山湖泊美景，晚上抵达富蕴休息。",
+                    "accommodation": [
+                        {
+                            "name": "可可托海亚朵酒店",
+                            "address": "可可托海镇和平路路58号",
+                            "feature": "住宿服务;宾馆酒店;宾馆酒店｜评分4.6"
+                        }
+                    ],
+                    "foodRecommendation": [
+                        "羊肉汤",
+                        "馕"
+                    ],
+                    "commentTips": "驾驶路程较长，注意安全；天池海拔较高，气温较低，带外套；山路驾驶谨慎。",
+                    "activities": [
+                        {
+                            "name": "天山天池风景区",
+                            "description": "著名的高山湖泊，湖水清澈，四周雪山环绕，风景如画，适合徒步和拍照。",
+                            "suggestedHours": "3-4小时",
+                            "ticketPriceCny": 0,
+                            "openingHours": "待查询",
+                            "images": []
+                        }
+                    ],
+                    "distance": 500,
+                    "drivingHours": 6
+                },
+                {
+                    "day": 4,
+                    "title": "第4天：富蕴至布尔津，游览可可托海",
+                    "waypoints": "[{\"alias\":\"可可托海\",\"name\":\"可可托海国家地质公园\",\"city\":\"富蕴县\",\"province\":\"新疆维吾尔自治区\"}]",
+                    "description": "从富蕴出发，游览可可托海风景区，欣赏奇特的地质景观和额尔齐斯河风光，然后驱车前往布尔津。",
+                    "accommodation": [
+                        {
+                            "name": "布尔津旅游宾馆",
+                            "address": "卧龙湾54号",
+                            "feature": "住宿服务;宾馆酒店;四星级宾馆｜评分4.6"
+                        }
+                    ],
+                    "foodRecommendation": [
+                        "狗鱼",
+                        "冷水鱼宴"
+                    ],
+                    "commentTips": "可可托海景区较大，建议乘坐区间车；布尔津夜市丰富，晚上可品尝当地鱼宴。",
+                    "activities": [
+                        {
+                            "name": "可可托海国家地质公园",
+                            "description": "以花岗岩地貌和额尔齐斯河大峡谷闻名，景观壮丽，适合地质爱好者和自然摄影。",
+                            "suggestedHours": "4-5小时",
+                            "ticketPriceCny": 0,
+                            "openingHours": "待查询",
+                            "images": []
+                        }
+                    ],
+                    "distance": 300,
+                    "drivingHours": 5
+                },
+                {
+                    "day": 5,
+                    "title": "第5天：布尔津至喀纳斯，进入童话世界",
+                    "waypoints": "[{\"alias\":\"喀纳斯湖\",\"name\":\"喀纳斯湖风景区\",\"city\":\"布尔津县\",\"province\":\"新疆维吾尔自治区\"}]",
+                    "description": "从布尔津自驾前往喀纳斯景区，入住后游览喀纳斯湖，体验湖光山色。",
+                    "accommodation": [
+                        {
+                            "name": "喀纳斯凯莱酒店",
+                            "address": "喀纳斯景区贾登峪管理区19号",
+                            "feature": "住宿服务;住宿服务相关;住宿服务相关｜评分4.5"
+                        }
+                    ],
+                    "foodRecommendation": [
+                        "图瓦人美食",
+                        "奶制品"
+                    ],
+                    "commentTips": "喀纳斯景区需购票进入，自驾车可能有限制，需换乘区间车；住宿条件有限，提前预订。",
+                    "activities": [
+                        {
+                            "name": "喀纳斯湖风景区",
+                            "description": "著名的高山湖泊，以神秘的湖怪传说和变幻的湖水颜色著称，风景绝美。",
+                            "suggestedHours": "3-4小时",
+                            "ticketPriceCny": 0,
+                            "openingHours": "待查询",
+                            "images": []
+                        }
+                    ],
+                    "distance": 150,
+                    "drivingHours": 3
+                },
+                {
+                    "day": 6,
+                    "title": "第6天：喀纳斯深度游",
+                    "waypoints": "[{\"alias\":\"观鱼台\",\"name\":\"喀纳斯观鱼台\",\"city\":\"布尔津县\",\"province\":\"新疆维吾尔自治区\"},{\"alias\":\"月亮湾\",\"name\":\"喀纳斯月亮湾\",\"city\":\"布尔津县\",\"province\":\"新疆维吾尔自治区\"},{\"alias\":\"神仙湾\",\"name\":\"喀纳斯神仙湾\",\"city\":\"布尔津县\",\"province\":\"新疆维吾尔自治区\"}]",
+                    "description": "全天游玩喀纳斯景区，登观鱼台俯瞰全景，徒步欣赏三湾美景，感受自然奇观。",
+                    "accommodation": [
+                        {
+                            "name": "花间坊·Snowy mountain view雪山观景高端民宿(喀纳斯景区店)",
+                            "address": "喀纳斯新村75号",
+                            "feature": "住宿服务;旅馆招待所;旅馆招待所｜评分4.7"
+                        }
+                    ],
+                    "foodRecommendation": [
+                        "手抓肉",
+                        "奶茶"
+                    ],
+                    "commentTips": "徒步较多，穿适合的鞋子；观鱼台需爬山，量力而行；保护环境，不乱丢垃圾。",
+                    "activities": [
+                        {
+                            "name": "喀纳斯观鱼台",
+                            "description": "俯瞰喀纳斯湖全景的最佳地点，需爬山，视野开阔，风景壮观。",
+                            "suggestedHours": "2-3小时",
+                            "ticketPriceCny": 0,
+                            "openingHours": "待查询",
+                            "images": []
+                        },
+                        {
+                            "name": "喀纳斯月亮湾",
+                            "description": "喀纳斯河形成的月牙形河湾，色彩斑斓，是摄影爱好者的必拍景点。",
+                            "suggestedHours": "1小时",
+                            "ticketPriceCny": 0,
+                            "openingHours": "待查询",
+                            "images": []
+                        },
+                        {
+                            "name": "喀纳斯神仙湾",
+                            "description": "晨雾缭绕时如仙境，适合清晨徒步，感受宁静的自然氛围。",
+                            "suggestedHours": "1小时",
+                            "ticketPriceCny": 0,
+                            "openingHours": "待查询",
+                            "images": []
+                        }
+                    ],
+                    "distance": 154.1,
+                    "drivingHours": 2.6
+                },
+                {
+                    "day": 7,
+                    "title": "第7天：喀纳斯至禾木，体验图瓦人村落",
+                    "waypoints": "[{\"alias\":\"禾木村\",\"name\":\"禾木图瓦人村落\",\"city\":\"布尔津县\",\"province\":\"新疆维吾尔自治区\"}]",
+                    "description": "从喀纳斯前往禾木村，沿途风景优美，抵达后游览禾木村，体验图瓦人文化。",
+                    "accommodation": [
+                        {
+                            "name": "布尔津禾木西雅客民宿",
+                            "address": "禾木乡禾木村喇嘛庙站26号",
+                            "feature": "住宿服务;住宿服务相关;住宿服务相关｜评分4.5"
+                        }
+                    ],
+                    "foodRecommendation": [
+                        "烤肉",
+                        "马奶酒"
+                    ],
+                    "commentTips": "禾木村道路较窄，驾驶小心；住宿多为木屋，设施简单；晚上可看星空。",
+                    "activities": [
+                        {
+                            "name": "禾木图瓦人村落",
+                            "description": "原始的图瓦人村庄，木屋错落，草原环绕，宁静祥和，适合放松和摄影。",
+                            "suggestedHours": "3-4小时",
+                            "ticketPriceCny": 0,
+                            "openingHours": "待查询",
+                            "images": []
+                        }
+                    ],
+                    "distance": 100,
+                    "drivingHours": 2.5
+                },
+                {
+                    "day": 8,
+                    "title": "第8天：禾木休闲日",
+                    "waypoints": "[{\"alias\":\"禾木晨雾\",\"name\":\"禾木晨雾观景点\",\"city\":\"布尔津县\",\"province\":\"新疆维吾尔自治区\"},{\"alias\":\"美丽峰\",\"name\":\"禾木美丽峰\",\"city\":\"布尔津县\",\"province\":\"新疆维吾尔自治区\"}]",
+                    "description": "在禾木村放松一天，早起看晨雾，骑马游览美丽峰，享受田园风光。",
+                    "accommodation": [
+                        {
+                            "name": "开来汗·ValleVive禾庭山隐度假民宿(禾木老村店)",
+                            "address": "哈纳斯禾木蒙古族乡禾木村老村东哈拉距自然民宿商店南方158米",
+                            "feature": "住宿服务;旅馆招待所;旅馆招待所｜评分4.5"
+                        }
+                    ],
+                    "foodRecommendation": [
+                        "野菜",
+                        "烤全羊"
+                    ],
+                    "commentTips": "晨雾需早起，约6-7点；骑马注意安全；尊重当地风俗，不随意进入民宅。",
+                    "activities": [
+                        {
+                            "name": "禾木晨雾观景点",
+                            "description": "清晨时分，禾木村笼罩在薄雾中，如仙境般美丽，是摄影的绝佳时机。",
+                            "suggestedHours": "1-2小时",
+                            "ticketPriceCny": 0,
+                            "openingHours": "待查询",
+                            "images": []
+                        },
+                        {
+                            "name": "禾木美丽峰",
+                            "description": "骑马或徒步前往美丽峰，俯瞰禾木村全景，草原和雪山交相辉映。",
+                            "suggestedHours": "3-4小时",
+                            "ticketPriceCny": 0,
+                            "openingHours": "待查询",
+                            "images": []
+                        }
+                    ],
+                    "distance": 0,
+                    "drivingHours": 0
+                },
+                {
+                    "day": 9,
+                    "title": "第9天：禾木至克拉玛依，途经魔鬼城",
+                    "waypoints": "[{\"alias\":\"魔鬼城\",\"name\":\"乌尔禾魔鬼城\",\"city\":\"克拉玛依市\",\"province\":\"新疆维吾尔自治区\"}]",
+                    "description": "从禾木出发，长途驾驶至克拉玛依，途中游览乌尔禾魔鬼城，欣赏雅丹地貌。",
+                    "accommodation": [
+                        {
+                            "name": "克拉玛依博达酒店",
+                            "address": "友谊路16号",
+                            "feature": "住宿服务;宾馆酒店;四星级宾馆｜评分4.4"
+                        }
+                    ],
+                    "foodRecommendation": [
+                        "克拉玛依凉皮",
+                        "羊肉串"
+                    ],
+                    "commentTips": "驾驶路程长，确保车辆状况；魔鬼城风沙大，带口罩和墨镜；夏季炎热，多喝水。",
+                    "activities": [
+                        {
+                            "name": "乌尔禾魔鬼城",
+                            "description": "典型的雅丹地貌景区，风蚀岩石形态各异，如魔鬼城堡，适合拍照和探险。",
+                            "suggestedHours": "2-3小时",
+                            "ticketPriceCny": 0,
+                            "openingHours": "待查询",
+                            "images": []
+                        }
+                    ],
+                    "distance": 500,
+                    "drivingHours": 8
+                },
+                {
+                    "day": 10,
+                    "title": "第10天：克拉玛依至赛里木湖",
+                    "waypoints": "[{\"alias\":\"赛里木湖\",\"name\":\"赛里木湖风景区\",\"city\":\"博乐市\",\"province\":\"新疆维吾尔自治区\"}]",
+                    "description": "从克拉玛依自驾前往赛里木湖，抵达后环湖游览，欣赏“大西洋最后一滴眼泪”的蓝。",
+                    "accommodation": [
+                        {
+                            "name": "TIMESHARE塔玛暇尔酒店",
+                            "address": "西海路7号",
+                            "feature": "住宿服务;宾馆酒店;宾馆酒店｜评分4.8"
+                        }
+                    ],
+                    "foodRecommendation": [
+                        "湖鱼",
+                        "高白鲑"
+                    ],
+                    "commentTips": "赛里木湖海拔较高，气温低，带厚衣服；环湖公路风景美，但注意驾驶安全；住宿可能简陋。",
+                    "activities": [
+                        {
+                            "name": "赛里木湖风景区",
+                            "description": "高山湖泊，湖水湛蓝，环湖公路风景优美，适合骑行、徒步和摄影。",
+                            "suggestedHours": "3-4小时",
+                            "ticketPriceCny": 0,
+                            "openingHours": "待查询",
+                            "images": []
+                        }
+                    ],
+                    "distance": 450,
+                    "drivingHours": 5
+                },
+                {
+                    "day": 11,
+                    "title": "第11天：赛里木湖至伊宁，途经果子沟",
+                    "waypoints": "[{\"alias\":\"果子沟\",\"name\":\"果子沟风景区\",\"city\":\"霍城县\",\"province\":\"新疆维吾尔自治区\"},{\"alias\":\"霍尔果斯\",\"name\":\"霍尔果斯口岸\",\"city\":\"霍尔果斯市\",\"province\":\"新疆维吾尔自治区\"},{\"alias\":\"喀赞其\",\"name\":\"伊宁喀赞其民俗旅游区\",\"city\":\"伊宁市\",\"province\":\"新疆维吾尔自治区\"}]",
+                    "description": "从赛里木湖出发，经过果子沟大桥，参观霍尔果斯口岸，抵达伊宁后游览喀赞其民俗村。",
+                    "accommodation": [
+                        {
+                            "name": "伊宁天缘国际酒店",
+                            "address": "滨河大道695号",
+                            "feature": "住宿服务;住宿服务相关;住宿服务相关｜评分4.6"
+                        }
+                    ],
+                    "foodRecommendation": [
+                        "伊犁面肺子",
+                        "熏马肠"
+                    ],
+                    "commentTips": "果子沟大桥不能停车，车上欣赏；霍尔果斯口岸需证件，提前准备；伊宁民族风情浓厚，尊重文化。",
+                    "activities": [
+                        {
+                            "name": "果子沟风景区",
+                            "description": "以果子沟大桥和峡谷风光闻名，沿途森林茂密，风景秀丽。",
+                            "suggestedHours": "1小时",
+                            "ticketPriceCny": 0,
+                            "openingHours": "待查询",
+                            "images": []
+                        },
+                        {
+                            "name": "霍尔果斯口岸",
+                            "description": "中国与哈萨克斯坦的边境口岸，可参观国门和免税店，体验边境风情。",
+                            "suggestedHours": "1-2小时",
+                            "ticketPriceCny": 0,
+                            "openingHours": "待查询",
+                            "images": []
+                        },
+                        {
+                            "name": "伊宁喀赞其民俗旅游区",
+                            "description": "维吾尔族聚居区，蓝色房屋和街道，民族风情浓郁，适合漫步和拍照。",
+                            "suggestedHours": "2-3小时",
+                            "ticketPriceCny": 0,
+                            "openingHours": "待查询",
+                            "images": []
+                        }
+                    ],
+                    "distance": 200,
+                    "drivingHours": 4
+                },
+                {
+                    "day": 12,
+                    "title": "第12天：伊宁至那拉提草原",
+                    "waypoints": "[{\"alias\":\"那拉提\",\"name\":\"那拉提旅游风景区\",\"city\":\"新源县\",\"province\":\"新疆维吾尔自治区\"}]",
+                    "description": "从伊宁前往那拉提草原，体验空中草原的壮丽，骑马或徒步感受自然。",
+                    "accommodation": [
+                        {
+                            "name": "新源县优悦宾至酒店",
+                            "address": "那拉提镇那拉提街385门面",
+                            "feature": "住宿服务;宾馆酒店;宾馆酒店｜评分4.6"
+                        }
+                    ],
+                    "foodRecommendation": [
+                        "草原烤肉",
+                        "酸奶疙瘩"
+                    ],
+                    "commentTips": "那拉提草原紫外线强，防晒措施；骑马项目需谈好价格；住宿可能没有独立卫生间。",
+                    "activities": [
+                        {
+                            "name": "那拉提旅游风景区",
+                            "description": "著名的空中草原，夏季绿草如茵，野花盛开，适合骑马、徒步和摄影。",
+                            "suggestedHours": "4-5小时",
+                            "ticketPriceCny": 0,
+                            "openingHours": "待查询",
+                            "images": []
+                        }
+                    ],
+                    "distance": 250,
+                    "drivingHours": 4
+                },
+                {
+                    "day": 13,
+                    "title": "第13天：那拉提至巴音布鲁克",
+                    "waypoints": "[{\"alias\":\"巴音布鲁克\",\"name\":\"巴音布鲁克草原\",\"city\":\"和静县\",\"province\":\"新疆维吾尔自治区\"}]",
+                    "description": "从那拉提自驾至巴音布鲁克草原，欣赏天鹅湖和开都河九曲十八弯的日落美景。",
+                    "accommodation": [
+                        {
+                            "name": "博雅丽景酒店(巴音布鲁克店)",
+                            "address": "巴音布鲁克派出所南侧",
+                            "feature": "住宿服务;宾馆酒店;宾馆酒店｜评分4.8"
+                        }
+                    ],
+                    "foodRecommendation": [
+                        "黑头羊肉",
+                        "马奶子"
+                    ],
+                    "commentTips": "巴音布鲁克海拔高，气温低，带羽绒服；日落时间晚，约晚上10点；景区内需乘区间车。",
+                    "activities": [
+                        {
+                            "name": "巴音布鲁克草原",
+                            "description": "中国第二大草原，以天鹅湖和九曲十八弯闻名，日落时分景色尤为壮丽。",
+                            "suggestedHours": "3-4小时",
+                            "ticketPriceCny": 0,
+                            "openingHours": "待查询",
+                            "images": []
+                        }
+                    ],
+                    "distance": 200,
+                    "drivingHours": 4
+                },
+                {
+                    "day": 14,
+                    "title": "第14天：巴音布鲁克至奎屯，穿越独库公路",
+                    "waypoints": "[{\"alias\":\"独库公路\",\"name\":\"独库公路风景道\",\"city\":\"独山子区\",\"province\":\"新疆维吾尔自治区\"}]",
+                    "description": "从巴音布鲁克出发，沿独库公路北段行驶，体验“一日有四季”的景观变化，晚上抵达奎屯。",
+                    "accommodation": [
+                        {
+                            "name": "奎屯汇德酒店",
+                            "address": "团结南路56号",
+                            "feature": "住宿服务;宾馆酒店;四星级宾馆｜评分4.8"
+                        }
+                    ],
+                    "foodRecommendation": [
+                        "奎屯大盘鸡",
+                        "拌面"
+                    ],
+                    "commentTips": "独库公路路况复杂，驾驶谨慎，注意落石；天气多变，准备雨具；部分路段海拔高，防高反。",
+                    "activities": [
+                        {
+                            "name": "独库公路风景道",
+                            "description": "著名的风景公路，沿途经过峡谷、雪山、草原，景观多变，驾驶体验独特。",
+                            "suggestedHours": "全天驾驶",
+                            "ticketPriceCny": 0,
+                            "openingHours": "待查询",
+                            "images": []
+                        }
+                    ],
+                    "distance": 300,
+                    "drivingHours": 6
+                },
+                {
+                    "day": 15,
+                    "title": "第15天：奎屯至乌鲁木齐，返回长沙",
+                    "waypoints": "[{\"alias\":\"红山公园\",\"name\":\"红山公园\",\"city\":\"乌鲁木齐市\",\"province\":\"新疆维吾尔自治区\"}]",
+                    "description": "上午从奎屯返回乌鲁木齐，参观红山公园，然后前往机场飞回长沙，结束新疆之旅。",
+                    "accommodation": [
+                        {
+                            "name": "天缘酒店",
+                            "address": "迎宾路1341号",
+                            "feature": "住宿服务;宾馆酒店;五星级宾馆|餐饮服务;餐饮相关场所;餐饮相关｜评分4.5"
+                        }
+                    ],
+                    "foodRecommendation": [
+                        "最后一顿新疆拌面",
+                        "水果"
+                    ],
+                    "commentTips": "注意航班时间，提前到达机场；检查行李，确保没有违禁品；回顾旅程，分享美好回忆。",
+                    "activities": [
+                        {
+                            "name": "红山公园",
+                            "description": "再次游览或首次参观，登高望远，回顾旅程，欣赏乌鲁木齐城市风光。",
+                            "suggestedHours": "1-2小时",
+                            "ticketPriceCny": 0,
+                            "openingHours": "待查询",
+                            "images": []
+                        }
+                    ],
+                    "distance": 250,
+                    "drivingHours": 3
+                }
+            ]
+        },
+        "errors": [],
+        "needUserInput": false
+    }
+}
