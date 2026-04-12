@@ -65,13 +65,19 @@ async function geocodeAddress(
   address: string,
   cityHint?: string,
 ): Promise<string | null> {
-  const data = await fetchAmap<AmapGeocodeResponse>("/v3/geocode/geo", {
+  const requestPath = "/v3/geocode/geo"
+  const requestParams = {
     address,
     ...(cityHint ? { city: cityHint } : {}),
-  })
+  }
+  const data = await fetchAmap<AmapGeocodeResponse>(requestPath, requestParams)
 
   if (!data || data.status !== "1") {
-    agentLog("高德", "地理编码失败", address, data?.info ?? "unknown")
+    agentLog("高德", "地理编码失败", {
+      path: requestPath,
+      params: requestParams,
+      info: data?.info ?? "unknown",
+    })
     return null
   }
 
@@ -106,15 +112,21 @@ export async function planDrivingByLocations(
   if (!origin || !destination) return null
 
   // 中间坐标作为 waypoints 参与路径规划。
+  const requestPath = "/v3/direction/driving"
+  const requestParams = buildDrivingParams(origin, destination, coordinateList.slice(1, -1))
   const data = await fetchAmap<AmapDrivingResponse>(
-    "/v3/direction/driving",
-    buildDrivingParams(origin, destination, coordinateList.slice(1, -1)),
+    requestPath,
+    requestParams,
   )
 
   if (!data) return null
   const mapped = mapDrivingResponse(data)
   if (!mapped) {
-    agentLog("高德", "驾车路径规划失败", data.info ?? "unknown")
+    agentLog("高德", "驾车路径规划失败", {
+      path: requestPath,
+      params: requestParams,
+      info: data.info ?? "unknown",
+    })
     return null
   }
 

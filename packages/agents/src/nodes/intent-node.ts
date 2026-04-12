@@ -32,10 +32,22 @@ import { createDeepSeekV3 } from "../lib/llm.js"
 import { agentLog } from "../lib/logger.js"
 import type { TravelStateAnnotation } from "../graph/state.js"
 import type { TravelIntent } from "../types/internal.js"
-import { INTENT_SYSTEM_PROMPT } from "../prompts/intent.js"
+import {
+  DEFAULT_TRAVEL_TYPE,
+  TRAVEL_TYPE_VALUES,
+  type TravelType,
+} from "../types/index.js"
+import { INTENT_SYSTEM_PROMPT } from "../prompts/index.js"
 
 /** 意图理解专用 LLM 实例 — 低温度保证输出稳定可预测 */
 const llm = createDeepSeekV3({ temperature: 0.3 })
+
+// 只做合法性校验，不做语义映射；语义归一交由 Intent Prompt 约束 LLM 完成。
+const isTravelType = (value: unknown): value is TravelType =>
+  typeof value === "string" && TRAVEL_TYPE_VALUES.includes(value as TravelType)
+
+const coerceTravelType = (value: unknown): TravelType =>
+  isTravelType(value) ? value : DEFAULT_TRAVEL_TYPE
 
 /**
  * 将 LLM 输出标准化为 TravelIntent，保证字段类型稳定：
@@ -62,12 +74,21 @@ function normalizeIntent(raw: unknown): TravelIntent {
     return 5
   }
 
+  const destination = toCleanString(obj.destination)
+  const departurePointRaw = toCleanString(obj.departurePoint)
+
   const normalized: TravelIntent = {
-    destination: toCleanString(obj.destination),
-    departurePoint: toCleanString(obj.departurePoint),
+    destination,
+    /**
+     * departurePoint 允许为空：
+     * - 若用户未提供出发地，默认与 destination 一致
+     * - destination 也为空时，保持空字符串，交由缺失信息分流处理
+     */
+    departurePoint: departurePointRaw || destination,
     days: toDays(obj.days),
     month: toCleanString(obj.month) || "未指定",
-    travelType: toCleanString(obj.travelType) || "自由行",
+    // travelType 必须落在统一枚举内；异常值统一兜底为默认出行方式。
+    travelType: coerceTravelType(obj.travelType),
   }
 
   if (typeof obj.budget === "string" && obj.budget.trim()) {
@@ -103,7 +124,9 @@ function normalizeIntent(raw: unknown): TravelIntent {
 export async function intentAgentNode(
   state: typeof TravelStateAnnotation.State,
 ) {
-  agentLog("意图识别", "收到用户输入", state.userInput)
+  agentLog("意图识别", "开始识别用户意图", {
+    userInput: state.userInput,
+  })
 
   // 构造 LLM 调用的消息序列：
   // 1. SystemMessage: 定义角色和输出格式规则
@@ -122,13 +145,22 @@ export async function intentAgentNode(
     const jsonStr = content.replace(/```json\n?|\n?```/g, "").trim()
     intent = normalizeIntent(JSON.parse(jsonStr))
   } catch {
-    agentLog("意图识别", "模型输出解析失败，已降级为空意图")
+    agentLog("意图识别", "识别失败，已降级为空意图", {
+      reason: "模型输出 JSON 解析失败",
+    })
     console.error("IntentAgent JSON parsing error. Raw output:", content)
     // JSON 解析失败时使用兜底默认值，避免整个管线崩溃
     // 这种情况通常是因为 LLM 输出了额外文字而非纯 JSON。
     // 注意必填字段使用空字符串，后续由 graph 分流给用户补充信息。
     intent = normalizeIntent({})
   }
+
+  agentLog("意图识别", "识别成功", {
+    destination: intent.destination,
+    departurePoint: intent.departurePoint,
+    days: intent.days,
+    travelType: intent.travelType,
+  })
 
   // 返回部分更新 —— LangGraph 会用各字段的 reducer 合并到当前 State
   return {

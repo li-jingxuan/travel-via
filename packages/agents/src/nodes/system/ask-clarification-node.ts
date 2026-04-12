@@ -14,7 +14,10 @@ export async function askClarificationNode(
 ) {
   const missing = getMissingRequiredFields(state)
 
-  agentLog("ask_clarification", state.userInput, missing)
+  agentLog("补充信息", "开始生成补充信息提示", {
+    userInput: state.userInput,
+    missing,
+  })
   const readable = missing
     .map((field) =>
       field === "destination"
@@ -23,10 +26,12 @@ export async function askClarificationNode(
     )
     .join("、")
 
+  agentLog("补充信息", "补充信息提示生成成功", {
+    missing,
+  })
   return {
     errors: [
       `NEED_USER_INPUT: 缺少必要信息：${readable}。请补充后重新提交。`,
     ],
   }
 }
-

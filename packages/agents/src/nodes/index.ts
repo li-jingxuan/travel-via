@@ -1,6 +1,5 @@
 export { intentAgentNode } from "./intent-node.js"
-export { routerPlannerNode } from "./router-planner-node.js"
-export { routePlannerNode } from "./route-planner-node.js"
+export { routerPlannerNode, routerPlannerNode as routePlannerNode } from "./router-planner-node.js"
 export { drivingDistanceNode } from "./driving-distance-node.js"
 export { poiEnricherNode } from "./poi-enricher-node.js"
 export { weatherEnricherNode } from "./weather-enricher-node.js"

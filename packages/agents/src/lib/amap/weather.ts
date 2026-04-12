@@ -50,16 +50,22 @@ function mapWeatherResponse(
  * 城市天气快照查询。
  */
 export async function getWeatherSnapshot(city: string): Promise<AmapWeatherSnapshot | null> {
-  const data = await fetchAmap<AmapWeatherResponse>("/v3/weather/weatherInfo", {
+  const requestPath = "/v3/weather/weatherInfo"
+  const requestParams = {
     city,
     extensions: "all",
-  })
+  }
+  const data = await fetchAmap<AmapWeatherResponse>(requestPath, requestParams)
   if (!data) return null
 
   const snapshot = mapWeatherResponse(data, city)
   if (!snapshot) {
     // 映射失败通常是响应缺字段或 city 不可识别。
-    agentLog("高德", "天气查询失败", city, data.info ?? "unknown")
+    agentLog("高德", "天气查询失败", {
+      path: requestPath,
+      params: requestParams,
+      info: data.info ?? "unknown",
+    })
     return null
   }
   return snapshot

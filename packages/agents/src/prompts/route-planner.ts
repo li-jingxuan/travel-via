@@ -52,11 +52,25 @@ const ROUTE_PLANNER_OUTPUT_SCHEMA = JSON.stringify({
         "maxItems": 5,
         "items": {
           "type": "object",
-          "required": ["name", "description", "suggestedHours"],
+          "required": ["name", "description", "suggestedHours", "city", "province"],
           "properties": {
-            "name": { "type": "string", "minLength": 1 },
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "description": "必须是可用于地图/POI检索的标准地点名，如‘重庆中国三峡博物馆’；禁止附加‘参观’‘游览’‘打卡’等动作词"
+            },
             "description": { "type": "string", "minLength": 1 },
-            "suggestedHours": { "type": "string", "minLength": 1 }
+            "suggestedHours": { "type": "string", "minLength": 1 },
+            "city": {
+              "type": "string",
+              "minLength": 2,
+              "description": "必须是市级行政区名称，如‘乌鲁木齐市’‘成都市’，不得写县/区/旗"
+            },
+            "province": {
+              "type": "string",
+              "minLength": 2,
+              "description": "必须是省级行政区名称，如‘四川省’‘浙江省’‘新疆维吾尔自治区’"
+            }
           }
         }
       },
@@ -112,7 +126,9 @@ const ROUTE_PLANNER_MIN_EXAMPLE = JSON.stringify([
       {
         "name": "新疆国际大巴扎",
         "description": "体验新疆民俗建筑与特色集市，适合首日轻量步行。",
-        "suggestedHours": "2-3小时"
+        "suggestedHours": "2-3小时",
+        "city": "乌鲁木齐市",
+        "province": "新疆维吾尔自治区"
       }
     ],
     "accommodation": [
@@ -156,6 +172,11 @@ ${ROUTE_PLANNER_MIN_EXAMPLE}
 - foodRecommendation 每天1-3个
 - waypoints 是 JSON 对象数组，且数组元素必须是对象，包含 alias/name/city/province
 - waypoints 中每个对象的 name 与 city 必须非空
+- waypoints 务必保持在 1-16 个之间，过多会导致后续高德接口调用失败
+- activities.name 必须是可检索的标准地点名/景点名/场馆名，禁止写成“重庆中国三峡博物馆参观”“洪崖洞打卡”“解放碑步行”等带动作词的形式
+- activities 的行为描述应写入 description，例如：name 写“重庆中国三峡博物馆”，description 写“参观馆藏与常设展览”
+- activities 中每个对象必须包含 city、province；city 必须为市级（例如“成都市”），禁止使用县/区/旗
+- activities 中的 province 必须为省级行政区（例如“四川省”“新疆维吾尔自治区”）
 - accommodation 中每个对象必须包含 city、province；city 必须为市级（例如“成都市”），禁止使用县/区/旗
 - province 必须为省级行政区（例如“四川省”“新疆维吾尔自治区”）
 - day 从 1 开始递增

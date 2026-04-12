@@ -14,7 +14,7 @@ import { SystemMessage, HumanMessage } from "@langchain/core/messages"
 import { createDeepSeekReasoner } from "../lib/llm.js"
 import type { TravelStateAnnotation } from "../graph/state.js"
 import type { RouteSkeletonDay } from "../types/internal.js"
-import { ROUTE_PLANNER_SYSTEM_PROMPT } from "../prompts/route-planner.js"
+import { ROUTE_PLANNER_SYSTEM_PROMPT } from "../prompts/index.js"
 import { agentLog } from "../lib/logger.js"
 import { parseRouteWaypoints } from "../lib/waypoint.js"
 
@@ -61,13 +61,13 @@ function normalizeSkeletonWaypoints(
       parsed.length > 0
         ? parsed
         : [
-            {
-              alias: fallbackCity,
-              name: fallbackCity,
-              city: fallbackCity,
-              province: "",
-            },
-          ]
+          {
+            alias: fallbackCity,
+            name: fallbackCity,
+            city: fallbackCity,
+            province: "",
+          },
+        ]
 
     return {
       ...dayPlan,
@@ -86,8 +86,15 @@ export async function routerPlannerNode(
 ) {
   const intent = state.intent
 
-  agentLog("路线规划", "开始规划，意图信息", intent)
+  agentLog("路线规划", "开始生成路线骨架", {
+    destination: intent?.destination,
+    days: intent?.days,
+    travelType: intent?.travelType,
+  })
   if (!intent) {
+    agentLog("路线规划", "路线骨架生成失败", {
+      reason: "intent 为空",
+    })
     throw new Error("routerPlannerNode: intent is null, cannot plan route")
   }
 
@@ -105,8 +112,6 @@ export async function routerPlannerNode(
   const content = response.content as string
   let routeSkeleton: RouteSkeletonDay[] | null = null
 
-  agentLog("路线规划", "模型返回骨架原文", content)
-
   try {
     const jsonStr = content.replace(/```\w*\n?|\n?```/g, "").trim()
     const parsed = JSON.parse(jsonStr) as unknown
@@ -121,7 +126,11 @@ export async function routerPlannerNode(
      * - 不继续把坏骨架传给下游节点
      * - 累加 routePlannerRetryCount，交由 graph 条件边决定是否重试
      */
-    agentLog("路线规划", "骨架解析失败，等待 graph 决策重试")
+    agentLog("路线规划", "路线骨架生成失败", {
+      reason: "模型输出解析失败",
+      error: parseError instanceof Error ? parseError.message : String(parseError),
+      retryCount: state.routePlannerRetryCount + 1,
+    })
     console.error("RouterPlanner JSON parse failed:", parseError)
     console.error("Raw LLM output:", content)
 
@@ -131,6 +140,11 @@ export async function routerPlannerNode(
       messages: [response],
     }
   }
+
+  agentLog("路线规划", "路线骨架生成成功", {
+    dayCount: routeSkeleton.length,
+    retryCount: 0,
+  })
 
   // 成功产出有效骨架后，重置 route_planner 专用重试计数。
   return {

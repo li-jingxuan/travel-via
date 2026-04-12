@@ -13,7 +13,6 @@
 
 import { planDrivingByLocations } from "../lib/amap/index.js"
 import { agentLog } from "../lib/logger.js"
-import { parseRouteWaypoints } from "../lib/waypoint.js"
 import type { TravelStateAnnotation } from "../graph/state.js"
 import type { RouteSkeletonDay } from "../types/internal.js"
 
@@ -22,20 +21,37 @@ import type { RouteSkeletonDay } from "../types/internal.js"
  */
 async function attachDrivingMetrics(
   routeSkeleton: RouteSkeletonDay[],
-  destinationHint: string,
+  departurePoint?: string,
 ): Promise<RouteSkeletonDay[]> {
   const enriched: RouteSkeletonDay[] = []
 
   for (const dayPlan of routeSkeleton) {
-    const waypoints = parseRouteWaypoints(dayPlan.waypoints, destinationHint)
-    const waypointNames = waypoints.map((point) => point.name || point.alias)
-    const cityHint = waypoints[0]?.city || destinationHint
+    const { waypoints, day } = dayPlan
 
-    // 少于两个地点无法规划驾驶路线，保持原数据。
+    let waypointNames = waypoints
+      .map((point) => point.name || point.alias)
+      .filter((name): name is string => typeof name === "string" && name.trim().length > 0)
+
+    /**
+     * 第一天补充“出发地 -> 首个落地点”里程计算：
+     * - 仅在 departurePoint 非空时生效
+     * - 若首个落地点与出发地同名则不重复插入
+     */
+    const departure = departurePoint?.trim()
+    if (day === 1 && departure && waypointNames.length > 0) {
+      const firstArrival = waypointNames[0]
+      if (firstArrival && firstArrival.trim() !== departure) {
+        waypointNames = [departure, ...waypointNames]
+      }
+    }
+
+    // 仍不足两个地点则无法规划驾驶路线，保持原数据。
     if (waypointNames.length < 2) {
       enriched.push(dayPlan)
       continue
     }
+
+    const cityHint = waypoints[0]?.city?.trim()
 
     const metrics = await planDrivingByLocations(waypointNames, cityHint)
     if (!metrics) {
@@ -70,12 +86,24 @@ export async function drivingDistanceNode(
   const routeSkeleton = state.routeSkeleton
   const intent = state.intent
 
+  agentLog("驾驶里程增强", "开始进行驾驶里程增强", {
+    routeDays: routeSkeleton?.length ?? 0,
+    departurePoint: intent?.departurePoint ?? "",
+  })
+
   if (!routeSkeleton || !intent) {
     agentLog("驾驶里程增强", "缺少 routeSkeleton 或 intent，跳过增强")
     return {}
   }
 
-  const nextSkeleton = await attachDrivingMetrics(routeSkeleton, intent.destination)
+  const nextSkeleton = await attachDrivingMetrics(
+    routeSkeleton,
+    intent.departurePoint,
+  )
+
+  agentLog("驾驶里程增强", "驾驶里程增强完成", {
+    dayCount: nextSkeleton.length,
+  })
   return {
     routeSkeleton: nextSkeleton,
   }

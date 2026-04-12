@@ -16,6 +16,10 @@ export async function weatherEnricherNode(
   const skeleton = state.routeSkeleton
   const intent = state.intent
 
+  agentLog("天气增强", "开始进行天气增强", {
+    routeDays: skeleton?.length ?? 0,
+  })
+
   if (!skeleton || !intent) {
     agentLog("天气增强", "缺少 routeSkeleton 或 intent，跳过天气增强")
     return {}
@@ -59,7 +63,10 @@ export async function weatherEnricherNode(
     })
   }
 
-  agentLog("天气增强", "天气查询完成", `城市数=${weatherList.length}`)
+  agentLog("天气增强", "天气增强成功", {
+    cityCount: weatherList.length,
+    errorCount: errors.length,
+  })
 
   return {
     enrichedWeather: weatherList,

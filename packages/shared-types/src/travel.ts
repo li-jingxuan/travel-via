@@ -33,10 +33,17 @@ export interface IActivity {
   images: IActivityImage[]
 }
 
+export interface IWaypoint {
+  alias: string
+  name: string
+  city: string
+  province: string
+}
+
 export interface ITravel {
   day: number
   title: string
-  waypoints: string
+  waypoints: IWaypoint[]
   description: string
   accommodation: IAccommodation[]
   foodRecommendation: string[]

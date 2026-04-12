@@ -40,6 +40,7 @@
 import type { ITravelPlan } from "@repo/shared-types/travel"
 import { z } from "zod"
 import type { TravelStateAnnotation } from "../graph/state.js"
+import { agentLog } from "../lib/logger.js"
 
 // ==================== Zod Schema 定义 ====================
 // 与 @repo/shared-types/travel 中的接口保持一致
@@ -96,11 +97,20 @@ const weatherSchema = z
   })
   .strict()
 
+const waypointSchema = z
+  .object({
+    alias: z.string(),
+    name: z.string(),
+    city: z.string(),
+    province: z.string(),
+  })
+  .strict()
+
 const travelDaySchema = z
   .object({
     day: z.number(),
     title: z.string(),
-    waypoints: z.string(),
+    waypoints: z.array(waypointSchema),
     description: z.string(),
     accommodation: z.array(accommodationSchema),
     foodRecommendation: z.array(z.string()),
@@ -134,7 +144,12 @@ const travelPlanSchema = z
 function validateITravelPlan(plan: ITravelPlan): ValidationResult {
   const parseResult = travelPlanSchema.safeParse(plan)
 
+  agentLog("校验器", "开始校验最终行程", {
+    totalDays: plan.totalDays,
+    dayCount: plan.days.length,
+  })
   if (parseResult.success) {
+    agentLog("校验器", "最终行程校验成功")
     return { valid: true, errors: [] }
   }
 
@@ -143,6 +158,10 @@ function validateITravelPlan(plan: ITravelPlan): ValidationResult {
     return `字段校验失败 (${path}): ${issue.message}`
   })
 
+  agentLog("校验器", "最终行程校验失败", {
+    errorCount: errors.length,
+    errors,
+  })
   return { valid: false, errors }
 }
 
@@ -162,8 +181,17 @@ export async function validatorNode(
 ) {
   const plan = state.finalPlan
 
+  agentLog("校验器", "进入校验节点", {
+    hasFinalPlan: Boolean(plan),
+    retryCount: state.retryCount,
+  })
+
   // finalPlan 为 null 说明 Formatter 失败了，直接标记重试
   if (!plan) {
+    agentLog("校验器", "最终行程校验失败", {
+      reason: "finalPlan 为空",
+      nextRetryCount: state.retryCount + 1,
+    })
     return {
       retryCount: state.retryCount + 1,
       errors: [...(state.errors ?? []), "Validator: finalPlan is null"],

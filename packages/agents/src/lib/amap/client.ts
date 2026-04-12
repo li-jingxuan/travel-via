@@ -25,6 +25,10 @@ function sleep(ms: number) {
   })
 }
 
+function buildRequestMeta(path: string, params: Record<string, string>) {
+  return { path, params }
+}
+
 /**
  * 按接口 path 做滑动窗口限流（每个 path 独立 3 req/s）。
  *
@@ -103,7 +107,7 @@ export async function fetchAmap<T>(
 ): Promise<T | null> {
   const key = process.env.AMAP_KEY?.trim()
   if (!key) {
-    agentLog("高德", "未配置 AMAP_KEY，跳过高德请求")
+    agentLog("高德", "未配置 AMAP_KEY，跳过高德请求", buildRequestMeta(path, params))
     return null
   }
 
@@ -124,13 +128,19 @@ export async function fetchAmap<T>(
     })
 
     if (!response.ok) {
-      agentLog("高德", "HTTP 请求失败", path, response.status)
+      agentLog("高德", "HTTP 请求失败", {
+        ...buildRequestMeta(path, params),
+        status: response.status,
+      })
       return null
     }
 
     return (await response.json()) as T
   } catch (error) {
-    agentLog("高德", "请求异常", path, (error as Error).message)
+    agentLog("高德", "请求异常", {
+      ...buildRequestMeta(path, params),
+      error: (error as Error).message,
+    })
     return null
   } finally {
     clearTimeout(timeout)

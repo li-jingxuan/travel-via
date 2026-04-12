@@ -1,0 +1,206 @@
+[
+  {
+    "day": 1,
+    "title": "第1天 | 抵达重庆，城市适应",
+    "waypoints": [
+      {
+        "alias": "解放碑",
+        "name": "解放碑步行街",
+        "city": "重庆市",
+        "province": "重庆市"
+      },
+      {
+        "alias": "洪崖洞",
+        "name": "洪崖洞民俗风貌区",
+        "city": "重庆市",
+        "province": "重庆市"
+      }
+    ],
+    "description": "从长沙出发抵达重庆，办理入住后，在渝中区轻松游览，适应山城地形与炎热气候，晚间欣赏初夜景。",
+    "activities": [
+      {
+        "name": "解放碑步行街",
+        "description": "重庆地标商业区，感受城市繁华氛围与历史印记。",
+        "suggestedHours": "1-2小时",
+        "city": "重庆市",
+        "province": "重庆市"
+      },
+      {
+        "name": "洪崖洞",
+        "description": "依山而建的吊脚楼建筑群，夜晚灯光璀璨，适合拍照和漫步。",
+        "suggestedHours": "2-3小时",
+        "city": "重庆市",
+        "province": "重庆市"
+      }
+    ],
+    "accommodation": [
+      {
+        "name": "重庆解放碑威斯汀酒店",
+        "address": "渝中区新华路222号",
+        "feature": "位于解放碑核心区，交通便利，俯瞰两江夜景。",
+        "city": "重庆市",
+        "province": "重庆市"
+      }
+    ],
+    "foodRecommendation": ["重庆火锅", "重庆小面"],
+    "commentTips": "7月重庆炎热，注意防晒和补水；首日避免过度步行，适应楼梯和坡道；洪崖洞傍晚去最佳，避开中午高温。"
+  },
+  {
+    "day": 2,
+    "title": "第2天 | 沙坪坝文化之旅",
+    "waypoints": [
+      {
+        "alias": "磁器口",
+        "name": "磁器口古镇",
+        "city": "重庆市",
+        "province": "重庆市"
+      },
+      {
+        "alias": "歌乐山",
+        "name": "歌乐山烈士陵园",
+        "city": "重庆市",
+        "province": "重庆市"
+      }
+    ],
+    "description": "前往沙坪坝区，探索古镇风情和红色历史景点，体验重庆的文化底蕴。",
+    "activities": [
+      {
+        "name": "磁器口古镇",
+        "description": "历史悠久的古镇街区，遍布小吃、手工艺品店，感受老重庆氛围。",
+        "suggestedHours": "2-3小时",
+        "city": "重庆市",
+        "province": "重庆市"
+      },
+      {
+        "name": "歌乐山烈士陵园",
+        "description": "重要的革命纪念地，了解历史，环境肃穆。",
+        "suggestedHours": "1-2小时",
+        "city": "重庆市",
+        "province": "重庆市"
+      }
+    ],
+    "accommodation": [
+      {
+        "name": "重庆沙坪坝丽笙世嘉酒店",
+        "address": "沙坪坝区三峡广场附近",
+        "feature": "靠近磁器口和歌乐山，便于次日出行，设施现代。",
+        "city": "重庆市",
+        "province": "重庆市"
+      }
+    ],
+    "foodRecommendation": ["陈麻花", "毛血旺"],
+    "commentTips": "磁器口人流密集，注意保管财物；穿着舒适防滑鞋，古镇石板路易滑；歌乐山区需保持肃静。"
+  },
+  {
+    "day": 3,
+    "title": "第3天 | 南岸夜景与长江风光",
+    "waypoints": [
+      {
+        "alias": "长江索道",
+        "name": "长江索道",
+        "city": "重庆市",
+        "province": "重庆市"
+      },
+      {
+        "alias": "南山一棵树",
+        "name": "南山一棵树观景台",
+        "city": "重庆市",
+        "province": "重庆市"
+      }
+    ],
+    "description": "乘坐长江索道横跨江面，下午前往南岸区，登南山欣赏重庆全景和璀璨夜景。",
+    "activities": [
+      {
+        "name": "长江索道",
+        "description": "特色交通工具，从高空俯瞰长江和山城建筑，体验独特视角。",
+        "suggestedHours": "1-2小时",
+        "city": "重庆市",
+        "province": "重庆市"
+      },
+      {
+        "name": "南山一棵树观景台",
+        "description": "最佳观景点之一，傍晚可观赏重庆两江夜景，视野开阔。",
+        "suggestedHours": "2-3小时",
+        "city": "重庆市",
+        "province": "重庆市"
+      }
+    ],
+    "accommodation": [
+      {
+        "name": "重庆南岸万豪酒店",
+        "address": "南岸区南滨路附近",
+        "feature": "位于南滨路，方便欣赏江景和次日出行，环境优雅。",
+        "city": "重庆市",
+        "province": "重庆市"
+      }
+    ],
+    "foodRecommendation": ["南山泉水鸡", "串串香"],
+    "commentTips": "长江索道可能排队较长，建议非高峰时段乘坐；南山傍晚凉爽但蚊虫多，备驱蚊液；夜景拍摄需带相机。"
+  },
+  {
+    "day": 4,
+    "title": "第4天 | 武隆天生三桥自然奇观",
+    "waypoints": [
+      {
+        "alias": "天生三桥",
+        "name": "武隆天生三桥",
+        "city": "重庆市",
+        "province": "重庆市"
+      }
+    ],
+    "description": "长途前往武隆区，参观世界自然遗产天生三桥，感受喀斯特地貌的壮丽与神奇。",
+    "activities": [
+      {
+        "name": "武隆天生三桥",
+        "description": "天然形成的石桥群，曾是电影取景地，步行游览峡谷和瀑布。",
+        "suggestedHours": "3-4小时",
+        "city": "重庆市",
+        "province": "重庆市"
+      }
+    ],
+    "accommodation": [
+      {
+        "name": "重庆渝中区洲际酒店",
+        "address": "渝中区解放碑附近",
+        "feature": "返回市区住宿，交通便利，适合最后一天轻松活动。",
+        "city": "重庆市",
+        "province": "重庆市"
+      }
+    ],
+    "foodRecommendation": ["武隆羊肉", "豆花饭"],
+    "commentTips": "长途车程约2-3小时，建议早起出发；景区内步行较多，穿运动鞋并带足饮水；注意防晒和防雨。"
+  },
+  {
+    "day": 5,
+    "title": "第5天 | 轻松收尾与返程",
+    "waypoints": [
+      {
+        "alias": "动物园",
+        "name": "重庆动物园",
+        "city": "重庆市",
+        "province": "重庆市"
+      }
+    ],
+    "description": "最后一天安排轻松活动，参观动物园或购物，购买重庆特产，然后准备返程回长沙。",
+    "activities": [
+      {
+        "name": "重庆动物园",
+        "description": "园内有熊猫等动物，适合家庭游览，环境清幽。",
+        "suggestedHours": "2-3小时",
+        "city": "重庆市",
+        "province": "重庆市"
+      }
+    ],
+    "accommodation": [
+      {
+        "name": "重庆江北机场附近酒店",
+        "address": "江北区机场路附近",
+        "feature": "靠近机场或高铁站，便于赶早班返程交通，提供接送服务。",
+        "city": "重庆市",
+        "province": "重庆市"
+      }
+    ],
+    "foodRecommendation": ["抄手", "酸辣粉"],
+    "commentTips": "预留足够时间去机场/车站，建议提前3小时出发；购买特产如火锅底料，可在超市或专卖店；注意检查行李。"
+  }
+]

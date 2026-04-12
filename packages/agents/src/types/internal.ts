@@ -1,3 +1,5 @@
+import type { TravelType } from "./travel-type.js"
+
 /**
  * 内部类型定义 — Graph 中间数据结构
  *
@@ -27,8 +29,8 @@ export interface TravelIntent {
   days: number
   /** 出行月份/季节，如 "6月"、"夏季"、"国庆期间" */
   month: string
-  /** 出行方式，如 "自驾"、"跟团"、"自由行"、"徒步" */
-  travelType: string
+  /** 出行方式枚举，统一由 travel-type.ts 管理 */
+  travelType: TravelType
   /** 预算范围（可选） */
   budget?: string
   /** 同行人员（可选） */
@@ -37,11 +39,15 @@ export interface TravelIntent {
   preferences?: string[]
 }
 
-/** 骨架阶段的活动数据 — 只有名称和描述，不含 API 查询字段 */
+/** 骨架阶段的活动数据 — 包含基础描述与省市信息，不含 API 查询字段 */
 export interface RouteSkeletonActivity {
   name: string
   description: string
   suggestedHours: string
+  /** 市级行政区（如“成都市”“乌鲁木齐市”） */
+  city: string
+  /** 省级行政区（如“四川省”“新疆维吾尔自治区”） */
+  province: string
 }
 
 /** 骨架阶段的住宿数据 — 只有基本信息 */

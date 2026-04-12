@@ -44,7 +44,8 @@ import { SystemMessage, HumanMessage } from "@langchain/core/messages"
 import { createDeepSeekReasoner } from "../lib/llm.js"
 import type { TravelStateAnnotation } from "../graph/state.js"
 import type { ITravelPlan } from "@repo/shared-types/travel"
-import { FORMATTER_SYSTEM_PROMPT } from "../prompts/formatter.js"
+import { FORMATTER_SYSTEM_PROMPT } from "../prompts/index.js"
+import { agentLog } from "../lib/logger.js"
 
 /**
  * 格式化组装专用 LLM 实例
@@ -70,7 +71,17 @@ export async function formatterNode(
   const skeleton = state.routeSkeleton
   const intent = state.intent
 
+  agentLog("格式化", "开始组装最终行程", {
+    routeDays: skeleton?.length ?? 0,
+    enrichedActivityDays: state.enrichedActivities?.size ?? 0,
+    enrichedWeatherCount: state.enrichedWeather?.length ?? 0,
+    enrichedAccommodationDays: state.enrichedAccommodation?.size ?? 0,
+  })
+
   if (!skeleton || !intent) {
+    agentLog("格式化", "组装失败", {
+      reason: "缺少 routeSkeleton 或 intent",
+    })
     throw new Error(
       "formatterNode: routeSkeleton or intent is null, cannot format",
     )
@@ -108,6 +119,10 @@ export async function formatterNode(
     const jsonStr = content.replace(/```\w*\n?|\n?```/g, "").trim()
     finalPlan = JSON.parse(jsonStr)
   } catch (parseError) {
+    agentLog("格式化", "组装失败", {
+      reason: "LLM 输出 JSON 解析失败",
+      error: parseError instanceof Error ? parseError.message : String(parseError),
+    })
     // Formatter 的 JSON 解析失败是不可接受的
     // 抛出错误让外层处理（Graph 会继续运行但 finalPlan 为 null，
     // 然后 Validator 会检测到 null 并触发重试）
@@ -115,6 +130,12 @@ export async function formatterNode(
     console.error("Raw LLM output:", content)
     throw new Error(`Formatter failed to produce valid ITravelPlan: ${parseError}`)
   }
+
+  agentLog("格式化", "组装成功", {
+    planName: finalPlan.planName,
+    totalDays: finalPlan.totalDays,
+    dayCount: finalPlan.days.length,
+  })
 
   return {
     finalPlan,          // 写入最终计划 → State.finalPlan

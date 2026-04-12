@@ -147,9 +147,11 @@ export async function searchScenicPois(
     excludeTypeKeywords: ["酒店", "宾馆", "民宿"],
   }
 
+  const requestPath = "/v5/place/text"
+  const requestParams = buildPoiTextParams(city, keyword, limit, options)
   const data = await fetchAmap<AmapPlaceTextResponseV5>(
-    "/v5/place/text",
-    buildPoiTextParams(city, keyword, limit, options),
+    requestPath,
+    requestParams,
   )
   if (!data) return []
 
@@ -159,7 +161,11 @@ export async function searchScenicPois(
   ).slice(0, limit)
   if (candidates.length === 0) {
     // 保留日志，便于排查 city/keyword 参数问题。
-    agentLog("高德", "景点检索失败", city, keyword, data.info ?? "unknown")
+    agentLog("高德", "景点检索失败", {
+      path: requestPath,
+      params: requestParams,
+      info: data.info ?? "unknown",
+    })
   }
   return candidates
 }
@@ -182,9 +188,11 @@ export async function searchHotels(
   }
 
   const hotelKeyword = keyword.trim() ? `${keyword} 酒店` : `${city} 酒店`
+  const requestPath = "/v5/place/text"
+  const requestParams = buildPoiTextParams(city, hotelKeyword, limit, options)
   const data = await fetchAmap<AmapPlaceTextResponseV5>(
-    "/v5/place/text",
-    buildPoiTextParams(city, hotelKeyword, limit, options),
+    requestPath,
+    requestParams,
   )
   if (!data) return []
 
@@ -194,7 +202,11 @@ export async function searchHotels(
   ).slice(0, limit)
 
   if (candidates.length === 0) {
-    agentLog("高德", "酒店检索失败", city, hotelKeyword, data.info ?? "unknown")
+    agentLog("高德", "酒店检索失败", {
+      path: requestPath,
+      params: requestParams,
+      info: data.info ?? "unknown",
+    })
   }
 
   return candidates
