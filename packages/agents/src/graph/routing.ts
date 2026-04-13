@@ -1,4 +1,5 @@
 import { agentLog } from "../lib/index.js"
+import { ERROR_CODE, hasErrorCode } from "../constants/error-code.js"
 import { MAX_RETRIES, ROUTE_PLANNER_MAX_RETRIES } from "./constants.js"
 import type { TravelStateAnnotation } from "./state.js"
 
@@ -71,18 +72,15 @@ export function shouldRetryOrEnd(
 ): "retry" | "success" {
   if (!state.finalPlan) return "retry"
 
-  if (state.retryCount >= MAX_RETRIES) {
-    return "success"
-  }
+  const hasValidationError = state.errors.some((err) =>
+    hasErrorCode(err, ERROR_CODE.VALIDATION_ERROR),
+  )
 
-  if (state.errors.length > 0 && state.errors.length > state.retryCount) {
-    agentLog("validator", "发现新错误，进入重试", {
-      errors: state.errors,
+  if (hasValidationError && state.retryCount < MAX_RETRIES) {
+    agentLog("validator", "发现致命校验错误，进入重试", {
       retryCount: state.retryCount,
-      routeSkeleton: state.routeSkeleton,
-      finalPlan: state.finalPlan,
+      errorCount: state.errors.length,
     })
-    
     return "retry"
   }
 

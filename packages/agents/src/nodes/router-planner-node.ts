@@ -47,7 +47,7 @@ function isValidRouteSkeleton(value: unknown): value is RouteSkeletonDay[] {
 
 /**
  * 统一规范 waypoints：
- * - 优先保留模型给出的结构化 waypoint（alias/name/city/province）
+ * - 优先保留模型给出的结构化 waypoint（alias/address/city/province）
  * - 若模型返回旧格式 string[]，自动转为新结构
  * - 若完全不可用，兜底注入目的地，避免后续高德参数为空
  */
@@ -63,7 +63,7 @@ function normalizeSkeletonWaypoints(
         : [
           {
             alias: fallbackCity,
-            name: fallbackCity,
+            address: fallbackCity,
             city: fallbackCity,
             province: "",
           },

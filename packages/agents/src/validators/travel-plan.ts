@@ -40,6 +40,7 @@
 import type { ITravelPlan } from "@repo/shared-types/travel"
 import { z } from "zod"
 import type { TravelStateAnnotation } from "../graph/state.js"
+import { ERROR_CODE, formatError } from "../constants/error-code.js"
 import { agentLog } from "../lib/logger.js"
 
 // ==================== Zod Schema 定义 ====================
@@ -100,7 +101,7 @@ const weatherSchema = z
 const waypointSchema = z
   .object({
     alias: z.string(),
-    name: z.string(),
+    address: z.string(),
     city: z.string(),
     province: z.string(),
   })
@@ -155,7 +156,10 @@ function validateITravelPlan(plan: ITravelPlan): ValidationResult {
 
   const errors = parseResult.error.issues.map((issue) => {
     const path = issue.path.length > 0 ? issue.path.join(".") : "root"
-    return `字段校验失败 (${path}): ${issue.message}`
+    return formatError(
+      ERROR_CODE.VALIDATION_ERROR,
+      `字段校验失败 (${path}): ${issue.message}`,
+    )
   })
 
   agentLog("校验器", "最终行程校验失败", {
@@ -194,7 +198,7 @@ export async function validatorNode(
     })
     return {
       retryCount: state.retryCount + 1,
-      errors: [...(state.errors ?? []), "Validator: finalPlan is null"],
+      errors: [formatError(ERROR_CODE.VALIDATION_ERROR, "finalPlan is null")],
     }
   }
 
@@ -211,6 +215,6 @@ export async function validatorNode(
   // shouldRetryOrEnd 会根据 retryCount 决定是否继续重试
   return {
     retryCount: state.retryCount + 1,
-    errors: [...(state.errors ?? []), ...result.errors],
+    errors: result.errors,
   }
 }

@@ -25,12 +25,13 @@ export function parseRouteWaypoints(
       if (item && typeof item === "object") {
         const record = item as Record<string, unknown>
         const alias = clean(record.alias)
-        const name = clean(record.name) || alias
-        if (!name) continue
+        const address = clean(record.address)
+        
+        if (!address) continue
 
         result.push({
-          alias: alias || name,
-          name,
+          alias: alias || address,
+          address,
           city: clean(record.city) || fallbackCity,
           province: clean(record.province),
         })
@@ -49,7 +50,7 @@ export function stringifyRouteWaypoints(waypoints: RouteWaypoint[]): string {
   return JSON.stringify(
     waypoints.map((item) => ({
       alias: item.alias.trim(),
-      name: item.name.trim(),
+      address: item.address.trim(),
       city: item.city.trim(),
       province: item.province.trim(),
     })),

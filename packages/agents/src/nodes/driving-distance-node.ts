@@ -28,9 +28,9 @@ async function attachDrivingMetrics(
   for (const dayPlan of routeSkeleton) {
     const { waypoints, day } = dayPlan
 
-    let waypointNames = waypoints
-      .map((point) => point.name || point.alias)
-      .filter((name): name is string => typeof name === "string" && name.trim().length > 0)
+    let waypointAddresses = waypoints
+      .map((point) => point.address)
+      .filter((addr): addr is string => typeof addr === "string" && addr.trim().length > 0)
 
     /**
      * 第一天补充“出发地 -> 首个落地点”里程计算：
@@ -38,22 +38,22 @@ async function attachDrivingMetrics(
      * - 若首个落地点与出发地同名则不重复插入
      */
     const departure = departurePoint?.trim()
-    if (day === 1 && departure && waypointNames.length > 0) {
-      const firstArrival = waypointNames[0]
+    if (day === 1 && departure && waypointAddresses.length > 0) {
+      const firstArrival = waypointAddresses[0]
       if (firstArrival && firstArrival.trim() !== departure) {
-        waypointNames = [departure, ...waypointNames]
+        waypointAddresses = [departure, ...waypointAddresses]
       }
     }
 
     // 仍不足两个地点则无法规划驾驶路线，保持原数据。
-    if (waypointNames.length < 2) {
+    if (waypointAddresses.length < 2) {
       enriched.push(dayPlan)
       continue
     }
 
     const cityHint = waypoints[0]?.city?.trim()
 
-    const metrics = await planDrivingByLocations(waypointNames, cityHint)
+    const metrics = await planDrivingByLocations(waypointAddresses, cityHint)
     if (!metrics) {
       agentLog("驾驶里程增强", `第${dayPlan.day}天高德查询失败，保留原始骨架`)
       enriched.push(dayPlan)

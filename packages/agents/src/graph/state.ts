@@ -211,9 +211,20 @@ export const TravelStateAnnotation = Annotation.Root({
    * 错误日志累积 — 所有 Agent/Validator 都可能写入
    *
    * 使用追加型 reducer，每次有新错误时追加到数组末尾。
-   * 最终可以随 finalPlan 一起返回给前端展示调试信息。
+   * 语义：致命错误（会影响流程重试/终止决策）。
    */
   errors: Annotation<string[]>({
+    reducer: (current, update) => [...(current ?? []), ...(update ?? [])],
+    default: () => [],
+  }),
+
+  /**
+   * 告警日志累积 — Enricher 降级场景写入
+   *
+   * 语义：非致命错误（例如外部 API 失败但已使用默认数据兜底）。
+   * 该字段仅用于观测与提示，不参与 shouldRetryOrEnd 重试判定。
+   */
+  warnings: Annotation<string[]>({
     reducer: (current, update) => [...(current ?? []), ...(update ?? [])],
     default: () => [],
   }),

@@ -37,15 +37,19 @@ function buildPoiTextParams(
   limit: number,
   options: SearchPoiOptions,
 ): Record<string, string> {
-  return {
+  const params: Record<string, string> = {
     keywords: normalizeKeyword(keyword),
-    region: city,
     page_size: String(limit),
     page_num: "1",
     show_fields: "business,photos",
     ...(options.types ? { types: options.types } : {}),
     ...(options.cityLimit ? { city_limit: "true" } : {}),
   }
+  if(city) {
+    params.region = city
+  }
+
+  return params
 }
 
 /**
@@ -187,7 +191,7 @@ export async function searchHotels(
     includeTypeKeywords: ["酒店", "宾馆", "民宿"],
   }
 
-  const hotelKeyword = keyword.trim() ? `${keyword} 酒店` : `${city} 酒店`
+  const hotelKeyword = keyword.trim() ? `${keyword}` : `${city}`
   const requestPath = "/v5/place/text"
   const requestParams = buildPoiTextParams(city, hotelKeyword, limit, options)
   const data = await fetchAmap<AmapPlaceTextResponseV5>(

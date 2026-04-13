@@ -2,6 +2,7 @@ import type { IActivity } from "@repo/shared-types/travel"
 import type { TravelStateAnnotation } from "../graph/state.js"
 import type { RouteSkeletonActivity } from "../types/index.js"
 import { searchScenicPois } from "../lib/amap/index.js"
+import { ERROR_CODE, formatError } from "../constants/error-code.js"
 import { agentLog } from "../lib/logger.js"
 
 // LLM 偶尔会把“参观/游览/打卡”等动作词拼到地点名后面。
@@ -78,6 +79,7 @@ export async function poiEnricherNode(
   }
 
   const activityMap = new Map<number, IActivity[]>()
+  const warnings: string[] = []
   const errors: string[] = []
 
   for (const dayPlan of skeleton) {
@@ -87,20 +89,29 @@ export async function poiEnricherNode(
 
     for (const activity of activities) {
       const { city, name } = activity
-      const cityHint = city?.trim()
+      // 没有城市信息依旧进行检索
+      const cityHint = city?.trim() || ''
       const keyword = normalizeActivityPoiName(name)
 
-      if (!cityHint || !keyword) {
-        errors.push(`POI_ENRICH: 缺少 city 或 name - day${day} ${name || "unknown"}`)
-        dayActivities.push(buildFallbackActivity(activity))
+      if(!keyword) {
+        errors.push(
+          formatError(ERROR_CODE.POI_ENRICH, `缺少 name - day${day} ${name || "unknown"}`),
+        )
         continue
+      }
+      if (!cityHint) {
+        warnings.push(
+          formatError(ERROR_CODE.POI_ENRICH, `缺少 city - day${day} ${name || "unknown"}`),
+        )
       }
 
       const candidates = await searchScenicPois(cityHint, keyword, 3)
       const best = candidates[0]
 
       if (!best) {
-        errors.push(`POI_ENRICH: 未找到景点候选 - day${day} ${cityHint} ${keyword}`)
+        warnings.push(
+          formatError(ERROR_CODE.POI_ENRICH, `未找到景点候选 - day${day} ${cityHint} ${keyword}`),
+        )
         dayActivities.push(buildFallbackActivity(activity))
         continue
       }
@@ -114,11 +125,13 @@ export async function poiEnricherNode(
 
   agentLog("景点增强", "景点增强完成", {
     dayCount: activityMap.size,
+    warningCount: warnings.length,
     errorCount: errors.length,
   })
 
   return {
     enrichedActivities: activityMap,
+    ...(warnings.length > 0 ? { warnings } : {}),
     ...(errors.length > 0 ? { errors } : {}),
   }
 }

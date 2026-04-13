@@ -35,7 +35,8 @@ export interface IActivity {
 
 export interface IWaypoint {
   alias: string
-  name: string
+  /** 供高德 geocode /v3/geocode/geo 的 address 参数使用 */
+  address: string
   city: string
   province: string
 }

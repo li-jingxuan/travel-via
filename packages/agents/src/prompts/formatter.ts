@@ -100,10 +100,10 @@ export const FORMATTER_OUTPUT_SCHEMA = {
             items: {
               type: "object",
               additionalProperties: false,
-              required: ["alias", "name", "city", "province"],
+              required: ["alias", "address", "city", "province"],
               properties: {
                 alias: { type: "string" },
-                name: { type: "string" },
+                address: { type: "string", description: "可直接用于高德 geocode 的 address 参数" },
                 city: { type: "string" },
                 province: { type: "string" },
               },

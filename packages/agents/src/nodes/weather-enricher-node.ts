@@ -1,6 +1,7 @@
 import type { IWeather } from "@repo/shared-types/travel"
 import type { TravelStateAnnotation } from "../graph/state.js"
 import { getWeatherSnapshot } from "../lib/amap/index.js"
+import { ERROR_CODE, formatError } from "../constants/error-code.js"
 import { agentLog } from "../lib/logger.js"
 import { parseRouteWaypoints } from "../lib/waypoint.js"
 
@@ -38,12 +39,12 @@ export async function weatherEnricherNode(
   }
 
   const weatherList: IWeather[] = []
-  const errors: string[] = []
+  const warnings: string[] = []
 
   for (const city of cityCandidates) {
     const snapshot = await getWeatherSnapshot(city)
     if (!snapshot) {
-      errors.push(`WEATHER_ENRICH: 天气查询失败 - ${city}`)
+      warnings.push(formatError(ERROR_CODE.WEATHER_ENRICH, `天气查询失败 - ${city}`))
       continue
     }
 
@@ -65,11 +66,11 @@ export async function weatherEnricherNode(
 
   agentLog("天气增强", "天气增强成功", {
     cityCount: weatherList.length,
-    errorCount: errors.length,
+    warningCount: warnings.length,
   })
 
   return {
     enrichedWeather: weatherList,
-    ...(errors.length > 0 ? { errors } : {}),
+    ...(warnings.length > 0 ? { warnings } : {}),
   }
 }

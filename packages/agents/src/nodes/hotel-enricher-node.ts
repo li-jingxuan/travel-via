@@ -1,6 +1,7 @@
 import type { IAccommodation } from "@repo/shared-types/travel"
 import type { TravelStateAnnotation } from "../graph/state.js"
 import { searchHotels } from "../lib/amap/index.js"
+import { ERROR_CODE, formatError } from "../constants/error-code.js"
 import { agentLog } from "../lib/logger.js"
 
 const normalizeText = (value: unknown) => typeof value === "string" ? value.trim() : ""
@@ -55,6 +56,7 @@ export async function hotelEnricherNode(
   }
 
   const hotelMap = new Map<number, IAccommodation[]>()
+  const warnings: string[] = []
   const errors: string[] = []
 
   for (const dayPlan of skeleton) {
@@ -67,19 +69,34 @@ export async function hotelEnricherNode(
         || extractCityFromAddress(seed.address)
       const seedHotelName = normalizeText(seed.name) || "住宿推荐无"
 
-      // cityHint 缺失时不再回退到 intent.destination，直接返回默认数据。
-      if (!cityHint) {
+      if(!seedHotelName) {
         errors.push(
-          `HOTEL_ENRICH: cityHint 缺失，使用默认数据 - day${dayPlan.day} ${seedHotelName}`,
+          formatError(
+            ERROR_CODE.HOTEL_ENRICH,
+            `缺少 name - day${dayPlan.day} ${seedHotelName || "unknown"}`,
+          ),
         )
         hotels.push(buildDefaultAccommodation(seed))
         continue
       }
 
+      // cityHint 缺失时不再回退到 intent.destination，直接返回默认数据。
+      if (!cityHint) {
+        warnings.push(
+          formatError(
+            ERROR_CODE.HOTEL_ENRICH,
+            `cityHint 缺失，使用默认数据 - day${dayPlan.day} ${seedHotelName}`,
+          ),
+        )
+      }
+
       const candidates = await searchHotels(cityHint, seedHotelName, 3)
       if (candidates.length === 0 || !candidates[0]) {
-        errors.push(
-          `HOTEL_ENRICH: 酒店检索无结果，使用默认数据 - day${dayPlan.day} ${seedHotelName}`,
+        warnings.push(
+          formatError(
+            ERROR_CODE.HOTEL_ENRICH,
+            `酒店检索无结果，使用默认数据 - day${dayPlan.day} ${seedHotelName}`,
+          ),
         )
         hotels.push(buildDefaultAccommodation(seed))
         continue
@@ -103,11 +120,11 @@ export async function hotelEnricherNode(
 
   agentLog("住宿增强", "住宿增强完成", {
     dayCount: hotelMap.size,
-    errorCount: errors.length,
+    warningCount: warnings.length,
   })
 
   return {
     enrichedAccommodation: hotelMap,
-    ...(errors.length > 0 ? { errors } : {}),
+    ...(warnings.length > 0 ? { warnings } : {}),
   }
 }

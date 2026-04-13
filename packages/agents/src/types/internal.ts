@@ -1,4 +1,4 @@
-import type { TravelType } from "./travel-type.js"
+import type { TravelType } from "../constants/travel-type.js"
 
 /**
  * 内部类型定义 — Graph 中间数据结构
@@ -29,7 +29,7 @@ export interface TravelIntent {
   days: number
   /** 出行月份/季节，如 "6月"、"夏季"、"国庆期间" */
   month: string
-  /** 出行方式枚举，统一由 travel-type.ts 管理 */
+  /** 出行方式枚举，统一由 constants/travel-type.ts 管理 */
   travelType: TravelType
   /** 预算范围（可选） */
   budget?: string
@@ -64,12 +64,12 @@ export interface RouteSkeletonAccommodation {
 /**
  * waypoint 结构化信息：
  * - alias: 简称（口语化）
- * - name: 标准地点名（用于检索）
+ * - address: 可直接用于高德 geocode 的地址字符串
  * - city/province: 行政区信息（用于高德 city 参数稳定化）
  */
 export interface RouteWaypoint {
   alias: string
-  name: string
+  address: string
   city: string
   province: string
 }

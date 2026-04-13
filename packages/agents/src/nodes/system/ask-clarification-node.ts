@@ -1,4 +1,5 @@
 import { agentLog } from "../../lib/logger.js"
+import { ERROR_CODE, formatError } from "../../constants/error-code.js"
 import type { TravelStateAnnotation } from "../../graph/state.js"
 import { getMissingRequiredFields } from "../../graph/routing.js"
 
@@ -31,7 +32,10 @@ export async function askClarificationNode(
   })
   return {
     errors: [
-      `NEED_USER_INPUT: 缺少必要信息：${readable}。请补充后重新提交。`,
+      formatError(
+        ERROR_CODE.NEED_USER_INPUT,
+        `缺少必要信息：${readable}。请补充后重新提交。`,
+      ),
     ],
   }
 }
