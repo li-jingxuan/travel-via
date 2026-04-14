@@ -1,7 +1,7 @@
 import type { IAccommodation } from "@repo/shared-types/travel"
 import type { TravelStateAnnotation } from "../graph/state.js"
 import { searchHotels } from "../lib/amap/index.js"
-import { ERROR_CODE, formatError } from "../constants/error-code.js"
+import { ERROR_CODE, createIssue, type IssueItem } from "../constants/error-code.js"
 import { agentLog } from "../lib/logger.js"
 
 const normalizeText = (value: unknown) => typeof value === "string" ? value.trim() : ""
@@ -56,8 +56,7 @@ export async function hotelEnricherNode(
   }
 
   const hotelMap = new Map<number, IAccommodation[]>()
-  const warnings: string[] = []
-  const errors: string[] = []
+  const issues: IssueItem[] = []
 
   for (const dayPlan of skeleton) {
     const dayIndex = Math.max(dayPlan.day - 1, 0)
@@ -70,8 +69,8 @@ export async function hotelEnricherNode(
       const seedHotelName = normalizeText(seed.name) || "住宿推荐无"
 
       if(!seedHotelName) {
-        errors.push(
-          formatError(
+        issues.push(
+          createIssue(
             ERROR_CODE.HOTEL_ENRICH,
             `缺少 name - day${dayPlan.day} ${seedHotelName || "unknown"}`,
           ),
@@ -82,8 +81,8 @@ export async function hotelEnricherNode(
 
       // cityHint 缺失时不再回退到 intent.destination，直接返回默认数据。
       if (!cityHint) {
-        warnings.push(
-          formatError(
+        issues.push(
+          createIssue(
             ERROR_CODE.HOTEL_ENRICH,
             `cityHint 缺失，使用默认数据 - day${dayPlan.day} ${seedHotelName}`,
           ),
@@ -92,8 +91,8 @@ export async function hotelEnricherNode(
 
       const candidates = await searchHotels(cityHint, seedHotelName, 3)
       if (candidates.length === 0 || !candidates[0]) {
-        warnings.push(
-          formatError(
+        issues.push(
+          createIssue(
             ERROR_CODE.HOTEL_ENRICH,
             `酒店检索无结果，使用默认数据 - day${dayPlan.day} ${seedHotelName}`,
           ),
@@ -120,11 +119,11 @@ export async function hotelEnricherNode(
 
   agentLog("住宿增强", "住宿增强完成", {
     dayCount: hotelMap.size,
-    warningCount: warnings.length,
+    issueCount: issues.length,
   })
 
   return {
     enrichedAccommodation: hotelMap,
-    ...(warnings.length > 0 ? { warnings } : {}),
+    ...(issues.length > 0 ? { issues } : {}),
   }
 }

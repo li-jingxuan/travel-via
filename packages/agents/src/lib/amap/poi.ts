@@ -94,28 +94,11 @@ function filterAndSortCandidates(
   candidates: AmapPoiCandidate[],
   options: SearchPoiOptions,
 ): AmapPoiCandidate[] {
-  const includeKeywords = options.includeTypeKeywords ?? []
-  const excludeKeywords = options.excludeTypeKeywords ?? []
-
   const filtered = candidates.filter((item) => {
     if (options.minRating !== undefined && options.minRating !== null) {
       if ((item.rating ?? 0) < options.minRating) return false
     }
 
-    const typeText = item.type ?? ""
-    if (
-      includeKeywords.length > 0 &&
-      !includeKeywords.some((keyword) => typeText.includes(keyword))
-    ) {
-      return false
-    }
-
-    if (
-      excludeKeywords.length > 0 &&
-      excludeKeywords.some((keyword) => typeText.includes(keyword))
-    ) {
-      return false
-    }
     return true
   })
 
@@ -146,9 +129,7 @@ export async function searchScenicPois(
   const options: SearchPoiOptions = {
     types: "110000",
     cityLimit: true,
-    minRating: 3,
-    // 景点检索排除明显住宿业态，减少噪音结果。
-    excludeTypeKeywords: ["酒店", "宾馆", "民宿"],
+    minRating: 3
   }
 
   const requestPath = "/v5/place/text"
@@ -187,8 +168,7 @@ export async function searchHotels(
     // 酒店大类：100000
     types: "100000",
     cityLimit: true,
-    minRating: 3,
-    includeTypeKeywords: ["酒店", "宾馆", "民宿"],
+    minRating: 3
   }
 
   const hotelKeyword = keyword.trim() ? `${keyword}` : `${city}`
@@ -206,6 +186,7 @@ export async function searchHotels(
   ).slice(0, limit)
 
   if (candidates.length === 0) {
+    agentLog("高德", "酒店检索失败, 源数据", data)
     agentLog("高德", "酒店检索失败", {
       path: requestPath,
       params: requestParams,

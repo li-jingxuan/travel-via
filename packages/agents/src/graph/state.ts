@@ -26,7 +26,7 @@
  *     适用场景：finalPlan、retryCount 每次都取最新值
  *
  * 3. (current, update) => [...current, ...update]  → 追加合并
- *     适用场景：errors 数组累积错误消息
+ *     适用场景：issues 数组累积问题项
  *
  * 4. addMessages（内置）         → 消息列表追加
  *     适用场景：messages 字段，自动去重/追加
@@ -63,6 +63,7 @@ import type {
   TravelIntent,
   RouteSkeletonDay,
 } from "../types/internal.js"
+import type { IssueItem } from "../constants/error-code.js"
 
 export const TravelStateAnnotation = Annotation.Root({
   // ==================== 输入层 ====================
@@ -208,23 +209,13 @@ export const TravelStateAnnotation = Annotation.Root({
   }),
 
   /**
-   * 错误日志累积 — 所有 Agent/Validator 都可能写入
+   * 问题日志累积 — 所有 Node 都可写入
    *
-   * 使用追加型 reducer，每次有新错误时追加到数组末尾。
-   * 语义：致命错误（会影响流程重试/终止决策）。
+   * 统一承载原 errors/warnings：
+   * - code 使用 ERROR_CODE 常量管理
+   * - 重试与否由 routing.ts 的 RETRYABLE_ISSUE_CODES 决定
    */
-  errors: Annotation<string[]>({
-    reducer: (current, update) => [...(current ?? []), ...(update ?? [])],
-    default: () => [],
-  }),
-
-  /**
-   * 告警日志累积 — Enricher 降级场景写入
-   *
-   * 语义：非致命错误（例如外部 API 失败但已使用默认数据兜底）。
-   * 该字段仅用于观测与提示，不参与 shouldRetryOrEnd 重试判定。
-   */
-  warnings: Annotation<string[]>({
+  issues: Annotation<IssueItem[]>({
     reducer: (current, update) => [...(current ?? []), ...(update ?? [])],
     default: () => [],
   }),

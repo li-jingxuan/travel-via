@@ -1,5 +1,5 @@
 import { agentLog } from "../../lib/logger.js"
-import { ERROR_CODE, formatError } from "../../constants/error-code.js"
+import { ERROR_CODE, createIssue } from "../../constants/error-code.js"
 import type { TravelStateAnnotation } from "../../graph/state.js"
 import { getMissingRequiredFields } from "../../graph/routing.js"
 
@@ -8,7 +8,7 @@ import { getMissingRequiredFields } from "../../graph/routing.js"
  *
  * 行为：
  * - 生成用户可读的补充提示
- * - 写入 errors，交由 CLI/API 做结构化展示
+ * - 写入 issues，交由 CLI/API 做结构化展示
  */
 export async function askClarificationNode(
   state: typeof TravelStateAnnotation.State,
@@ -31,8 +31,8 @@ export async function askClarificationNode(
     missing,
   })
   return {
-    errors: [
-      formatError(
+    issues: [
+      createIssue(
         ERROR_CODE.NEED_USER_INPUT,
         `缺少必要信息：${readable}。请补充后重新提交。`,
       ),

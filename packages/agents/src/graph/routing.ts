@@ -1,5 +1,5 @@
 import { agentLog } from "../lib/index.js"
-import { ERROR_CODE, hasErrorCode } from "../constants/error-code.js"
+import { ERROR_CODE, RETRYABLE_ISSUE_CODES } from "../constants/error-code.js"
 import { MAX_RETRIES, ROUTE_PLANNER_MAX_RETRIES } from "./constants.js"
 import type { TravelStateAnnotation } from "./state.js"
 
@@ -70,19 +70,25 @@ export function routeAfterRoutePlanner(
 export function shouldRetryOrEnd(
   state: typeof TravelStateAnnotation.State,
 ): "retry" | "success" {
+  // 达到上限后不再重试，直接结束（降级返回）。
+  if (state.retryCount >= MAX_RETRIES) return "success"
+
+  // 兜底：finalPlan 为空时（例如 formatter 失败）继续重试。
   if (!state.finalPlan) return "retry"
 
-  const hasValidationError = state.errors.some((err) =>
-    hasErrorCode(err, ERROR_CODE.VALIDATION_ERROR),
-  )
+  // finalPlan 存在时，再按可重试错误码做一层保护判断。
+  // const hasRetryableIssue = state.issues.some((issue) =>
+  //   RETRYABLE_ISSUE_CODES.includes(issue.code),
+  // )
 
-  if (hasValidationError && state.retryCount < MAX_RETRIES) {
-    agentLog("validator", "发现致命校验错误，进入重试", {
-      retryCount: state.retryCount,
-      errorCount: state.errors.length,
-    })
-    return "retry"
-  }
+  // if (hasRetryableIssue) {
+  //   agentLog("validator", "发现可重试问题，进入重试", {
+  //     retryCount: state.retryCount,
+  //     issueCount: state.issues.length,
+  //     retryableCode: ERROR_CODE.VALIDATION_ERROR,
+  //   })
+  //   return "retry"
+  // }
 
   return "success"
 }

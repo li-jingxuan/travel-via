@@ -11,6 +11,7 @@
  */
 
 import { SystemMessage, HumanMessage } from "@langchain/core/messages"
+import { z } from "zod"
 import { createDeepSeekReasoner } from "../lib/llm.js"
 import type { TravelStateAnnotation } from "../graph/state.js"
 import type { RouteSkeletonDay } from "../types/internal.js"
@@ -21,28 +22,81 @@ import { parseRouteWaypoints } from "../lib/waypoint.js"
 /** 行程规划专用 LLM 实例 */
 const llm = createDeepSeekReasoner({ temperature: 0.7 })
 
-/**
- * 骨架最小有效性校验：
- * - 必须是非空数组
- * - 每天至少包含 day(数字) 和 title(非空字符串)
- *
- * 说明：
- * 这里做“轻校验”，目的是尽早拦截明显坏数据，
- * 更严格的最终结构校验仍由 validator 节点负责。
- */
-function isValidRouteSkeleton(value: unknown): value is RouteSkeletonDay[] {
-  if (!Array.isArray(value) || value.length === 0) return false
+const routeWaypointSchema = z.object({
+  alias: z.string().trim().min(1),
+  address: z.string().trim().min(1),
+  city: z.string().trim().min(1),
+  province: z.string().trim().min(1),
+})
 
-  return value.every((day) => {
-    if (!day || typeof day !== "object") return false
-    const item = day as Partial<RouteSkeletonDay>
-    return (
-      typeof item.day === "number" &&
-      Number.isFinite(item.day) &&
-      typeof item.title === "string" &&
-      item.title.trim().length > 0
-    )
-  })
+const routeSkeletonActivitySchema = z.object({
+  name: z.string().trim().min(1),
+  description: z.string().trim().min(1),
+  suggestedHours: z.string().trim().min(1),
+  city: z.string().trim().min(1),
+  province: z.string().trim().min(1),
+})
+
+const routeSkeletonAccommodationSchema = z.object({
+  name: z.string().trim().min(1),
+  address: z.string().trim().min(1),
+  feature: z.string().trim().min(1),
+  city: z.string().trim().min(1),
+  province: z.string().trim().min(1),
+})
+
+const routeSkeletonDaySchema = z.object({
+  day: z.number().int().positive(),
+  title: z.string().trim().min(1),
+  waypoints: z.array(routeWaypointSchema).min(1).max(16),
+  description: z.string().trim().min(1),
+  activities: z.array(routeSkeletonActivitySchema).min(1).max(5),
+  accommodation: z.array(routeSkeletonAccommodationSchema).min(1).max(3),
+  foodRecommendation: z.array(z.string().trim().min(1)).min(1).max(3),
+  commentTips: z.string().trim().min(1).optional(),
+  distance: z.number().finite().nonnegative().optional(),
+  drivingHours: z.number().finite().nonnegative().optional(),
+})
+
+const routeSkeletonSchema = z.array(routeSkeletonDaySchema).nonempty()
+
+function validateRouteSkeleton(
+  value: unknown,
+  expectedDays: number,
+): { success: true; data: RouteSkeletonDay[] } | { success: false; message: string } {
+  const result = routeSkeletonSchema.safeParse(value)
+  if (!result.success) {
+    const issueText = result.error.issues
+      .slice(0, 3)
+      .map((issue) => {
+        const path = issue.path.length > 0 ? issue.path.join(".") : "root"
+        return `${path}: ${issue.message}`
+      })
+      .join("; ")
+
+    return {
+      success: false,
+      message: `routeSkeleton schema 校验失败: ${issueText || "unknown"}`,
+    }
+  }
+
+  const skeleton = result.data
+  if (skeleton.length !== expectedDays) {
+    return {
+      success: false,
+      message: `routeSkeleton 天数不匹配: expected=${expectedDays}, actual=${skeleton.length}`,
+    }
+  }
+
+  const hasSequentialDays = skeleton.every((item, idx) => item.day === idx + 1)
+  if (!hasSequentialDays) {
+    return {
+      success: false,
+      message: "routeSkeleton.day 必须从 1 开始递增且连续",
+    }
+  }
+
+  return { success: true, data: skeleton }
 }
 
 /**
@@ -116,10 +170,11 @@ export async function routerPlannerNode(
     const jsonStr = content.replace(/```\w*\n?|\n?```/g, "").trim()
     const parsed = JSON.parse(jsonStr) as unknown
 
-    if (!isValidRouteSkeleton(parsed)) {
-      throw new Error("routeSkeleton is invalid or empty")
+    const validated = validateRouteSkeleton(parsed, intent.days)
+    if (!validated.success) {
+      throw new Error(validated.message)
     }
-    routeSkeleton = normalizeSkeletonWaypoints(parsed, intent.destination)
+    routeSkeleton = normalizeSkeletonWaypoints(validated.data, intent.destination)
   } catch (parseError) {
     /**
      * 解析失败策略：

@@ -1,0 +1,333 @@
+{
+    "finalPlan": {
+        "planName": "长沙到重庆5天7月自由行",
+        "totalDays": 5,
+        "totalDistance": 839.5,
+        "vehicleType": "高铁/自驾/市内公共交通",
+        "vehicleAdvice": "重庆道路复杂，多山坡和单行道，自驾需提前熟悉路线或使用导航；市内建议乘坐轨道交通（轻轨）或出租车/网约车出行，便捷且能体验山城特色；7月天气炎热，注意车辆防晒和空调使用，及时补充水分。",
+        "bestSeason": "春秋季（3-5月，9-11月）",
+        "essentialItems": [
+            "防晒霜、太阳帽、墨镜",
+            "轻便、透气的衣物（短袖、速干衣）",
+            "舒适的运动鞋或徒步鞋",
+            "雨伞或雨衣（7月可能有阵雨）",
+            "充电宝、相机",
+            "常用药品（如肠胃药、防中暑药）",
+            "身份证件"
+        ],
+        "weather": [
+            {
+                "area": "重庆市",
+                "daytime": {
+                    "tempMax": 35,
+                    "tempMin": 28,
+                    "weather": "晴间多云，偶有雷阵雨"
+                },
+                "nighttime": {
+                    "tempMax": 32,
+                    "tempMin": 25,
+                    "weather": "多云，局部阵雨"
+                },
+                "clothing": "建议穿着短袖、短裤、裙子等轻薄透气的棉麻面料衣物，外出时务必做好防晒措施。"
+            }
+        ],
+        "days": [
+            {
+                "day": 1,
+                "title": "第1天 | 抵达重庆，城市适应",
+                "waypoints": [
+                    {
+                        "alias": "解放碑",
+                        "address": "渝中区解放碑步行街",
+                        "city": "重庆市",
+                        "province": "重庆市"
+                    }
+                ],
+                "description": "从长沙出发，抵达重庆后办理入住，下午在市中心轻松游览解放碑，适应城市环境和炎热气候。",
+                "accommodation": [
+                    {
+                        "name": "重庆解放碑威斯汀酒店",
+                        "address": "新华路222号(小什字地铁站5A口步行190米)",
+                        "feature": "住宿服务;宾馆酒店;五星级宾馆｜评分4.7"
+                    }
+                ],
+                "foodRecommendation": [
+                    "重庆小面",
+                    "火锅"
+                ],
+                "commentTips": "抵达首日避免过度劳累，注意补充水分；重庆7月炎热，建议穿着轻便衣物，使用防晒用品。",
+                "activities": [
+                    {
+                        "name": "解放碑",
+                        "description": "参观重庆的地标性纪念碑和周边商业区，感受城市氛围。",
+                        "suggestedHours": "1-2小时",
+                        "ticketPriceCny": 0,
+                        "openingHours": "待查询",
+                        "images": [
+                            {
+                                "description": "人民解放纪念碑",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/3e5c41cec40e35e5675a47a7a326b3f4"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "https://aos-comment.amap.com/B00170L5D4/comment/content_media_external_file_3330_ss__1762920345649_08301714.jpg"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "https://aos-comment.amap.com/B00170L5D4/comment/c55ab707a857aeee96f210d27f1c8b0c_2048_2048_80.jpg"
+                            }
+                        ]
+                    }
+                ],
+                "distance": 795.5,
+                "drivingHours": 8.9
+            },
+            {
+                "day": 2,
+                "title": "第2天 | 历史文化探索",
+                "waypoints": [
+                    {
+                        "alias": "磁器口古镇",
+                        "address": "沙坪坝区磁器口古镇",
+                        "city": "重庆市",
+                        "province": "重庆市"
+                    },
+                    {
+                        "alias": "重庆中国三峡博物馆",
+                        "address": "渝中区人民路236号",
+                        "city": "重庆市",
+                        "province": "重庆市"
+                    }
+                ],
+                "description": "上午游览磁器口古镇体验老重庆风情，下午参观三峡博物馆深入了解巴渝文化和历史。",
+                "accommodation": [
+                    {
+                        "name": "重庆沙坪坝站三峡广场希尔顿欢朋酒店",
+                        "address": "龙湖光年2号楼41层",
+                        "feature": "住宿服务;宾馆酒店;宾馆酒店｜评分4.7"
+                    }
+                ],
+                "foodRecommendation": [
+                    "毛血旺",
+                    "酸辣粉"
+                ],
+                "commentTips": "磁器口人多拥挤，注意保管好随身物品；博物馆内请保持安静，穿着舒适鞋子以便步行。",
+                "activities": [
+                    {
+                        "name": "磁器口古镇",
+                        "description": "漫步古镇街道，品尝当地小吃，欣赏传统建筑和手工艺品。",
+                        "suggestedHours": "2-3小时",
+                        "ticketPriceCny": 0,
+                        "openingHours": "24小时营业",
+                        "images": [
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://aos-cdn-image.amap.com/sns/ugccomment/0563885f-17e8-4b9a-b97f-ce1e60360f19.jpg"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "https://aos-comment.amap.com/B00170IFE4/headerImg/29433e01190f6478f1177e6ca16d17ce_2048_2048_80.jpg"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "https://aos-comment.amap.com/B00170IFE4/headerImg/770ffdfe9bb66b332cfd2a2f3bb50d48_2048_2048_80.jpg"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "重庆中国三峡博物馆",
+                        "description": "参观馆藏展览，了解三峡工程、重庆历史和民俗文化。",
+                        "suggestedHours": "2-3小时",
+                        "ticketPriceCny": 0,
+                        "openingHours": "待查询",
+                        "images": []
+                    }
+                ],
+                "distance": 15.9,
+                "drivingHours": 0.4
+            },
+            {
+                "day": 3,
+                "title": "第3天 | 城市地标与江景体验",
+                "waypoints": [
+                    {
+                        "alias": "长江索道",
+                        "address": "渝中区新华路151号",
+                        "city": "重庆市",
+                        "province": "重庆市"
+                    },
+                    {
+                        "alias": "朝天门广场",
+                        "address": "渝中区朝天门广场",
+                        "city": "重庆市",
+                        "province": "重庆市"
+                    },
+                    {
+                        "alias": "南山一棵树观景台",
+                        "address": "南岸区南山一棵树观景台",
+                        "city": "重庆市",
+                        "province": "重庆市"
+                    }
+                ],
+                "description": "乘坐长江索道体验独特过江方式，游览朝天门码头看两江交汇，晚上登南山一棵树欣赏重庆璀璨夜景。",
+                "accommodation": [
+                    {
+                        "name": "重庆万豪酒店",
+                        "address": "烟雨路9号(海棠溪地铁站2A口步行320米)",
+                        "feature": "住宿服务;宾馆酒店;五星级宾馆｜评分4.5"
+                    }
+                ],
+                "foodRecommendation": [
+                    "泉水鸡",
+                    "串串香"
+                ],
+                "commentTips": "长江索道可能需排队，建议早去或避开高峰时段；南山一棵树晚上人多，注意安全，携带防蚊用品。",
+                "activities": [
+                    {
+                        "name": "长江索道",
+                        "description": "乘坐缆车横跨长江，俯瞰江景和城市风貌。",
+                        "suggestedHours": "1小时",
+                        "ticketPriceCny": 0,
+                        "openingHours": "待查询",
+                        "images": []
+                    },
+                    {
+                        "name": "朝天门广场",
+                        "description": "参观长江和嘉陵江交汇处的地标广场，了解码头历史。",
+                        "suggestedHours": "1-2小时",
+                        "ticketPriceCny": 0,
+                        "openingHours": "24小时营业",
+                        "images": [
+                            {
+                                "description": "重庆朝天门",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/3018b48adcd6941a173478f29124ea42"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/105d90142d77b0cf02e17ec4e683e87c"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/15d799919b9240d5b7c175dc5e1c55d5"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "南山一棵树观景台",
+                        "description": "登高望远，欣赏重庆全景和夜间灯光秀。",
+                        "suggestedHours": "2-3小时",
+                        "ticketPriceCny": 0,
+                        "openingHours": "待查询",
+                        "images": []
+                    }
+                ],
+                "distance": 7.9,
+                "drivingHours": 0.3
+            },
+            {
+                "day": 4,
+                "title": "第4天 | 武隆自然奇观一日游",
+                "waypoints": [
+                    {
+                        "alias": "武隆天生三桥",
+                        "address": "武隆区仙女山镇",
+                        "city": "重庆市",
+                        "province": "重庆市"
+                    },
+                    {
+                        "alias": "仙女山国家森林公园",
+                        "address": "武隆区仙女山国家森林公园",
+                        "city": "重庆市",
+                        "province": "重庆市"
+                    }
+                ],
+                "description": "前往武隆区，游览天生三桥欣赏喀斯特地貌，随后参观仙女山国家森林公园感受高山草原风光。",
+                "accommodation": [
+                    {
+                        "name": "足迹青年旅舍(重庆江北机场店)",
+                        "address": "双凤桥街道滨港路153号金港国际小区13栋3-4",
+                        "feature": "住宿服务;住宿服务相关;住宿服务相关｜评分4.6"
+                    }
+                ],
+                "foodRecommendation": [
+                    "武隆羊肉",
+                    "碗碗羊肉"
+                ],
+                "commentTips": "武隆距离市区较远，建议提前预订车票或参加一日游团；山区天气变化快，带雨具、外套和防晒用品。",
+                "activities": [
+                    {
+                        "name": "武隆天生三桥",
+                        "description": "徒步游览天然石桥、峡谷和瀑布，体验自然奇观。",
+                        "suggestedHours": "3-4小时",
+                        "ticketPriceCny": 0,
+                        "openingHours": "待查询",
+                        "images": [
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/8b9f078404607f13a44df6ffde140f5e"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "https://aos-comment.amap.com/B001794J2H/comment/content_media_external_file_1000141956_ss__1754050722190_08358102.jpg"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "https://aos-comment.amap.com/B001794J2H/comment/content_media_external_file_12061_ss__1764177281373_71154716.jpg"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "仙女山国家森林公园",
+                        "description": "游览高山草原、森林和牧场，适合放松和拍照。",
+                        "suggestedHours": "2-3小时",
+                        "ticketPriceCny": 0,
+                        "openingHours": "待查询",
+                        "images": []
+                    }
+                ],
+                "distance": 15.2,
+                "drivingHours": 0.4
+            },
+            {
+                "day": 5,
+                "title": "第5天 | 休闲购物与告别重庆",
+                "waypoints": [
+                    {
+                        "alias": "观音桥步行街",
+                        "address": "江北区观音桥步行街",
+                        "city": "重庆市",
+                        "province": "重庆市"
+                    }
+                ],
+                "description": "最后一天在市区休闲购物，购买特产如火锅底料，随后准备返程回长沙。",
+                "accommodation": [
+                    {
+                        "name": "足迹青年旅舍(重庆江北机场店)",
+                        "address": "双凤桥街道滨港路153号金港国际小区13栋3-4",
+                        "feature": "住宿服务;住宿服务相关;住宿服务相关｜评分4.6"
+                    }
+                ],
+                "foodRecommendation": [
+                    "抄手",
+                    "担担面"
+                ],
+                "commentTips": "预留足够时间去机场或车站，建议提前办理退房；检查行李，不要遗漏物品，重庆夏季炎热，注意防暑。",
+                "activities": [
+                    {
+                        "name": "观音桥步行街",
+                        "description": "购物和品尝小吃，体验现代重庆的商业氛围。",
+                        "suggestedHours": "2-3小时",
+                        "ticketPriceCny": 0,
+                        "openingHours": "待查询",
+                        "images": []
+                    }
+                ],
+                "distance": 5,
+                "drivingHours": 0.2
+            }
+        ]
+    },
+    "errors": [],
+    "needUserInput": false,
+    "finishedAt": 1776185371172
+}

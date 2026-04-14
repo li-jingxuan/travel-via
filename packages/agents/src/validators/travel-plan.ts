@@ -29,18 +29,18 @@
  *                    │
  *                    └──→ retry → route_planner（重新生成，最多 MAX_RETRIES 次）
  *
- * Validator 本身不修改 finalPlan，它只做两件事：
+ * Validator 本身只做两件事：
  * 1. 检查 finalPlan 是否合法
- * 2. 更新 retryCount 和 errors（供 shouldRetryOrEnd 条件路由函数判断）
+ * 2. 更新 retryCount 和 issues（供 shouldRetryOrEnd 条件路由函数判断）
  *
  * 注意：Validator 返回空对象 {} 表示"无状态更新"，这会让 LangGraph 保持 State 不变。
- * 只有在发现错误时才返回 { retryCount: n+1, errors: [...] } 触发重试。
+ * 只有在发现错误时才返回 { retryCount: n+1, issues: [...] } 触发重试。
  */
 
 import type { ITravelPlan } from "@repo/shared-types/travel"
 import { z } from "zod"
 import type { TravelStateAnnotation } from "../graph/state.js"
-import { ERROR_CODE, formatError } from "../constants/error-code.js"
+import { ERROR_CODE, createIssue, type IssueItem } from "../constants/error-code.js"
 import { agentLog } from "../lib/logger.js"
 
 // ==================== Zod Schema 定义 ====================
@@ -49,8 +49,8 @@ import { agentLog } from "../lib/logger.js"
 /** 校验结果类型 */
 interface ValidationResult {
   valid: boolean
-  /** 收集到的所有错误描述 */
-  errors: string[]
+  /** 收集到的所有问题项 */
+  issues: IssueItem[]
 }
 
 const activityImageSchema = z
@@ -151,34 +151,34 @@ function validateITravelPlan(plan: ITravelPlan): ValidationResult {
   })
   if (parseResult.success) {
     agentLog("校验器", "最终行程校验成功")
-    return { valid: true, errors: [] }
+    return { valid: true, issues: [] }
   }
 
-  const errors = parseResult.error.issues.map((issue) => {
+  const issues = parseResult.error.issues.map((issue) => {
     const path = issue.path.length > 0 ? issue.path.join(".") : "root"
-    return formatError(
+    return createIssue(
       ERROR_CODE.VALIDATION_ERROR,
       `字段校验失败 (${path}): ${issue.message}`,
     )
   })
 
   agentLog("校验器", "最终行程校验失败", {
-    errorCount: errors.length,
-    errors,
+    issueCount: issues.length,
+    issues,
   })
-  return { valid: false, errors }
+  return { valid: false, issues }
 }
 
 /**
  * Validator 节点函数
  *
- * @param state - 当前 Graph 状态（应包含 finalPlan、retryCount、errors）
- * @returns 需要更新的 State 字段（retryCount 和/或 errors）
+ * @param state - 当前 Graph 状态（应包含 finalPlan、retryCount、issues）
+ * @returns 需要更新的 State 字段（retryCount 和/或 issues）
  *
  * 返回值的含义：
  * - {}                    → 校验通过，不做任何更新（shouldRetryOrEnd 返回 "success"）
  * - { retryCount: n+1 }   → 发现错误，增加重试计数（shouldRetryOrEnd 返回 "retry"）
- * - { errors: [...] }     → 追加新的错误描述
+ * - { issues: [...] }     → 追加新的问题项
  */
 export async function validatorNode(
   state: typeof TravelStateAnnotation.State,
@@ -198,7 +198,8 @@ export async function validatorNode(
     })
     return {
       retryCount: state.retryCount + 1,
-      errors: [formatError(ERROR_CODE.VALIDATION_ERROR, "finalPlan is null")],
+      finalPlan: null,
+      issues: [createIssue(ERROR_CODE.VALIDATION_ERROR, "finalPlan is null")],
     }
   }
 
@@ -211,10 +212,11 @@ export async function validatorNode(
     return {}
   }
 
-  // 校验失败 → 更新 retryCount 和 errors
+  // 校验失败 → 更新 retryCount 和 issues
   // shouldRetryOrEnd 会根据 retryCount 决定是否继续重试
   return {
     retryCount: state.retryCount + 1,
-    errors: result.errors,
+    finalPlan: null,
+    issues: result.issues,
   }
 }
