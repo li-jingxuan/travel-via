@@ -6,18 +6,39 @@ loadAgentsEnv()
 
 const AMAP_BASE_URL = "https://restapi.amap.com"
 const AMAP_TIMEOUT_MS = 8000
+// 高德免费配额为每个 path 3次 / 秒
 const AMAP_QPS_LIMIT_PER_PATH = 3
+// 高德的免费配额是按照接口 path 来限制的，每个 path 独立计算 QPS。
 const AMAP_QPS_WINDOW_MS = 1000
-const AMAP_QPS_SAFETY_BUFFER_MS = 100
+// 增加安全缓冲，降低边界抖动导致的偶发 CUQPS 超限（尤其在高并发时更明显）。
+const AMAP_QPS_SAFETY_BUFFER_MS = 120
+// 平滑发包：限制同 path 相邻请求的最小间隔，避免“1 秒内突发 3 个”。
+const AMAP_MIN_SPACING_MS = Math.ceil(
+  (AMAP_QPS_WINDOW_MS + AMAP_QPS_SAFETY_BUFFER_MS) / AMAP_QPS_LIMIT_PER_PATH,
+)
+// 业务态限流时的最多重试次数（总请求次数 = 1 + 重试次数）。
+const AMAP_THROTTLE_MAX_RETRIES = 2
+const AMAP_THROTTLE_BACKOFF_MS = [300, 800, 1600]
 
 interface PathRateLimiter {
   // 1 秒窗口内的请求时间戳（毫秒）。
   timestamps: number[]
   // 同 path 的串行队列，保证限流判定顺序一致。
   queue: Promise<void>
+  // 上一次放行时间戳，用于平滑发包。
+  lastGrantedAt: number
 }
 
 const pathRateLimiters = new Map<string, PathRateLimiter>()
+
+interface PathRateMetric {
+  requests: number
+  throttledByBusiness: number
+  limiterWaitMs: number
+  retries: number
+}
+
+const pathRateMetrics = new Map<string, PathRateMetric>()
 
 function sleep(ms: number) {
   return new Promise<void>((resolve) => {
@@ -27,6 +48,58 @@ function sleep(ms: number) {
 
 function buildRequestMeta(path: string, params: Record<string, string>) {
   return { path, params }
+}
+
+function getPathMetric(path: string): PathRateMetric {
+  const metric = pathRateMetrics.get(path) ?? {
+    requests: 0,
+    throttledByBusiness: 0,
+    limiterWaitMs: 0,
+    retries: 0,
+  }
+  pathRateMetrics.set(path, metric)
+  return metric
+}
+
+interface AmapBaseResponse {
+  status?: string
+  info?: string
+  infocode?: string
+}
+
+function isObjectRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null
+}
+
+function toAmapBaseResponse(value: unknown): AmapBaseResponse | null {
+  if (!isObjectRecord(value)) return null
+  return {
+    status: typeof value.status === "string" ? value.status : undefined,
+    info: typeof value.info === "string" ? value.info : undefined,
+    infocode: typeof value.infocode === "string" ? value.infocode : undefined,
+  }
+}
+
+function isBusinessRateLimited(payload: AmapBaseResponse | null): boolean {
+  if (!payload) return false
+  const joined = `${payload.info ?? ""} ${payload.infocode ?? ""}`.toUpperCase()
+  return (
+    payload.status === "0" &&
+    (joined.includes("CUQPS") ||
+      joined.includes("QPS") ||
+      joined.includes("TOO FREQUENT") ||
+      joined.includes("RATE LIMIT") ||
+      joined.includes("频率"))
+  )
+}
+
+function calcThrottleBackoffMs(retryIndex: number): number {
+  const base =
+    AMAP_THROTTLE_BACKOFF_MS[retryIndex] ??
+    AMAP_THROTTLE_BACKOFF_MS[AMAP_THROTTLE_BACKOFF_MS.length - 1] ??
+    1600
+  const jitter = Math.floor(Math.random() * 120)
+  return base + jitter
 }
 
 /**
@@ -52,8 +125,10 @@ async function acquirePathRateLimit(path: string) {
   const limiter = pathRateLimiters.get(path) ?? {
     timestamps: [],
     queue: Promise.resolve(),
+    lastGrantedAt: 0,
   }
   pathRateLimiters.set(path, limiter)
+  const startedAt = Date.now()
 
   // 把当前请求挂到该 path 的队列尾部，确保串行执行限流判断。
   const task = limiter.queue.then(async () => {
@@ -66,7 +141,17 @@ async function acquirePathRateLimit(path: string) {
 
       // 未超限：立即放行，并记录当前放行时间。
       if (limiter.timestamps.length < AMAP_QPS_LIMIT_PER_PATH) {
-        limiter.timestamps.push(now)
+        const smoothWaitMs = Math.max(
+          limiter.lastGrantedAt + AMAP_MIN_SPACING_MS - now,
+          0,
+        )
+        if (smoothWaitMs > 0) {
+          await sleep(smoothWaitMs)
+        }
+
+        const grantedAt = Date.now()
+        limiter.timestamps.push(grantedAt)
+        limiter.lastGrantedAt = grantedAt
         return
       }
 
@@ -93,6 +178,7 @@ async function acquirePathRateLimit(path: string) {
   limiter.queue = task.catch(() => undefined)
   // 当前请求必须等待自己的限流任务完成后才能继续发请求。
   await task
+  return Date.now() - startedAt
 }
 
 /**
@@ -118,24 +204,63 @@ export async function fetchAmap<T>(
 
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), AMAP_TIMEOUT_MS)
+  const metric = getPathMetric(path)
+  metric.requests += 1
 
   try {
     // 请求真正发出前先经过限流闸门。
-    await acquirePathRateLimit(path)
-    const response = await fetch(`${AMAP_BASE_URL}${path}?${query.toString()}`, {
-      method: "GET",
-      signal: controller.signal,
-    })
+    const limiterWaitMs = await acquirePathRateLimit(path)
+    metric.limiterWaitMs += limiterWaitMs
 
-    if (!response.ok) {
-      agentLog("高德", "HTTP 请求失败", {
-        ...buildRequestMeta(path, params),
-        status: response.status,
+    for (let attempt = 0; attempt <= AMAP_THROTTLE_MAX_RETRIES; attempt += 1) {
+      const response = await fetch(`${AMAP_BASE_URL}${path}?${query.toString()}`, {
+        method: "GET",
+        signal: controller.signal,
       })
-      return null
-    }
 
-    return (await response.json()) as T
+      if (!response.ok) {
+        agentLog("高德", "HTTP 请求失败", {
+          ...buildRequestMeta(path, params),
+          status: response.status,
+          attempt: attempt + 1,
+        })
+        return null
+      }
+
+      const payload = (await response.json()) as T
+      const meta = toAmapBaseResponse(payload)
+
+      // 高德限流常见表现是 HTTP 200 + status=0 + info/infocode。
+      if (isBusinessRateLimited(meta) && attempt < AMAP_THROTTLE_MAX_RETRIES) {
+        const waitMs = calcThrottleBackoffMs(attempt)
+        metric.throttledByBusiness += 1
+        metric.retries += 1
+        agentLog("高德限流", "命中业务态限流，执行退避重试", {
+          ...buildRequestMeta(path, params),
+          attempt: attempt + 1,
+          nextWaitMs: waitMs,
+          info: meta?.info ?? "unknown",
+          infocode: meta?.infocode ?? "unknown",
+        })
+        await sleep(waitMs)
+        continue
+      }
+
+      if (attempt > 0 || limiterWaitMs > 0) {
+        agentLog("高德监控", "请求完成", {
+          path,
+          attempts: attempt + 1,
+          limiterWaitMs,
+          throttledByBusinessTotal: metric.throttledByBusiness,
+          retriesTotal: metric.retries,
+          requestsTotal: metric.requests,
+          avgLimiterWaitMs: Number((metric.limiterWaitMs / metric.requests).toFixed(1)),
+        })
+      }
+
+      return payload
+    }
+    return null
   } catch (error) {
     agentLog("高德", "请求异常", {
       ...buildRequestMeta(path, params),

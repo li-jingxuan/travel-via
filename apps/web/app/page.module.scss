@@ -1,0 +1,488 @@
+$page-bg-0: #f5efe2;
+$page-bg-1: #f8f3e8;
+$ink-1: #1f2227;
+$ink-2: #5c646f;
+$line-main: #d4c6ae;
+$panel-bg: rgba(254, 251, 245, 0.78);
+$panel-line: rgba(186, 161, 130, 0.55);
+$soft-shadow: 0 8px 24px rgba(40, 28, 16, 0.08);
+$panel-shadow: 0 24px 70px rgba(60, 35, 12, 0.14);
+
+.page {
+  min-height: calc(100vh - 24px);
+  padding: 12px;
+  position: relative;
+  background: linear-gradient(145deg, $page-bg-0 0%, $page-bg-1 100%);
+
+  &::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: radial-gradient(rgba(84, 66, 44, 0.06) 0.7px, transparent 0.7px);
+    background-size: 4px 4px;
+  }
+}
+
+.shell {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  height: 100%;
+}
+
+.panel {
+  border: 1px solid $line-main;
+  border-radius: 26px;
+  background: $panel-bg;
+  box-shadow: $panel-shadow;
+  backdrop-filter: blur(6px);
+  overflow: hidden;
+  height: 100%;
+}
+
+.chatPanel {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+.routePanel {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
+  border-bottom: 1px solid $panel-line;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: $ink-2;
+}
+
+.panelTitle {
+  margin: 4px 0 0;
+  font-family: var(--font-geist-mono), "Iosevka", monospace;
+  font-size: 1.25rem;
+  letter-spacing: -0.02em;
+  color: $ink-1;
+}
+
+.livePill {
+  border-radius: 999px;
+  border: 1px solid rgba(31, 143, 122, 0.5);
+  background: #cdeee5;
+  color: #0f6252;
+  padding: 4px 12px;
+  font-size: 12px;
+}
+
+.chatScroll {
+  display: grid;
+  gap: 12px;
+  overflow: auto;
+  padding: 12px;
+}
+
+.msgCard {
+  max-width: 92%;
+  border-radius: 18px;
+  border: 1px solid rgba(183, 162, 132, 0.45);
+  box-shadow: $soft-shadow;
+  padding: 14px;
+  animation: rise 0.5s ease both;
+}
+
+.msgAi {
+  justify-self: start;
+  background: rgba(245, 252, 250, 0.95);
+}
+
+.msgUser {
+  justify-self: end;
+  background: rgba(255, 242, 223, 0.95);
+}
+
+.msgMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: $ink-2;
+}
+
+.msgText {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: $ink-1;
+}
+
+.suggestionRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.suggestionBtn {
+  border-radius: 999px;
+  border: 1px dashed rgba(87, 87, 87, 0.34);
+  background: rgba(255, 255, 255, 0.62);
+  color: #29323f;
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.inputWrap {
+  display: flex;
+  gap: 10px;
+  border-top: 1px solid rgba(186, 161, 130, 0.45);
+  padding: 12px;
+}
+
+.input {
+  width: 100%;
+  min-height: 44px;
+  border-radius: 14px;
+  border: 1px solid rgba(139, 125, 107, 0.5);
+  background: rgba(255, 255, 255, 0.88);
+  color: #242d36;
+  padding: 0 14px;
+  outline: none;
+
+  &::placeholder {
+    color: #7a838d;
+  }
+}
+
+.sendBtn {
+  min-width: 82px;
+  border: 0;
+  border-radius: 14px;
+  background: linear-gradient(140deg, #217a69, #0f5a4c);
+  color: #effff8;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.budgetBox {
+  display: grid;
+  align-content: center;
+  gap: 4px;
+  padding: 8px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(97, 124, 125, 0.45);
+  background: rgba(237, 249, 247, 0.76);
+
+  span {
+    font-size: 11px;
+    color: #45666a;
+  }
+
+  strong {
+    font-size: 18px;
+    color: #0a6154;
+  }
+}
+
+.routeGrid {
+  display: grid;
+  overflow-y: auto;
+  min-height: 0;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  padding: 12px;
+}
+
+.mapCard {
+  position: relative;
+  overflow: hidden;
+  min-height: 180px;
+  border-radius: 20px;
+  border: 1px solid rgba(146, 117, 83, 0.35);
+  background:
+    linear-gradient(120deg, rgba(16, 83, 70, 0.92), rgba(29, 143, 122, 0.65)),
+    repeating-linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.16) 0 2px,
+      rgba(255, 255, 255, 0) 2px 10px
+    );
+}
+
+.mapOverlay {
+  display: grid;
+  gap: 8px;
+  padding: 20px;
+  color: #f3fffb;
+
+  p {
+    margin: 0;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.85;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 1.42rem;
+    letter-spacing: -0.02em;
+  }
+
+  span {
+    width: fit-content;
+    display: inline-flex;
+    border-radius: 999px;
+    border: 1px solid rgba(226, 255, 248, 0.34);
+    padding: 4px 10px;
+    font-size: 12px;
+  }
+}
+
+.mapDots {
+  i {
+    position: absolute;
+    width: 11px;
+    height: 11px;
+    border-radius: 999px;
+    background: #ffe3ba;
+    box-shadow: 0 0 0 8px rgba(255, 227, 186, 0.12);
+    animation: pulse 2.2s ease-in-out infinite;
+  }
+
+  i:nth-child(1) {
+    top: 26%;
+    left: 22%;
+  }
+
+  i:nth-child(2) {
+    top: 58%;
+    left: 35%;
+    animation-delay: 0.4s;
+  }
+
+  i:nth-child(3) {
+    top: 44%;
+    right: 28%;
+    animation-delay: 0.7s;
+  }
+
+  i:nth-child(4) {
+    top: 64%;
+    right: 14%;
+    animation-delay: 1s;
+  }
+}
+
+.card {
+  border-radius: 18px;
+  border: 1px solid rgba(184, 164, 138, 0.52);
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: $soft-shadow;
+  padding: 14px;
+}
+
+.timelineCard {
+  grid-column: 1 / -1;
+}
+
+.cardTitle {
+  margin: 0 0 10px;
+  font-size: 15px;
+  color: #36414e;
+}
+
+.stepList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.stepItem {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(203, 189, 168, 0.55);
+  background: rgba(255, 250, 241, 0.78);
+  padding: 10px;
+}
+
+.stepDay {
+  min-height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  border: 1px solid rgba(204, 139, 58, 0.3);
+  background: rgba(240, 184, 111, 0.24);
+  font-family: var(--font-geist-mono), "Iosevka", monospace;
+  font-size: 12px;
+  color: #7a4a0f;
+}
+
+.stepTitle {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: $ink-1;
+}
+
+.stepDetail {
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 1.55;
+  color: #5e6770;
+}
+
+.stepSide {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  span {
+    border-radius: 999px;
+    border: 1px solid rgba(76, 132, 120, 0.35);
+    background: rgba(205, 238, 229, 0.5);
+    color: #1f7769;
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+
+  strong {
+    font-size: 13px;
+    color: #28313a;
+  }
+}
+
+.metricList {
+  display: grid;
+  gap: 8px;
+}
+
+.metricItem {
+  margin: 0;
+  border-radius: 12px;
+  border: 1px solid rgba(194, 184, 168, 0.55);
+  background: rgba(255, 250, 245, 0.8);
+  padding: 10px;
+  font-size: 13px;
+  color: #43505d;
+
+  strong {
+    float: right;
+    color: #0f5f52;
+  }
+}
+
+.alertText {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #4b5662;
+}
+
+@keyframes rise {
+  from {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.25);
+  }
+}
+
+@media (min-width: 640px) {
+  .page {
+    padding: 16px;
+  }
+
+  .panelHeader {
+    padding: 20px 24px;
+  }
+
+  .chatScroll,
+  .inputWrap,
+  .routeGrid {
+    padding: 16px;
+  }
+
+  .panelTitle {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .routeGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .mapCard,
+  .timelineCard {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 1024px) {
+  .page {
+    height: 100vh;
+    padding: 24px;
+    overflow: hidden;
+  }
+
+  .shell {
+    height: 100%;
+    gap: 20px;
+    grid-template-columns: minmax(320px, 38%) minmax(420px, 1fr);
+  }
+
+  .routePanel > .panelHeader {
+    min-height: 104px;
+    height: 104px;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .stepItem {
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+  }
+
+  .stepSide {
+    grid-column: auto;
+    display: block;
+    text-align: right;
+
+    strong {
+      display: block;
+      margin-top: 4px;
+    }
+  }
+}

@@ -209,6 +209,29 @@ export const TravelStateAnnotation = Annotation.Root({
   }),
 
   /**
+   * pre_formatter_guard 已处理 issue 游标
+   *
+   * 用途：
+   * - 仅检查“新增 issues”，避免历史问题反复触发重试
+   * - 值含义：上次 guard 执行后，issues 已处理到的长度
+   */
+  preFormatterIssueCursor: Annotation<number>({
+    reducer: (_, update) => update,
+    default: () => 0,
+  }),
+
+  /**
+   * pre_formatter_guard 的路由决策结果
+   *
+   * true  -> 回退 route_planner
+   * false -> 继续 formatter
+   */
+  preFormatterShouldRetry: Annotation<boolean>({
+    reducer: (_, update) => update,
+    default: () => false,
+  }),
+
+  /**
    * 问题日志累积 — 所有 Node 都可写入
    *
    * 统一承载原 errors/warnings：

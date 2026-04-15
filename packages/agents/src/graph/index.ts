@@ -17,6 +17,7 @@ import {
   weatherEnricherNode,
   hotelEnricherNode,
   formatterNode,
+  preFormatterGuardNode,
   askClarificationNode,
   routePlannerFailedNode,
   routeEnrichEntryNode,
@@ -24,6 +25,7 @@ import {
 import { validatorNode } from "../validators/travel-plan.js"
 import {
   routeAfterIntent,
+  routeAfterPreFormatterGuard,
   routeAfterRoutePlanner,
   shouldRetryOrEnd,
 } from "./routing.js"
@@ -44,7 +46,7 @@ type TravelGraphBuilder = StateGraph<
   string
 >
 
-/** 奎屯市 奎屯豪丰国际大酒店
+/**
  * 注册所有节点。
  *
  * 说明：
@@ -70,6 +72,8 @@ function registerNodes(graph: TravelGraphBuilder): TravelGraphBuilder {
     // .addNode("weather_enricher", weatherEnricherNode)
     // 酒店增强
     .addNode("hotel_enricher", hotelEnricherNode)
+    // formatter 前置守卫
+    .addNode("pre_formatter_guard", preFormatterGuardNode)
 
     // 格式化数据节点
     .addNode("formatter", formatterNode)
@@ -109,7 +113,7 @@ function connectRoutePlannerStage(
 
 /**
  * 连接增强阶段（Fan-out / Fan-in）：
- * route_enrich_entry -> driving/poi/weather/hotel -> formatter
+ * route_enrich_entry -> driving/poi/weather/hotel -> pre_formatter_guard
  */
 function connectEnrichment(graph: TravelGraphBuilder): TravelGraphBuilder {
   return graph
@@ -117,10 +121,27 @@ function connectEnrichment(graph: TravelGraphBuilder): TravelGraphBuilder {
     .addEdge("route_enrich_entry", "poi_enricher")
     // .addEdge("route_enrich_entry", "weather_enricher")
     .addEdge("route_enrich_entry", "hotel_enricher")
-    .addEdge("driving_distance", "formatter")
-    .addEdge("poi_enricher", "formatter")
-    // .addEdge("weather_enricher", "formatter")
-    .addEdge("hotel_enricher", "formatter")
+    .addEdge("driving_distance", "pre_formatter_guard")
+    .addEdge("poi_enricher", "pre_formatter_guard")
+    // .addEdge("weather_enricher", "pre_formatter_guard")
+    .addEdge("hotel_enricher", "pre_formatter_guard")
+}
+
+/**
+ * formatter 前置守卫：
+ * pre_formatter_guard -> (retry | continue)
+ */
+function connectPreFormatterGuard(
+  graph: TravelGraphBuilder,
+): TravelGraphBuilder {
+  return graph.addConditionalEdges(
+    "pre_formatter_guard",
+    routeAfterPreFormatterGuard,
+    {
+      retry: "route_planner",
+      continue: "formatter",
+    },
+  )
 }
 
 /**
@@ -137,11 +158,13 @@ function connectValidationLoop(graph: TravelGraphBuilder): TravelGraphBuilder {
 }
 
 const travelPlannerGraph = connectValidationLoop(
-  connectEnrichment(
-    connectRoutePlannerStage(
-      connectEntry(
-        registerNodes(
-          new StateGraph(TravelStateAnnotation) as TravelGraphBuilder,
+  connectPreFormatterGuard(
+    connectEnrichment(
+      connectRoutePlannerStage(
+        connectEntry(
+          registerNodes(
+            new StateGraph(TravelStateAnnotation) as TravelGraphBuilder,
+          ),
         ),
       ),
     ),

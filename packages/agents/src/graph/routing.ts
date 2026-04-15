@@ -63,6 +63,21 @@ export function routeAfterRoutePlanner(
 }
 
 /**
+ * pre_formatter_guard 之后的路由：
+ * - retry    : 命中可重试问题码，回退 route_planner
+ * - continue : 进入 formatter
+ */
+export function routeAfterPreFormatterGuard(
+  state: typeof TravelStateAnnotation.State,
+): "retry" | "continue" {
+  if (state.preFormatterIssueCursor > 0) {
+    agentLog("routeAfterPreFormatterGuard", "preFormatterGuard issues: ", state.issues)
+  }
+
+  return state.preFormatterShouldRetry ? "retry" : "continue"
+}
+
+/**
  * validator 之后的路由：
  * - retry   : 结果缺失或新增校验错误且未超限
  * - success : 可结束
@@ -75,6 +90,8 @@ export function shouldRetryOrEnd(
 
   // 兜底：finalPlan 为空时（例如 formatter 失败）继续重试。
   if (!state.finalPlan) return "retry"
+
+  agentLog("shouldRetryOrEnd", "issues: ", state.issues)
 
   // finalPlan 存在时，再按可重试错误码做一层保护判断。
   // const hasRetryableIssue = state.issues.some((issue) =>

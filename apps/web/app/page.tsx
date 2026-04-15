@@ -1,3 +1,5 @@
+import styles from "./page.module.scss";
+
 const chatMessages = [
   {
     role: "assistant",
@@ -20,7 +22,9 @@ const chatMessages = [
       "收到，我会把动线集中在西湖-满觉陇-运河三段，减少折返；并把每日步行控制在 8 公里以内。",
     time: "09:14",
   },
-];
+] as const;
+
+const suggestions = ["生成 5 天路线", "改成亲子友好", "降低预算 15%"] as const;
 
 const tripSteps = [
   {
@@ -51,68 +55,89 @@ const tripSteps = [
     tag: "弹性日",
     cost: "¥560",
   },
-];
+] as const;
+
+const metrics = [
+  { label: "日均步行", value: "7.4 km" },
+  { label: "公交地铁占比", value: "68%" },
+  { label: "高峰拥堵规避", value: "3 段" },
+] as const;
+
+function cn(...names: Array<string | false | null | undefined>) {
+  return names.filter(Boolean).join(" ");
+}
 
 export default function Home() {
   return (
-    <main className="planner-page">
-      <section className="planner-shell">
-        <aside className="panel panel-chat">
-          <header className="panel-head">
+    <main className={styles.page}>
+      <section className={styles.shell}>
+        <aside className={cn(styles.panel, styles.chatPanel)}>
+          <header className={styles.panelHeader}>
             <div>
-              <p className="eyebrow">AI Travel Planner</p>
-              <h1>旅行偏好对话</h1>
+              <p className={styles.eyebrow}>AI Travel Planner</p>
+              <h1 className={styles.panelTitle}>旅行偏好对话</h1>
             </div>
-            <span className="live-pill">在线</span>
+            <span className={styles.livePill}>在线</span>
           </header>
 
-          <div className="chat-scroll">
+          <div className={styles.chatScroll}>
             {chatMessages.map((message) => (
               <article
                 key={`${message.time}-${message.role}`}
-                className={`msg-card ${message.role === "user" ? "is-user" : "is-ai"}`}
+                className={cn(
+                  styles.msgCard,
+                  message.role === "user" ? styles.msgUser : styles.msgAi,
+                )}
               >
-                <div className="msg-meta">
+                <div className={styles.msgMeta}>
                   <strong>{message.title}</strong>
                   <span>{message.time}</span>
                 </div>
-                <p>{message.content}</p>
+                <p className={styles.msgText}>{message.content}</p>
               </article>
             ))}
 
-            <div className="suggestions">
-              <button type="button">生成 5 天路线</button>
-              <button type="button">改成亲子友好</button>
-              <button type="button">降低预算 15%</button>
+            <div className={styles.suggestionRow}>
+              {suggestions.map((item) => (
+                <button key={item} type="button" className={styles.suggestionBtn}>
+                  {item}
+                </button>
+              ))}
             </div>
           </div>
 
-          <footer className="chat-input-wrap">
-            <input type="text" placeholder="告诉我：预算、出发城市、偏好节奏..." />
-            <button type="button">发送</button>
+          <footer className={styles.inputWrap}>
+            <input
+              type="text"
+              placeholder="告诉我：预算、出发城市、偏好节奏..."
+              className={styles.input}
+            />
+            <button type="button" className={styles.sendBtn}>
+              发送
+            </button>
           </footer>
         </aside>
 
-        <section className="panel panel-route">
-          <header className="panel-head route-head">
+        <section className={cn(styles.panel, styles.routePanel)}>
+          <header className={styles.panelHeader}>
             <div>
-              <p className="eyebrow">Route Overview</p>
-              <h2>杭州 · 5天轻松路线</h2>
+              <p className={styles.eyebrow}>Route Overview</p>
+              <h2 className={styles.panelTitle}>杭州 · 5天轻松路线</h2>
             </div>
-            <div className="budget-box">
+            <div className={styles.budgetBox}>
               <span>总预算</span>
               <strong>¥4,380</strong>
             </div>
           </header>
 
-          <div className="route-grid">
-            <article className="map-card">
-              <div className="map-overlay">
+          <div className={styles.routeGrid}>
+            <article className={styles.mapCard}>
+              <div className={styles.mapOverlay}>
                 <p>核心动线</p>
                 <h3>西湖 → 茶山 → 运河</h3>
                 <span>平均通勤 24 分钟</span>
               </div>
-              <div className="map-dots" aria-hidden>
+              <div className={styles.mapDots} aria-hidden>
                 <i />
                 <i />
                 <i />
@@ -120,17 +145,17 @@ export default function Home() {
               </div>
             </article>
 
-            <article className="timeline-card">
-              <h3>每日安排</h3>
-              <ul>
+            <article className={cn(styles.card, styles.timelineCard)}>
+              <h3 className={styles.cardTitle}>每日安排</h3>
+              <ul className={styles.stepList}>
                 {tripSteps.map((step) => (
-                  <li key={step.day}>
-                    <div className="step-day">{step.day}</div>
-                    <div className="step-main">
-                      <p className="step-title">{step.title}</p>
-                      <p className="step-detail">{step.detail}</p>
+                  <li key={step.day} className={styles.stepItem}>
+                    <div className={styles.stepDay}>{step.day}</div>
+                    <div>
+                      <p className={styles.stepTitle}>{step.title}</p>
+                      <p className={styles.stepDetail}>{step.detail}</p>
                     </div>
-                    <div className="step-side">
+                    <div className={styles.stepSide}>
                       <span>{step.tag}</span>
                       <strong>{step.cost}</strong>
                     </div>
@@ -139,24 +164,23 @@ export default function Home() {
               </ul>
             </article>
 
-            <article className="stats-card">
-              <h3>出行指标</h3>
-              <div className="stats-list">
-                <p>
-                  日均步行 <strong>7.4 km</strong>
-                </p>
-                <p>
-                  公交地铁占比 <strong>68%</strong>
-                </p>
-                <p>
-                  高峰拥堵规避 <strong>3 段</strong>
-                </p>
+            <article className={styles.card}>
+              <h3 className={styles.cardTitle}>出行指标</h3>
+              <div className={styles.metricList}>
+                {metrics.map((metric) => (
+                  <p key={metric.label} className={styles.metricItem}>
+                    {metric.label}
+                    <strong>{metric.value}</strong>
+                  </p>
+                ))}
               </div>
             </article>
 
-            <article className="alert-card">
-              <h3>智能提醒</h3>
-              <p>周日 16:00 西湖边游客密度较高，建议提前 30 分钟前往观景点。</p>
+            <article className={styles.card}>
+              <h3 className={styles.cardTitle}>智能提醒</h3>
+              <p className={styles.alertText}>
+                周日 16:00 西湖边游客密度较高，建议提前 30 分钟前往观景点。
+              </p>
             </article>
           </div>
         </section>
