@@ -50,8 +50,7 @@ $panel-shadow: 0 24px 70px rgba(60, 35, 12, 0.14);
 }
 
 .routePanel {
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 0;
 }
 
 .panelHeader {
@@ -178,225 +177,6 @@ $panel-shadow: 0 24px 70px rgba(60, 35, 12, 0.14);
   font-weight: 600;
 }
 
-.budgetBox {
-  display: grid;
-  align-content: center;
-  gap: 4px;
-  padding: 8px 12px;
-  border-radius: 14px;
-  border: 1px solid rgba(97, 124, 125, 0.45);
-  background: rgba(237, 249, 247, 0.76);
-
-  span {
-    font-size: 11px;
-    color: #45666a;
-  }
-
-  strong {
-    font-size: 18px;
-    color: #0a6154;
-  }
-}
-
-.routeGrid {
-  display: grid;
-  overflow-y: auto;
-  min-height: 0;
-  grid-template-columns: 1fr;
-  gap: 12px;
-  padding: 12px;
-}
-
-.mapCard {
-  position: relative;
-  overflow: hidden;
-  min-height: 180px;
-  border-radius: 20px;
-  border: 1px solid rgba(146, 117, 83, 0.35);
-  background:
-    linear-gradient(120deg, rgba(16, 83, 70, 0.92), rgba(29, 143, 122, 0.65)),
-    repeating-linear-gradient(
-      45deg,
-      rgba(255, 255, 255, 0.16) 0 2px,
-      rgba(255, 255, 255, 0) 2px 10px
-    );
-}
-
-.mapOverlay {
-  display: grid;
-  gap: 8px;
-  padding: 20px;
-  color: #f3fffb;
-
-  p {
-    margin: 0;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    opacity: 0.85;
-  }
-
-  h3 {
-    margin: 0;
-    font-size: 1.42rem;
-    letter-spacing: -0.02em;
-  }
-
-  span {
-    width: fit-content;
-    display: inline-flex;
-    border-radius: 999px;
-    border: 1px solid rgba(226, 255, 248, 0.34);
-    padding: 4px 10px;
-    font-size: 12px;
-  }
-}
-
-.mapDots {
-  i {
-    position: absolute;
-    width: 11px;
-    height: 11px;
-    border-radius: 999px;
-    background: #ffe3ba;
-    box-shadow: 0 0 0 8px rgba(255, 227, 186, 0.12);
-    animation: pulse 2.2s ease-in-out infinite;
-  }
-
-  i:nth-child(1) {
-    top: 26%;
-    left: 22%;
-  }
-
-  i:nth-child(2) {
-    top: 58%;
-    left: 35%;
-    animation-delay: 0.4s;
-  }
-
-  i:nth-child(3) {
-    top: 44%;
-    right: 28%;
-    animation-delay: 0.7s;
-  }
-
-  i:nth-child(4) {
-    top: 64%;
-    right: 14%;
-    animation-delay: 1s;
-  }
-}
-
-.card {
-  border-radius: 18px;
-  border: 1px solid rgba(184, 164, 138, 0.52);
-  background: rgba(255, 255, 255, 0.7);
-  box-shadow: $soft-shadow;
-  padding: 14px;
-}
-
-.timelineCard {
-  grid-column: 1 / -1;
-}
-
-.cardTitle {
-  margin: 0 0 10px;
-  font-size: 15px;
-  color: #36414e;
-}
-
-.stepList {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  gap: 8px;
-}
-
-.stepItem {
-  display: grid;
-  grid-template-columns: 44px minmax(0, 1fr);
-  gap: 10px;
-  border-radius: 12px;
-  border: 1px solid rgba(203, 189, 168, 0.55);
-  background: rgba(255, 250, 241, 0.78);
-  padding: 10px;
-}
-
-.stepDay {
-  min-height: 24px;
-  display: grid;
-  place-items: center;
-  border-radius: 8px;
-  border: 1px solid rgba(204, 139, 58, 0.3);
-  background: rgba(240, 184, 111, 0.24);
-  font-family: var(--font-geist-mono), "Iosevka", monospace;
-  font-size: 12px;
-  color: #7a4a0f;
-}
-
-.stepTitle {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: $ink-1;
-}
-
-.stepDetail {
-  margin: 4px 0 0;
-  font-size: 12px;
-  line-height: 1.55;
-  color: #5e6770;
-}
-
-.stepSide {
-  grid-column: 2;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  span {
-    border-radius: 999px;
-    border: 1px solid rgba(76, 132, 120, 0.35);
-    background: rgba(205, 238, 229, 0.5);
-    color: #1f7769;
-    font-size: 11px;
-    padding: 4px 8px;
-  }
-
-  strong {
-    font-size: 13px;
-    color: #28313a;
-  }
-}
-
-.metricList {
-  display: grid;
-  gap: 8px;
-}
-
-.metricItem {
-  margin: 0;
-  border-radius: 12px;
-  border: 1px solid rgba(194, 184, 168, 0.55);
-  background: rgba(255, 250, 245, 0.8);
-  padding: 10px;
-  font-size: 13px;
-  color: #43505d;
-
-  strong {
-    float: right;
-    color: #0f5f52;
-  }
-}
-
-.alertText {
-  margin: 0;
-  font-size: 13px;
-  line-height: 1.55;
-  color: #4b5662;
-}
-
 @keyframes rise {
   from {
     transform: translateY(8px);
@@ -406,17 +186,6 @@ $panel-shadow: 0 24px 70px rgba(60, 35, 12, 0.14);
   to {
     transform: translateY(0);
     opacity: 1;
-  }
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-
-  50% {
-    transform: scale(1.25);
   }
 }
 
@@ -430,24 +199,12 @@ $panel-shadow: 0 24px 70px rgba(60, 35, 12, 0.14);
   }
 
   .chatScroll,
-  .inputWrap,
-  .routeGrid {
+  .inputWrap {
     padding: 16px;
   }
 
   .panelTitle {
     font-size: 1.5rem;
-  }
-}
-
-@media (min-width: 768px) {
-  .routeGrid {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .mapCard,
-  .timelineCard {
-    grid-column: 1 / -1;
   }
 }
 
@@ -462,27 +219,5 @@ $panel-shadow: 0 24px 70px rgba(60, 35, 12, 0.14);
     height: 100%;
     gap: 20px;
     grid-template-columns: minmax(320px, 38%) minmax(420px, 1fr);
-  }
-
-  .routePanel > .panelHeader {
-    min-height: 104px;
-    height: 104px;
-    align-items: center;
-    flex-shrink: 0;
-  }
-
-  .stepItem {
-    grid-template-columns: 44px minmax(0, 1fr) auto;
-  }
-
-  .stepSide {
-    grid-column: auto;
-    display: block;
-    text-align: right;
-
-    strong {
-      display: block;
-      margin-top: 4px;
-    }
   }
 }
