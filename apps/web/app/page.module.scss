@@ -92,6 +92,8 @@ $panel-shadow: 0 24px 70px rgba(60, 35, 12, 0.14);
   gap: 12px;
   overflow: auto;
   padding: 12px;
+  align-content: start;
+  grid-auto-rows: max-content;
 }
 
 .msgCard {
@@ -134,15 +136,23 @@ $panel-shadow: 0 24px 70px rgba(60, 35, 12, 0.14);
   flex-wrap: wrap;
   gap: 8px;
   padding-top: 4px;
+  align-self: start;
+  align-items: center;
+  min-height: 32px;
 }
 
 .suggestionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 999px;
   border: 1px dashed rgba(87, 87, 87, 0.34);
   background: rgba(255, 255, 255, 0.62);
   color: #29323f;
   padding: 6px 12px;
   font-size: 12px;
+  line-height: 1.2;
+  min-height: 30px;
 }
 
 .inputWrap {

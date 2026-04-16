@@ -25,7 +25,7 @@ const chatMessages = [
   },
 ] as const;
 
-const suggestions = ["换成亲子友好", "把预算压到 4000", "增加城市夜景"] as const;
+// const suggestions = ["换成亲子友好", "把预算压到 4000", "增加城市夜景"] as const;
 
 const plan = normalizeFinalPlan(rawPlan);
 
@@ -63,13 +63,13 @@ export default function Home() {
               </article>
             ))}
 
-            <div className={styles.suggestionRow}>
+            {/* <div className={styles.suggestionRow}>
               {suggestions.map((item) => (
                 <button key={item} type="button" className={styles.suggestionBtn}>
                   {item}
                 </button>
               ))}
-            </div>
+            </div> */}
           </div>
 
           <footer className={styles.inputWrap}>

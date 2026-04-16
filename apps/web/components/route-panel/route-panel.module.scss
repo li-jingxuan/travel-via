@@ -172,19 +172,19 @@
 
 .activityItem {
   display: grid;
-  grid-template-columns: 110px 1fr;
-  gap: 10px;
+  gap: 12px;
   border-radius: 12px;
   border: 1px solid rgba(204, 190, 168, 0.55);
   background: rgba(255, 250, 242, 0.74);
-  padding: 10px;
+  padding: 12px;
 }
 
-.activityImageWrap {
-  height: 90px;
-  border-radius: 10px;
-  overflow: hidden;
-  background: rgba(232, 237, 242, 0.78);
+.activityGallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+  gap: 8px;
+  align-content: start;
+  margin-top: 2px;
 }
 
 .activityImage {
@@ -193,8 +193,31 @@
   object-fit: cover;
 }
 
+.thumbnailButton {
+  border: 1px solid rgba(165, 173, 185, 0.35);
+  border-radius: 10px;
+  height: 86px;
+  overflow: hidden;
+  background: rgba(232, 237, 242, 0.78);
+  padding: 0;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: rgba(16, 104, 88, 0.4);
+    box-shadow: 0 8px 18px rgba(22, 31, 44, 0.18);
+  }
+}
+
 .activityImageFallback {
-  height: 100%;
+  min-height: 86px;
+  grid-column: 1 / -1;
+  border-radius: 10px;
+  border: 1px dashed rgba(143, 156, 173, 0.45);
+  background: rgba(232, 237, 242, 0.78);
   display: grid;
   place-items: center;
   color: #5a6775;
@@ -230,6 +253,63 @@
     color: #2e625a;
     padding: 3px 8px;
   }
+}
+
+.noImageHint {
+  margin: 10px 0 0;
+  color: #607082;
+  font-size: 12px;
+}
+
+.lightboxBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(66, 100, 125, 0.22), transparent 48%),
+    rgba(18, 26, 39, 0.82);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+}
+
+.lightboxDialog {
+  position: relative;
+  width: min(980px, 100%);
+  max-height: calc(100vh - 40px);
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid rgba(186, 205, 228, 0.38);
+  background: rgba(12, 20, 33, 0.96);
+  box-shadow: 0 24px 60px rgba(4, 7, 14, 0.55);
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+}
+
+.lightboxClose {
+  justify-self: end;
+  border-radius: 999px;
+  border: 1px solid rgba(174, 201, 224, 0.4);
+  background: rgba(28, 42, 62, 0.8);
+  color: #d5e4f3;
+  font-size: 12px;
+  padding: 6px 10px;
+}
+
+.lightboxImage {
+  width: 100%;
+  max-height: calc(100vh - 150px);
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+.lightboxCaption {
+  margin: 0;
+  color: #b5c9dd;
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .metaGrid {
@@ -312,11 +392,16 @@
     padding: 14px;
   }
 
-  .activityItem {
-    grid-template-columns: 1fr;
+  .thumbnailButton {
+    height: 92px;
   }
 
-  .activityImageWrap {
-    height: 140px;
+  .lightboxBackdrop {
+    padding: 10px;
+  }
+
+  .lightboxDialog {
+    max-height: calc(100vh - 20px);
+    padding: 10px;
   }
 }

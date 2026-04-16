@@ -10,6 +10,7 @@ export interface CreatePlanResponseData {
   finalPlan: ITravelPlan | null
   errors: string[]
   needUserInput: boolean
+  planSummary: string
   debugState?: unknown
 }
 
@@ -23,6 +24,10 @@ export interface CreateChatStreamRequest {
 export type AgentStreamEventName =
   | "start"
   | "state"
+  | "plan_ready"
+  | "summary_start"
+  | "summary_delta"
+  | "summary_done"
   | "done"
   | "error"
   | "heartbeat"

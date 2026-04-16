@@ -13,16 +13,16 @@ import {
 } from "./formatters";
 
 function normalizeActivity(activity: RawFinalPlan["days"][number]["activities"][number]): ActivityViewModel {
-  const coverImage = activity.images?.[0];
-
   return {
     name: activity.name,
     description: activity.description,
     suggestedHours: activity.suggestedHours,
     openingHoursText: formatOpeningHours(activity.openingHours),
     ticketText: formatTicketPrice(activity.ticketPriceCny),
-    imageSrc: coverImage?.imgSrc ?? null,
-    imageAlt: coverImage?.description || `${activity.name} 参考图`,
+    images: (activity.images ?? []).map((image, index) => ({
+      src: image.imgSrc,
+      alt: (image.description || `${activity.name} 图片 ${index + 1}`).replace("高德参考图片", "参考图片"),
+    })),
   };
 }
 

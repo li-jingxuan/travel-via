@@ -111,6 +111,8 @@ export interface ActivityViewModel {
   suggestedHours: string;
   openingHoursText: string;
   ticketText: string;
-  imageSrc: string | null;
-  imageAlt: string;
+  images: Array<{
+    src: string;
+    alt: string;
+  }>;
 }

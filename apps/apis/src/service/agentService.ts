@@ -1,9 +1,12 @@
 import { travelPlannerGraph } from "@repo/agents/src/index.js"
+import { createDeepSeekReasoner } from "@repo/agents/src/lib/llm.js"
 import type { ITravelPlan } from "@repo/shared-types/travel"
 import type { AgentStreamEvent } from "../types/agent.js"
 
 interface GraphInvokeResult {
   finalPlan?: ITravelPlan | null
+  intent?: unknown
+  issues?: Array<{ code?: string; message?: string }>
   errors?: string[]
 }
 
@@ -11,7 +14,94 @@ export interface CreatePlanServiceResult {
   finalPlan: ITravelPlan | null
   errors: string[]
   needUserInput: boolean
+  planSummary: string
   debugState?: unknown
+}
+
+const summaryLlm = createDeepSeekReasoner({ temperature: 0.4 })
+
+const SUMMARY_SYSTEM_PROMPT = `你是一名资深旅行顾问。请基于行程规划结果，输出详细、清晰、可执行的中文总结。
+
+要求：
+1. 只基于输入数据总结，不得编造。
+2. 覆盖：行程总览、每日亮点、驾驶强度与节奏、住宿与用餐建议、风险提示与备选方案。
+3. 使用结构化小标题与分段，表达具体。
+4. 只输出纯文本，不要 Markdown 代码块。`
+
+function normalizeErrors(state: GraphInvokeResult): string[] {
+  if (Array.isArray(state.errors)) {
+    return state.errors
+  }
+
+  if (Array.isArray(state.issues)) {
+    return state.issues
+      .map((item) => item?.message)
+      .filter((message): message is string => typeof message === "string")
+  }
+
+  return []
+}
+
+function hasNeedUserInput(state: GraphInvokeResult, errors: string[]): boolean {
+  const fromIssues = Array.isArray(state.issues)
+    ? state.issues.some((item) => item?.code === "NEED_USER_INPUT")
+    : false
+
+  const fromErrors = errors.some((item) => item.startsWith("NEED_USER_INPUT:"))
+
+  return fromIssues || fromErrors
+}
+
+function extractTextFromChunk(chunk: unknown): string {
+  if (!chunk || typeof chunk !== "object") return ""
+  const content = (chunk as { content?: unknown }).content
+
+  if (typeof content === "string") {
+    return content
+  }
+
+  if (Array.isArray(content)) {
+    let merged = ""
+    for (const part of content) {
+      if (typeof part === "string") {
+        merged += part
+        continue
+      }
+      if (
+        part &&
+        typeof part === "object" &&
+        "text" in part &&
+        typeof (part as { text?: unknown }).text === "string"
+      ) {
+        merged += (part as { text: string }).text
+      }
+    }
+    return merged
+  }
+
+  return ""
+}
+
+async function* streamPlanSummaryText(
+  finalPlan: ITravelPlan,
+  intent?: unknown,
+  issues?: Array<{ code?: string; message?: string }>,
+): AsyncGenerator<string> {
+  const payload = {
+    finalPlan,
+    intent: intent ?? null,
+    issues: issues ?? [],
+  }
+
+  const prompt = `${SUMMARY_SYSTEM_PROMPT}\n\n输入数据：\n${JSON.stringify(payload, null, 2)}`
+  const stream = await summaryLlm.stream(prompt)
+
+  for await (const chunk of stream) {
+    const delta = extractTextFromChunk(chunk)
+    if (delta) {
+      yield delta
+    }
+  }
 }
 
 export async function createTravelPlan(
@@ -22,15 +112,14 @@ export async function createTravelPlan(
     userInput,
   })) as GraphInvokeResult
 
-  const errors = Array.isArray(state.errors) ? state.errors : []
-  const needUserInput = errors.some((item) =>
-    item.startsWith("NEED_USER_INPUT:"),
-  )
+  const errors = normalizeErrors(state)
+  const needUserInput = hasNeedUserInput(state, errors)
 
   return {
     finalPlan: state.finalPlan ?? null,
     errors,
     needUserInput,
+    planSummary: "",
     debugState: debug ? state : undefined,
   }
 }
@@ -59,6 +148,8 @@ export async function* streamTravelChat(
     userInput,
   })) as AsyncIterable<Record<string, unknown>>
   const aggregatedState: GraphInvokeResult = {}
+  let hasEmittedPlanReady = false
+  let planSummary = ""
 
   for await (const chunk of stream) {
     const updatedNodes = Object.keys(chunk)
@@ -68,6 +159,22 @@ export async function* streamTravelChat(
     for (const nodeUpdate of Object.values(chunk)) {
       if (nodeUpdate && typeof nodeUpdate === "object") {
         Object.assign(aggregatedState, nodeUpdate)
+      }
+    }
+
+    const touchedValidator = updatedNodes.includes("validator")
+    if (
+      touchedValidator &&
+      !hasEmittedPlanReady &&
+      aggregatedState.finalPlan
+    ) {
+      hasEmittedPlanReady = true
+      yield {
+        event: "plan_ready",
+        data: {
+          finalPlan: aggregatedState.finalPlan,
+          emittedAt: Date.now(),
+        },
       }
     }
 
@@ -81,13 +188,52 @@ export async function* streamTravelChat(
   }
 
   const finalState = aggregatedState
-  const errors = Array.isArray(finalState.errors) ? finalState.errors : []
-  const needUserInput = errors.some((item) => item.startsWith("NEED_USER_INPUT:"))
+  const errors = normalizeErrors(finalState)
+  const needUserInput = hasNeedUserInput(finalState, errors)
+
+  if (finalState.finalPlan) {
+    yield {
+      event: "summary_start",
+      data: { startedAt: Date.now() },
+    }
+
+    try {
+      for await (const delta of streamPlanSummaryText(
+        finalState.finalPlan,
+        finalState.intent,
+        finalState.issues,
+      )) {
+        planSummary += delta
+        yield {
+          event: "summary_delta",
+          data: { delta },
+        }
+      }
+
+      yield {
+        event: "summary_done",
+        data: {
+          planSummary,
+          finishedAt: Date.now(),
+        },
+      }
+    } catch (error) {
+      yield {
+        event: "summary_done",
+        data: {
+          planSummary,
+          error: (error as Error).message || "summary stream failed",
+          finishedAt: Date.now(),
+        },
+      }
+    }
+  }
 
   yield {
     event: "done",
     data: {
       finalPlan: finalState.finalPlan ?? null,
+      planSummary,
       errors,
       needUserInput,
       finishedAt: Date.now(),

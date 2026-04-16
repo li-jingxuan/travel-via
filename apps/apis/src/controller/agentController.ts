@@ -30,6 +30,7 @@ export async function createPlanHandler(ctx: Context) {
         finalPlan: null,
         errors: ["`userInput` is required"],
         needUserInput: false,
+        planSummary: "",
       },
     } satisfies CreatePlanResponse
     return
