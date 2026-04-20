@@ -115,6 +115,12 @@ $panel-shadow: 0 24px 70px rgba(60, 35, 12, 0.14);
   background: rgba(255, 242, 223, 0.95);
 }
 
+.msgError {
+  justify-self: start;
+  border-color: rgba(205, 86, 86, 0.35);
+  background: rgba(255, 236, 236, 0.85);
+}
+
 .msgMeta {
   display: flex;
   align-items: center;
@@ -129,6 +135,27 @@ $panel-shadow: 0 24px 70px rgba(60, 35, 12, 0.14);
   font-size: 14px;
   line-height: 1.55;
   color: $ink-1;
+}
+
+.streamingCaret {
+  margin-left: 4px;
+  color: #0f6a59;
+  animation: blink 0.9s steps(1) infinite;
+}
+
+.progressRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.progressTag {
+  border-radius: 999px;
+  border: 1px solid rgba(89, 120, 137, 0.35);
+  background: rgba(244, 249, 255, 0.92);
+  color: #3c5870;
+  font-size: 11px;
+  padding: 4px 9px;
 }
 
 .suggestionRow {
@@ -153,6 +180,15 @@ $panel-shadow: 0 24px 70px rgba(60, 35, 12, 0.14);
   font-size: 12px;
   line-height: 1.2;
   min-height: 30px;
+}
+
+.followupHint {
+  margin: 0;
+  border-left: 3px solid rgba(202, 137, 56, 0.45);
+  padding-left: 10px;
+  color: #6f5835;
+  font-size: 12px;
+  line-height: 1.55;
 }
 
 .inputWrap {
@@ -196,6 +232,12 @@ $panel-shadow: 0 24px 70px rgba(60, 35, 12, 0.14);
   to {
     transform: translateY(0);
     opacity: 1;
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
   }
 }
 

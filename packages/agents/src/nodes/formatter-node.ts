@@ -35,7 +35,7 @@
  *   enrichedAccommodation (读)
  *   intent (读)
  *
- * - 模型：deepseek-reasoner（需要严格按照 Schema 组装，不能有格式错误）
+ * - 模型：deepseek-chat（优先速度，配合温度与重试策略保稳定）
  * - temperature=0：零随机性，最大化输出稳定性
  * - Tools：无（纯 LLM 推理 + 结构化输出）
  */
@@ -56,6 +56,111 @@ import { agentLog } from "../lib/logger.js"
  * - 如果温度 > 0，LLM 可能"自作主张"修改字段名或添加额外内容
  */
 const llm = createDeepSeekReasoner({ temperature: 0 })
+/** 首次请求 + 2 次重试 */
+const FORMATTER_MAX_ATTEMPTS = 3
+
+/**
+ * 判断 formatter 错误是否适合在节点内重试。
+ *
+ * 当前仅把“输出格式不可解析”视为可恢复错误；
+ * 业务语义问题仍交给下游 validator 统一处理。
+ */
+function isRecoverableFormatterError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error)
+
+  return (
+    message.includes("Unexpected token")
+    || message.includes("JSON")
+    || message.includes("code block")
+    || message.includes("markdown")
+    || message.includes("Unterminated string")
+    || message.includes("truncated")
+    || message.includes("finish_reason=length")
+  )
+}
+
+/**
+ * 将 LLM content 统一提取为文本。
+ * 兼容：
+ * - string
+ * - LangChain content blocks（含 text 字段）
+ */
+function extractTextFromContent(content: unknown): string {
+  if (typeof content === "string") {
+    return content
+  }
+
+  if (!Array.isArray(content)) {
+    return ""
+  }
+
+  let merged = ""
+  for (const part of content) {
+    if (typeof part === "string") {
+      merged += part
+      continue
+    }
+
+    if (
+      part
+      && typeof part === "object"
+      && "text" in part
+      && typeof (part as { text?: unknown }).text === "string"
+    ) {
+      merged += (part as { text: string }).text
+    }
+  }
+
+  return merged
+}
+
+/**
+ * 判断响应是否疑似被截断。
+ * OpenAI 兼容接口一般会给 finish_reason，length 表示到达输出上限。
+ */
+function isResponseTruncated(response: unknown): boolean {
+  if (!response || typeof response !== "object") return false
+  if (!("response_metadata" in response)) return false
+
+  const metadata = (response as { response_metadata?: unknown }).response_metadata
+  if (!metadata || typeof metadata !== "object") return false
+
+  const finishReason = (metadata as { finish_reason?: unknown }).finish_reason
+  return finishReason === "length"
+}
+
+/**
+ * 简单退避等待，避免连续瞬时重试导致同类错误高频复现。
+ */
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms)
+  })
+}
+
+const enrichedRouteSkeleton = (state: typeof TravelStateAnnotation.State) => {
+  return state.routeSkeleton?.map((dayPlan) => {
+    const {
+      distance=0, drivingHours=0, day, title, waypoints, description,
+      foodRecommendation, commentTips, accommodation, activities
+    } = dayPlan
+
+    const enrichedAccommodation = state.enrichedAccommodation.get(day - 1)
+    const enrichedActivities = state.enrichedActivities.get(day - 1)
+
+    return {
+      distance,
+      drivingHours,
+      day,
+      title,
+      waypoints, description,
+      foodRecommendation,
+      commentTips,
+      activities: (enrichedActivities || activities).map((c) => ({ ...c })),
+      accommodation: enrichedAccommodation || accommodation
+    }
+  })
+}
 
 /**
  * Formatter 节点函数
@@ -87,58 +192,96 @@ export async function formatterNode(
     )
   }
 
+  // 增强骨架
+  const newSkeleton = enrichedRouteSkeleton(state)!
+
   // 构造完整的数据上下文对象，包含所有中间产物
   // Map 类型转为普通 Object 以便 JSON 序列化传给 LLM
   const contextData = {
     intent,                                    // 用户原始意图
-    routeSkeleton: skeleton,                   // 行程骨架
-    enrichedActivities: Object.fromEntries(    // POI 丰富数据（Map→Object）
-      state.enrichedActivities ?? [],
-    ),
-    enrichedWeather: state.enrichedWeather ?? [],       // 天气数据
-    enrichedAccommodation: Object.fromEntries(          // 酒店数据（Map→Object）
-      state.enrichedAccommodation ?? [],
-    ),
+    skeleton: newSkeleton,                   // 增强之后行程骨架
   }
 
-  // 调用 LLM 执行格式化组装
-  // SystemMessage 包含完整的 ITravelPlan Schema 定义和填充规则
-  // HumanMessage 提供所有待组装的原始数据
-  const response = await llm.invoke([
+  const contextDataJSONStr = JSON.stringify(contextData, null, 2)
+  agentLog('contextData: ', contextDataJSONStr)
+
+  // 固定主提示：每次重试都复用同一份输入上下文，避免重试时上下文漂移。
+  const baseMessages = [
     new SystemMessage(FORMATTER_SYSTEM_PROMPT),
     new HumanMessage(
-      `请将以下数据组装为完整的 ITravelPlan JSON：\n\n${JSON.stringify(contextData, null, 2)}`,
+      `请根据以下数据完成数据填充 ITravelPlan JSON：\n\n${contextDataJSONStr}`,
     ),
-  ])
+  ]
 
-  // 解析最终的 ITravelPlan JSON
-  const content = response.content as string
-  let finalPlan: ITravelPlan
+  // 固定纠错提示：失败后附加同一条短提示，不做累积，避免重试输入不断膨胀。
+  const retryHint = new HumanMessage(
+    [
+      "上次输出解析失败，请严格修正并重新输出：",
+      "1. 只输出纯 JSON 对象",
+      "2. 不要 markdown 代码块",
+      "3. 字段名与结构必须完全匹配 ITravelPlan Schema",
+    ].join("\n"),
+  )
+  let lastError: unknown = null
 
-  try {
-    const jsonStr = content.replace(/```\w*\n?|\n?```/g, "").trim()
-    finalPlan = JSON.parse(jsonStr)
-  } catch (parseError) {
-    agentLog("格式化", "组装失败", {
-      reason: "LLM 输出 JSON 解析失败",
-      error: parseError instanceof Error ? parseError.message : String(parseError),
-    })
-    // Formatter 的 JSON 解析失败是不可接受的
-    // 抛出错误让外层处理（Graph 会继续运行但 finalPlan 为 null，
-    // 然后 Validator 会检测到 null 并触发重试）
-    console.error("Formatter JSON parse failed:", parseError)
-    console.error("Raw LLM output:", content)
-    throw new Error(`Formatter failed to produce valid ITravelPlan: ${parseError}`)
+  // 节点内有限重试：只修复“输出格式问题”，避免整图回退带来的高成本。
+  for (let attempt = 1; attempt <= FORMATTER_MAX_ATTEMPTS; attempt += 1) {
+    try {
+      const response = await llm.invoke(
+        attempt === 1 ? baseMessages : [...baseMessages, retryHint],
+      )
+      agentLog("格式化", "LLM 调用成功，输出: ", response.content)
+
+      if (isResponseTruncated(response)) {
+        throw new Error("formatter response truncated: finish_reason=length")
+      }
+
+      const content = extractTextFromContent(response.content)
+      if (!content.trim()) {
+        throw new Error("formatter response content is empty")
+      }
+
+      // 兼容模型偶发返回 markdown code fence 的情况。
+      const jsonStr = content.replace(/```\w*\n?|\n?```/g, "").trim()
+      const finalPlan: ITravelPlan = {
+        ...JSON.parse(jsonStr),
+        days: newSkeleton.map(c => ({ ...c }))
+      }
+
+      agentLog("格式化", "组装成功", {
+        planName: finalPlan.planName,
+        totalDays: finalPlan.totalDays,
+        days: finalPlan.days.length,
+        attempt,
+      })
+
+      return {
+        finalPlan,       // 写入最终计划 → State.finalPlan
+        messages: [response], // 追加到消息历史 → State.messages
+      }
+    } catch (error) {
+      lastError = error
+      const recoverable = isRecoverableFormatterError(error)
+
+      agentLog("格式化", "组装失败", {
+        reason: "LLM 输出 JSON 解析失败",
+        attempt,
+        recoverable,
+        error: error instanceof Error ? error.message : String(error),
+      })
+
+      // 不可恢复错误或已达上限时直接退出循环并抛错。
+      if (!recoverable || attempt === FORMATTER_MAX_ATTEMPTS) {
+        break
+      }
+
+      // 轻量线性退避：第 1 次 150ms，第 2 次 300ms。
+      await sleep(150 * attempt)
+    }
   }
 
-  agentLog("格式化", "组装成功", {
-    planName: finalPlan.planName,
-    totalDays: finalPlan.totalDays,
-    dayCount: finalPlan.days.length,
-  })
-
-  return {
-    finalPlan,          // 写入最终计划 → State.finalPlan
-    messages: [response], // 追加到消息历史 → State.messages
-  }
+  throw new Error(
+    `Formatter failed after ${FORMATTER_MAX_ATTEMPTS} attempts: ${lastError instanceof Error ? lastError.message : String(lastError)
+    }`,
+  )
 }

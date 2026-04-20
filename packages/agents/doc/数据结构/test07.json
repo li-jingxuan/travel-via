@@ -1,0 +1,613 @@
+{
+    "finalPlan": {
+        "planName": "长沙出发重庆5天4晚盛夏自由行",
+        "totalDays": 5,
+        "totalDistance": 923.4,
+        "vehicleType": "公共交通与步行结合",
+        "vehicleAdvice": "重庆是著名的山城，道路复杂且坡度大。建议：1）市内游览可多依赖轨道交通（轻轨）和出租车/网约车，避免自驾带来的停车和导航困扰；2）导航软件（如高德地图）在重庆可能因立体交通而失灵，注意查看实景和问路；3）务必穿着舒适、防滑的平底鞋，应对大量上下坡和阶梯；4）轨道交通能体验穿楼而过的李子坝站等独特景观。",
+        "bestSeason": "春季（3-5月）和秋季（9-11月），气候宜人。夏季（6-8月）炎热但可体验山城火辣氛围与璀璨夜景，冬季较为湿冷。",
+        "essentialItems": [
+            "防晒用品（防晒霜、太阳镜、遮阳帽）",
+            "防暑药品（藿香正气水、风油精）",
+            "雨伞（7月多阵雨）",
+            "舒适的运动鞋/平底鞋",
+            "大容量充电宝",
+            "轻便背包",
+            "身份证件",
+            "肠胃药（应对麻辣饮食）"
+        ],
+        "weather": [
+            {
+                "area": "重庆主城区",
+                "daytime": {
+                    "tempMax": 38,
+                    "tempMin": 35,
+                    "weather": "晴间多云，炎热"
+                },
+                "nighttime": {
+                    "tempMax": 32,
+                    "tempMin": 28,
+                    "weather": "多云，偶有短时阵雨"
+                },
+                "clothing": "建议穿着轻薄、透气、速干的夏装（短袖、短裤、裙子），并做好强力防晒。可备一件薄外套用于空调房或游船甲板。"
+            }
+        ],
+        "days": [
+            {
+                "day": 1,
+                "title": "第1天 | 抵达山城，初探渝中",
+                "waypoints": [
+                    {
+                        "alias": "重庆江北国际机场",
+                        "address": "重庆市渝北区两路镇",
+                        "city": "重庆市",
+                        "province": "重庆市"
+                    },
+                    {
+                        "alias": "解放碑",
+                        "address": "重庆市渝中区民族路177号",
+                        "city": "重庆市",
+                        "province": "重庆市"
+                    },
+                    {
+                        "alias": "洪崖洞民俗风貌区",
+                        "address": "重庆市渝中区嘉陵江滨江路88号",
+                        "city": "重庆市",
+                        "province": "重庆市"
+                    }
+                ],
+                "description": "从长沙飞抵重庆，入住酒店后，前往渝中半岛核心区，感受山城地标与现代商业的交融，傍晚欣赏洪崖洞的璀璨夜景。",
+                "accommodation": [
+                    {
+                        "name": "重庆解放碑威斯汀酒店",
+                        "address": "新华路222号(小什字地铁站5A口步行190米)",
+                        "feature": "住宿服务;宾馆酒店;五星级宾馆｜评分4.7"
+                    },
+                    {
+                        "name": "翰文大酒店",
+                        "address": "双钢路1号附1号(黄花园大桥南桥头石黄隧道旁)",
+                        "feature": "住宿服务;宾馆酒店;宾馆酒店｜评分4.7"
+                    }
+                ],
+                "foodRecommendation": [
+                    "佩姐老火锅(洪崖洞店)",
+                    "好又来酸辣粉(解放碑店)",
+                    "一只酸奶牛"
+                ],
+                "commentTips": "7月重庆炎热，注意防暑降温。洪崖洞内部商业气息较浓，外部拍照打卡即可。建议傍晚前往，既可看白天的建筑，也能等待夜景亮灯。",
+                "activities": [
+                    {
+                        "name": "东水门",
+                        "description": "重庆的城市象征与繁华商业中心，感受现代都市氛围。（评分4.1，人均消费待补充）",
+                        "suggestedHours": "1-2小时",
+                        "ticketPriceCny": 0,
+                        "openingHours": "24小时营业",
+                        "images": [
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "https://aos-comment.amap.com/B001791SCK/comment/7e4c36afe1b8d4a7a10cf18751caae52_2048_2048_80.jpg"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "https://aos-comment.amap.com/B0FFFWYOXE/comment/08B0B3E4_C91A_470B_9695_C549774D705A_L0_001_1134_2016_1761120199052_20178544.jpg"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "https://aos-comment.amap.com/B0FFFWYOXE/comment/file_media_Photo_4985_IMG_1758681461_4498_IMG_20250924_103601_jpg_ss_2.jpg"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "重庆动物园",
+                        "description": "依山而建的吊脚楼建筑群，夜晚灯光亮起时宛如《千与千寻》中的场景。（评分4.8，人均消费待补充）",
+                        "suggestedHours": "2-3小时",
+                        "ticketPriceCny": 0,
+                        "openingHours": "08:00-16:00",
+                        "images": [
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/09de14668d0efa3d8dd189ed267d87b7"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/4c0404ca96d0e32280b5f62612ec6016"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/4a1433843d587ec6fa2c1cd51ee0fb00"
+                            }
+                        ]
+                    }
+                ],
+                "distance": 842.7,
+                "drivingHours": 9.6
+            },
+            {
+                "day": 2,
+                "title": "第2天 | 母城记忆与长江索道",
+                "waypoints": [
+                    {
+                        "alias": "湖广会馆",
+                        "address": "重庆市渝中区长滨路芭蕉园1号",
+                        "city": "重庆市",
+                        "province": "重庆市"
+                    },
+                    {
+                        "alias": "长江索道(新华路站)",
+                        "address": "重庆市渝中区新华路151号",
+                        "city": "重庆市",
+                        "province": "重庆市"
+                    },
+                    {
+                        "alias": "龙门浩老街",
+                        "address": "重庆市南岸区南滨路105号",
+                        "city": "重庆市",
+                        "province": "重庆市"
+                    },
+                    {
+                        "alias": "南山一棵树观景台",
+                        "address": "重庆市南岸区南山街道龙黄公路",
+                        "city": "重庆市",
+                        "province": "重庆市"
+                    }
+                ],
+                "description": "上午探寻湖广会馆的移民历史，下午乘坐长江索道横跨两岸，在南岸的龙门浩老街感受开埠文化，傍晚登南山俯瞰渝中半岛全景。",
+                "accommodation": [
+                    {
+                        "name": "重庆JW万豪酒店",
+                        "address": "民生路235号(临江门地铁站3号口步行450米)",
+                        "feature": "住宿服务;宾馆酒店;五星级宾馆｜评分4.5"
+                    }
+                ],
+                "foodRecommendation": [
+                    "和记火爆(南滨路店)",
+                    "南山泉水鸡一条街",
+                    "埠口精酿·重庆夜景西餐酒吧(长嘉汇店)"
+                ],
+                "commentTips": "长江索道排队时间可能较长，建议通过官方渠道提前购票或错峰乘坐。南山一棵树观景台傍晚人流量大，建议提前前往占位。",
+                "activities": [
+                    {
+                        "name": "重庆十八梯传统风貌区",
+                        "description": "中国现存规模最大的古会馆建筑群，展现了清代重庆的移民文化与建筑艺术。（评分4.8，人均消费待补充）",
+                        "suggestedHours": "1.5-2小时",
+                        "ticketPriceCny": 0,
+                        "openingHours": "24小时营业",
+                        "images": [
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://aos-cdn-image.amap.com/sns/ugccomment/72a52977-9e95-4d8c-a5e4-446ca1128dd3.jpg"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://aos-cdn-image.amap.com/sns/ugccomment/94c7f6f2-0f66-408d-a064-d2be65194a4d.jpg"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "https://aos-comment.amap.com/B0G1XDI8P4/comment/20260324-9fba8d68de80423d6d42d1ca-4K4ks5RaEYH5ugFDYrAJ1R.jpg"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "重庆动物园",
+                        "description": "被誉为“万里长江第一条空中走廊”，是体验重庆立体交通和观赏两岸风光的独特方式。（评分4.8，人均消费待补充）",
+                        "suggestedHours": "1小时",
+                        "ticketPriceCny": 0,
+                        "openingHours": "08:00-16:00",
+                        "images": [
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/09de14668d0efa3d8dd189ed267d87b7"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/4c0404ca96d0e32280b5f62612ec6016"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/4a1433843d587ec6fa2c1cd51ee0fb00"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "磁器口古镇",
+                        "description": "依山面江的历史文化街区，保留了众多历史建筑，可远眺东水门大桥与渝中区。（评分4.7，人均消费待补充）",
+                        "suggestedHours": "1.5-2小时",
+                        "ticketPriceCny": 0,
+                        "openingHours": "24小时营业",
+                        "images": [
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://aos-cdn-image.amap.com/sns/ugccomment/0563885f-17e8-4b9a-b97f-ce1e60360f19.jpg"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "https://aos-comment.amap.com/B00170IFE4/headerImg/29433e01190f6478f1177e6ca16d17ce_2048_2048_80.jpg"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "https://aos-comment.amap.com/B00170IFE4/headerImg/770ffdfe9bb66b332cfd2a2f3bb50d48_2048_2048_80.jpg"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "龙门浩老街",
+                        "description": "俯瞰重庆主城区，尤其是渝中半岛夜景的绝佳观景点。（评分4.8，人均消费待补充）",
+                        "suggestedHours": "1-2小时",
+                        "ticketPriceCny": 0,
+                        "openingHours": "24小时营业",
+                        "images": [
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "https://store.is.autonavi.com/showpic/c5bce5ff4d52131c0000001414276214?type=pic"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "https://aos-comment.amap.com/B0FFJ0756U/comment/20260307-8459f813907bf0c19dc0b8c9-6uTgQfVDZOm65n5xb1nvTy.jpg"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "https://store.is.autonavi.com/showpic/8e0c10b4daf9fc723c8025d5f9503ba4"
+                            }
+                        ]
+                    }
+                ],
+                "distance": 12.2,
+                "drivingHours": 0.4
+            },
+            {
+                "day": 3,
+                "title": "第3天 | 红色足迹与文艺磁器口",
+                "waypoints": [
+                    {
+                        "alias": "李子坝轻轨穿楼观景平台",
+                        "address": "重庆市渝中区嘉陵新路与桂花园路交汇处",
+                        "city": "重庆市",
+                        "province": "重庆市"
+                    },
+                    {
+                        "alias": "磁器口古镇",
+                        "address": "重庆市沙坪坝区磁南街1号",
+                        "city": "重庆市",
+                        "province": "重庆市"
+                    },
+                    {
+                        "alias": "白公馆",
+                        "address": "重庆市沙坪坝区壮志路治法三村63号",
+                        "city": "重庆市",
+                        "province": "重庆市"
+                    },
+                    {
+                        "alias": "渣滓洞",
+                        "address": "重庆市沙坪坝区凌云路",
+                        "city": "重庆市",
+                        "province": "重庆市"
+                    }
+                ],
+                "description": "上午打卡网红轻轨穿楼奇观，随后前往沙坪坝区，在磁器口古镇感受老重庆的码头文化，下午参观白公馆、渣滓洞，缅怀革命历史。",
+                "accommodation": [
+                    {
+                        "name": "重庆融汇国际酒店",
+                        "address": "汇泉路8号",
+                        "feature": "住宿服务;宾馆酒店;五星级宾馆｜评分4.7"
+                    }
+                ],
+                "foodRecommendation": [
+                    "磁器口陈麻花",
+                    "古镇鸡杂",
+                    "张飞牛肉面"
+                ],
+                "commentTips": "磁器口古镇主街商业化程度高且拥挤，可尝试探索两侧小巷，更有生活气息。参观白公馆、渣滓洞需怀有肃穆之心，部分场景可能令人心情沉重。",
+                "activities": [
+                    {
+                        "name": "磁器口古镇",
+                        "description": "亲眼目睹轻轨列车从居民楼中穿行而过的独特城市景观。（评分4.7，人均消费待补充）",
+                        "suggestedHours": "0.5-1小时",
+                        "ticketPriceCny": 0,
+                        "openingHours": "24小时营业",
+                        "images": [
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://aos-cdn-image.amap.com/sns/ugccomment/0563885f-17e8-4b9a-b97f-ce1e60360f19.jpg"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "https://aos-comment.amap.com/B00170IFE4/headerImg/29433e01190f6478f1177e6ca16d17ce_2048_2048_80.jpg"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "https://aos-comment.amap.com/B00170IFE4/headerImg/770ffdfe9bb66b332cfd2a2f3bb50d48_2048_2048_80.jpg"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "磁器口古镇",
+                        "description": "重庆“新巴渝十二景”之一，拥有千年历史，汇聚了巴渝文化、宗教文化、沙磁文化。（评分4.7，人均消费待补充）",
+                        "suggestedHours": "2-3小时",
+                        "ticketPriceCny": 0,
+                        "openingHours": "24小时营业",
+                        "images": [
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://aos-cdn-image.amap.com/sns/ugccomment/0563885f-17e8-4b9a-b97f-ce1e60360f19.jpg"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "https://aos-comment.amap.com/B00170IFE4/headerImg/29433e01190f6478f1177e6ca16d17ce_2048_2048_80.jpg"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "https://aos-comment.amap.com/B00170IFE4/headerImg/770ffdfe9bb66b332cfd2a2f3bb50d48_2048_2048_80.jpg"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "歌乐山国家森林公园",
+                        "description": "原四川军阀白驹的别墅，后成为国民党军统局关押政治犯的监狱，是重要的革命历史遗迹。（评分4.7，人均消费待补充）",
+                        "suggestedHours": "1小时",
+                        "ticketPriceCny": 0,
+                        "openingHours": "08:00-18:00",
+                        "images": [
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/10599f26e4ece4580d2daa2cac2533ab"
+                            },
+                            {
+                                "description": "歌乐山国家森林公园",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/c0bd6054b7aca1407c2e71c4b000ee89"
+                            },
+                            {
+                                "description": "歌乐山国家森林公园",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/88b094ce5214b26bbe1aa4bec87f6018"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "重庆动物园",
+                        "description": "国民党特务机关用来关押和迫害革命者的监狱，与白公馆共同组成爱国主义教育基地。（评分4.8，人均消费待补充）",
+                        "suggestedHours": "1小时",
+                        "ticketPriceCny": 0,
+                        "openingHours": "08:00-16:00",
+                        "images": [
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/09de14668d0efa3d8dd189ed267d87b7"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/4c0404ca96d0e32280b5f62612ec6016"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/4a1433843d587ec6fa2c1cd51ee0fb00"
+                            }
+                        ]
+                    }
+                ],
+                "distance": 16.7,
+                "drivingHours": 0.7
+            },
+            {
+                "day": 4,
+                "title": "第4天 | 艺术园区与两江游轮",
+                "waypoints": [
+                    {
+                        "alias": "四川美术学院(黄桷坪校区)",
+                        "address": "重庆市九龙坡区黄桷坪正街108号",
+                        "city": "重庆市",
+                        "province": "重庆市"
+                    },
+                    {
+                        "alias": "重庆动物园",
+                        "address": "重庆市九龙坡区西郊一村1号",
+                        "city": "重庆市",
+                        "province": "重庆市"
+                    },
+                    {
+                        "alias": "朝天门码头",
+                        "address": "重庆市渝中区朝千路",
+                        "city": "重庆市",
+                        "province": "重庆市"
+                    }
+                ],
+                "description": "上午前往九龙坡区，在川美涂鸦街感受艺术气息，下午可选择参观动物园或休闲购物。晚上在朝天门码头登船，开启两江夜景游。",
+                "accommodation": [
+                    {
+                        "name": "重庆来福士洲际酒店",
+                        "address": "长江滨江路2号",
+                        "feature": "住宿服务;宾馆酒店;五星级宾馆｜评分4.7"
+                    },
+                    {
+                        "name": "重庆尼依格罗酒店",
+                        "address": "庆云路1号国金中心1号楼4、62层",
+                        "feature": "住宿服务;宾馆酒店;宾馆酒店｜评分4.7"
+                    }
+                ],
+                "foodRecommendation": [
+                    "胡记蹄花汤(黄桷坪老店)",
+                    "交通茶馆",
+                    "受气牛肉(观音桥店)"
+                ],
+                "commentTips": "两江游船票建议提前预订，并确认登船码头（通常为朝天门或洪崖洞码头）。游船甲板上风大，夏季也建议带件薄外套。",
+                "activities": [
+                    {
+                        "name": "重庆动物园",
+                        "description": "以四川美术学院为核心的涂鸦街区，整条街道的建筑外墙布满色彩斑斓的涂鸦作品，充满艺术活力。（评分4.8，人均消费待补充）",
+                        "suggestedHours": "1.5-2小时",
+                        "ticketPriceCny": 0,
+                        "openingHours": "08:00-16:00",
+                        "images": [
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/09de14668d0efa3d8dd189ed267d87b7"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/4c0404ca96d0e32280b5f62612ec6016"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/4a1433843d587ec6fa2c1cd51ee0fb00"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "重庆动物园",
+                        "description": "以展出大熊猫、金丝猴、华南虎等珍稀动物为特色，适合家庭游客。（评分4.8，人均消费待补充）",
+                        "suggestedHours": "2-3小时",
+                        "ticketPriceCny": 0,
+                        "openingHours": "08:00-16:00",
+                        "images": [
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/09de14668d0efa3d8dd189ed267d87b7"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/4c0404ca96d0e32280b5f62612ec6016"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/4a1433843d587ec6fa2c1cd51ee0fb00"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "湖广会馆",
+                        "description": "乘坐游轮航行于长江和嘉陵江上，从江面视角欣赏洪崖洞、大剧院、来福士等两岸璀璨夜景。（评分4.7，人均消费待补充）",
+                        "suggestedHours": "1-1.5小时",
+                        "ticketPriceCny": 0,
+                        "openingHours": "09:00-17:00",
+                        "images": [
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/b44117b134ac7b1d6dabee5d837c7642"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/46d2175646549329ebd5e0c8b1ff5398"
+                            },
+                            {
+                                "description": "湖广会馆",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/f9e331a43c654ce51fa7d167a5c4d2c3"
+                            }
+                        ]
+                    }
+                ],
+                "distance": 23.9,
+                "drivingHours": 0.8
+            },
+            {
+                "day": 5,
+                "title": "第5天 | 城市探索与返程",
+                "waypoints": [
+                    {
+                        "alias": "重庆中国三峡博物馆",
+                        "address": "重庆市渝中区人民路236号",
+                        "city": "重庆市",
+                        "province": "重庆市"
+                    },
+                    {
+                        "alias": "人民大礼堂",
+                        "address": "重庆市渝中区人民路173号",
+                        "city": "重庆市",
+                        "province": "重庆市"
+                    },
+                    {
+                        "alias": "山城步道(第三步道)",
+                        "address": "重庆市渝中区中兴路234号旁",
+                        "city": "重庆市",
+                        "province": "重庆市"
+                    },
+                    {
+                        "alias": "重庆江北国际机场",
+                        "address": "重庆市渝北区两路镇",
+                        "city": "重庆市",
+                        "province": "重庆市"
+                    }
+                ],
+                "description": "最后一天行程较为轻松。上午参观三峡博物馆与人民大礼堂，了解巴渝文化与三峡工程，随后漫步山城步道，最后根据航班时间前往机场，结束重庆之旅。",
+                "accommodation": [
+                    {
+                        "name": "足迹青年旅舍(重庆江北机场店)",
+                        "address": "双凤桥街道滨港路153号金港国际小区13栋3-4",
+                        "feature": "住宿服务;住宿服务相关;住宿服务相关｜评分4.6"
+                    }
+                ],
+                "foodRecommendation": [
+                    "曾老幺鱼庄(长滨路店)",
+                    "九九豆花馆",
+                    "老字号吴抄手"
+                ],
+                "commentTips": "最后一天请预留充足时间前往机场，考虑重庆交通可能拥堵。三峡博物馆与人民大礼堂隔广场相望，可一并游览。山城步道部分路段较陡，请穿着舒适的鞋子。",
+                "activities": [
+                    {
+                        "name": "重庆动物园",
+                        "description": "全面展示重庆及三峡地区历史文化和自然风光的国家级博物馆，镇馆之宝为乌杨汉阙和巴蜀青铜器。（评分4.8，人均消费待补充）",
+                        "suggestedHours": "2-3小时",
+                        "ticketPriceCny": 0,
+                        "openingHours": "08:00-16:00",
+                        "images": [
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/09de14668d0efa3d8dd189ed267d87b7"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/4c0404ca96d0e32280b5f62612ec6016"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/4a1433843d587ec6fa2c1cd51ee0fb00"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "湖广会馆",
+                        "description": "重庆的标志性建筑之一，仿北京天坛祈年殿的建筑风格，气势宏伟。（评分4.7，人均消费待补充）",
+                        "suggestedHours": "1小时",
+                        "ticketPriceCny": 0,
+                        "openingHours": "09:00-17:00",
+                        "images": [
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/b44117b134ac7b1d6dabee5d837c7642"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/46d2175646549329ebd5e0c8b1ff5398"
+                            },
+                            {
+                                "description": "湖广会馆",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/f9e331a43c654ce51fa7d167a5c4d2c3"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "湖广会馆",
+                        "description": "保留了老重庆风貌的步道，沿途可看到古城墙、传统民居，体验爬坡上坎的山城生活。（评分4.7，人均消费待补充）",
+                        "suggestedHours": "1-1.5小时",
+                        "ticketPriceCny": 0,
+                        "openingHours": "09:00-17:00",
+                        "images": [
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/b44117b134ac7b1d6dabee5d837c7642"
+                            },
+                            {
+                                "description": "高德参考图片",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/46d2175646549329ebd5e0c8b1ff5398"
+                            },
+                            {
+                                "description": "湖广会馆",
+                                "imgSrc": "http://store.is.autonavi.com/showpic/f9e331a43c654ce51fa7d167a5c4d2c3"
+                            }
+                        ]
+                    }
+                ],
+                "distance": 27.9,
+                "drivingHours": 0.6
+            }
+        ]
+    },
+    "emittedAt": 1776452015224
+}

@@ -1,206 +1,37 @@
-[
-  {
-    "day": 1,
-    "title": "第1天 | 抵达重庆，城市适应",
-    "waypoints": [
-      {
-        "alias": "解放碑",
-        "name": "解放碑步行街",
-        "city": "重庆市",
-        "province": "重庆市"
+{
+  "id": "bbcd3880-875b-43ee-a95c-13771189739d",
+  "content": "```json\n{\n  \"planName\": \"长沙至重庆5天自由行\",\n  \"totalDays\": 5,\n  \"totalDistance\": 917.8,\n  \"vehicleType\": \"飞机+市内公共交通/出租车/网约车\",\n  \"vehicleAdvice\": \"重庆地形复杂，多山多坡，建议优先使用轨道交通（轻轨）和网约车出行。自驾需注意复杂的立交桥和单行道。7月天气炎热，步行游览时注意防暑。\",\n  \"bestSeason\": \"春季（3-5月）和秋季（9-11月），气候宜人。7月为盛夏，炎热多雨，需做好防暑降温准备。\",\n  \"essentialItems\": [\n    \"防晒霜、遮阳帽、太阳镜\",\n    \"透气舒适的徒步鞋\",\n    \"雨伞或雨衣（7月多阵雨）\",\n    \"便携小风扇或扇子\",\n    \"肠胃药和防暑药品（如藿香正气水）\",\n    \"充电宝\",\n    \"身份证件\"\n  ],\n  \"weather\": [\n    {\n      \"area\": \"重庆市主城区（渝中、南岸、沙坪坝等）\",\n      \"daytime\": {\n        \"tempMax\": 35,\n        \"tempMin\": 28,\n        \"weather\": \"多云转晴，局部有阵雨\"\n      },\n      \"nighttime\": {\n        \"tempMax\": 28,\n        \"tempMin\": 25,\n        \"weather\": \"多云\"\n      },\n      \"clothing\": \"建议穿着轻薄透气的夏装（短袖、短裤、裙子），并备一件薄外套以防室内空调过冷或夜间降温。务必做好防晒。\"\n    }\n  ],\n  \"days\": [\n    {\n      \"day\": 1,\n      \"title\": \"第1天 | 抵达山城，初识渝中\",\n      \"waypoints\": [\n        {\n          \"alias\": \"重庆江北国际机场\",\n          \"address\": \"重庆市渝北区两路镇\",\n          \"city\": \"重庆市\",\n          \"province\": \"重庆市\"\n        },\n        {\n          \"alias\": \"解放碑\",\n          \"address\": \"重庆市渝中区民族路177号\",\n          \"city\": \"重庆市\",\n          \"province\": \"重庆市\"\n        },\n        {\n          \"alias\": \"洪崖洞民俗风貌区\",\n          \"address\": \"重庆市渝中区嘉陵江滨江路88号\",\n          \"city\": \"重庆市\",\n          \"province\": \"重庆市\"\n        }\n      ],\n      \"description\": \"从长沙飞抵重庆，入住酒店后，前往解放碑商圈感受都市繁华，傍晚在洪崖洞欣赏璀璨夜景。\",\n      \"accommodation\": [\n        {\n          \"name\": \"重庆解放碑威斯汀酒店\",\n          \"address\": \"新华路222号(小什字地铁站5A口步行190米)\",\n          \"feature\": \"住宿服务;宾馆酒店;五星级宾馆｜评分4.7\"\n        },\n        {\n          \"name\": \"翰文大酒店\",\n          \"address\": \"双钢路1号附1号(黄花园大桥南桥头石黄隧道旁)\",\n          \"feature\": \"住宿服务;宾馆酒店;宾馆酒店｜评分4.7\"\n        }\n      ],\n      \"foodRecommendation\": [\n        \"洞子老火锅\",\n        \"好又来酸辣粉\",\n        \"山城小汤圆\"\n      ],\n      \"commentTips\": \"7月重庆炎热，注意防暑降温。洪崖洞人流量大，建议错峰前往。\",\n      \"activities\": [\n        {\n          \"name\": \"东水门\",\n          \"description\": \"重庆的商业与文化中心，感受现代都市氛围。（评分4.1，人均消费待补充）\",\n          \"suggestedHours\": \"1-2小时\",\n          \"ticketPriceCny\": 0,\n          \"openingHours\": \"24小时营业\",\n          \"images\": [\n            {\n              \"description\": \"高德参考图片\",\n              \"imgSrc\": \"https://aos-comment.amap.com/B001791SCK/comment/7e4c36afe1b8d4a7a10cf18751caae52_2048_2048_80.jpg\"\n            },\n            {\n              \"description\": \"高德参考图片\",\n              \"imgSrc\": \"https://aos-comment.amap.com/B0FFFWYOXE/comment/08B0B3E4_C91A_470B_9695_C549774D705A_L0_001_1134_2016_1761120199052_20178544.jpg\"\n            },\n            {\n              \"description\": \"高德参考图片\",\n              \"imgSrc\": \"https://aos-comment.amap.com/B0FFFWYOXE/comment/file_media_Photo_4985_IMG_1758681461_4498_IMG_20250924_103601_jpg_ss_2.jpg\"\n            }\n          ]\n        },\n        {\n          \"name\": \"重庆动物园\",\n          \"description\": \"依山而建的吊脚楼建筑群，夜晚灯光亮起时宛如《千与千寻》场景。（评分4.8，人均消费待补充）\",\n          \"suggestedHours\": \"2-3小时\",\n          \"ticketPriceCny\": 0,\n          \"openingHours\": \"08:00-16:00\",\n          \"images\": [\n            {\n              \"description\": \"高德参考图片\",\n              \"imgSrc\": \"http://store.is.autonavi.com/showpic/09de14668d0efa3d8dd189ed267d87b7\"\n            },\n            {\n              \"description\": \"高德参考图片\",\n              \"imgSrc\": \"http://store.is.autonavi.com/showpic/4c0404ca96d0e32280b5f62612ec6016\"\n            },\n            {\n              \"description\": \"高德参考图片\",\n              \"imgSrc\": \"http://store.is.autonavi.com/showpic/4a1433843d587ec6fa2c1cd51ee0fb00\"\n            }\n          ]\n        }\n      ],\n      \"distance\": 842.7,\n      \"drivingHours\": 9.7\n    },\n    {\n      \"day\": 2,\n      \"title\": \"第2天 | 母城记忆与长江索道\",\n      \"waypoints\": [\n        {\n          \"alias\": \"湖广会馆\",\n          \"address\": \"重庆市渝中区长滨路芭蕉园1号\",\n          \"city\": \"重庆市\",\n          \"province\": \"重庆市\"\n        },\n        {\n          \"alias\": \"长江索道\",\n          \"address\": \"重庆市渝中区新华路151号\",\n          \"city\": \"重庆市\",\n          \"province\": \"重庆市\"\n        },\n        {\n          \"alias\": \"龙门浩老街\",\n          \"address\": \"重庆市南岸区南滨路105号\",\n          \"city\": \"重庆市\",\n          \"province\": \"重庆市\"\n        },\n        {\n          \"alias\": \"南山一棵树观景台\",\n          \"address\": \"重庆市南岸区南山街道龙黄公路\",\n          \"city\": \"重庆市\",\n          \"province\": \"重庆市\"\n        }\n      ],\n      \"description\": \"上午参观湖广会馆，了解移民历史。乘坐长江索道飞渡长江，在南岸的龙门浩老街漫步，傍晚登南山俯瞰渝中半岛夜景。\",\n      \"accommodation\": [\n        {\n          \"name\": \"重庆JW万豪酒店\",\n          \"address\": \"民生路235号(临江门地铁站3号口步行450米)\",\n          \"feature\": \"住宿服务;宾馆酒店;五星级宾馆｜评分4.5\"\n        }\n      ],\n      \"foodRecommendation\": [\n        \"南山泉水鸡\",\n        \"和记火爆\",\n        \"慈云寺素斋\"\n      ],\n      \"commentTips\": \"长江索道排队时间可能较长，建议通过官方渠道提前购票。南山观景台傍晚人流量大，建议提前前往。\",\n      \"activities\": [\n        {\n          \"name\": \"重庆十八梯传统风貌区\",\n          \"description\": \"清代古建筑群，展现了“湖广填四川”的移民历史。（评分4.8，人均消费待补充）\",\n          \"suggestedHours\": \"1.5-2小时\",\n          \"ticketPriceCny\": 0,\n          \"openingHours\": \"24小时营业\",\n          \"images\": [\n            {\n              \"description\": \"高德参考图片\",\n              \"imgSrc\": \"http://aos-cdn-image.amap.com/sns/ugccomment/72a52977-9e95-4d8c-a5e4-446ca1128dd3.jpg\"\n            },\n            {\n              \"description\": \"高德参考图片\",\n              \"imgSrc\": \"http://aos-cdn-image.amap.com/sns/ugccomment/94c7f6f2-0f66-408d-a064-d2be65194a4d.jpg\"\n            },\n            {\n              \"description\": \"高德参考图片\",\n              \"imgSrc\": \"https://aos-comment.amap.com/B0G1XDI8P4/comment/20260324-9fba8d68de80423d6d42d1ca-4K4ks5RaEYH5ugFDYrAJ1R.jpg\"\n            }\n          ]\n        },\n        {\n          \"name\": \"重庆动物园\",\n          \"description\": \"横跨长江的空中交通工具，从独特视角欣赏两岸风光。（评分4.8，人均消费待补充）\",\n          \"suggestedHours\": \"0.5-1小时\",\n          \"ticketPriceCny\": 0,\n          \"openingHours\": \"08:00-16:00\",\n          \"images\": [\n            {\n              \"description\": \"高德参考图片\",\n              \"imgSrc\": \"http://store.is.autonavi.com/showpic/09de14668d0efa3d8dd189ed267d87b7\"\n            },\n            {\n              \"description\": \"高德参考图片\",\n              \"imgSrc\": \"http://store.is.autonavi.com/showpic/4c0404ca96d0e32280b5f62612ec6016\"\n            },\n            {\n              \"description\": \"高德参考图片\",\n              \"imgSrc\": \"http://store.is.autonavi.com/showpic/4a1433843d587ec6fa2c1cd51ee0fb00\"\n            }\n          ]\n        },\n        {\n          \"name\": \"磁器口古镇\",\n          \"description\": \"依山面江的历史文化街区，拥有众多历史建筑和观景平台。（评分4.7，人均消费待补充）\",\n          \"suggestedHours\": \"1-2小时\",\n          \"ticketPriceCny\": 0,\n          \"openingHours\": \"24小时营业\",\n          \"images\": [\n            {\n              \"description\": \"高德参考图片\",\n              \"imgSrc\": \"http://aos-cdn-image.amap.com/sns/ugccomment/0563885f-17e8-4b9a-b97f-ce1e60360f19.jpg\"\n            },\n            {\n              \"description\": \"高德参考图片\",\n              \"imgSrc\": \"https://aos-comment.amap.com/B00170IFE4/headerImg/29433e01190f6478f1177e6ca16d17ce_2048_2048_80.jpg\"\n            },\n            {\n              \"description\": \"高德参考图片\",\n              \"imgSrc\": \"https://aos-comment.amap.com/B00170IFE4/headerImg/770ffdfe9bb66b332cfd2a2f3bb50d48_2048_2048_80.jpg\"\n            }\n          ]\n        },\n        {\n          \"name\": \"龙门浩老街\",\n          \"description\": \"俯瞰重庆主城区及两江夜景的绝佳观景点。（评分4.8，人均消费待补充）\",\n          \"suggestedHours\": \"1-2小时\",\n          \"ticketPriceCny\": 0,\n          \"openingHours\": \"24小时营业\",\n          \"images\": [\n            {\n              \"description\": \"高德参考图片\",\n              \"imgSrc\": \"https://store.is.autonavi.com/showpic/c5bce5ff4d52131c0000001414276214?type=pic\"\n            },\n            {\n              \"description\": \"高德参考图片\",\n              \"imgSrc\": \"https://aos-comment.amap.com/B0FFJ0756U/comment/20260307-8459f813907bf0c19dc0b8c9-6uTgQfVDZOm65n5xb1nvTy.jpg\"\n            },\n            {\n              \"description\": \"高德参考图片\",\n              \"imgSrc\": \"https://store.is.autonavi.com/showpic/8e0c10b4daf9fc723c8025d5f9503ba4\"\n            }\n          ]\n        }\n      ],\n      \"distance\": 12.2,\n      \"drivingHours\": 0.4\n    },\n    {\n      \"day\": 3,\n      \"title\": \"第3天 | 红色足迹与磁器口古镇\",\n      \"waypoints\": [\n        {\n          \"alias\": \"李子坝轻轨站\",\n          \"address\": \"重庆市渝中区李子坝正街39号\",\n          \"city\": \"重庆市\",\n          \"province\": \"重庆市\"\n        },\n        {\n          \"alias\": \"磁器口古镇\",\n          \"address\": \"重庆市沙坪坝区磁南街1号\",\n          \"city\": \"重庆市\",\n          \"province\": \"重庆市\"\n        },\n        {\n          \"alias\": \"白公馆\",\n          \"address\": \"重庆市沙坪坝区壮志路治法三村63号\",\n          \"city\": \"重庆市\",\n          \"province\": \"重庆市\"\n        },\n        {\n          \"alias\": \"渣滓洞\",\n          \"address\": \"重庆市沙坪坝区凌云路\",\n          \"city\": \"重庆市\",\n          \"province\": \"重庆市\"\n        }\n      ],\n      \"description\": \"上午打卡网红李子坝轻轨穿楼，随后前往磁器口古镇感受巴渝风情。下午参观白公馆、渣滓洞，缅怀革命历史。\",\n      \"accommodation\": [\n        {\n          \"name\": \"重庆沙坪坝站三峡广场希尔顿欢朋酒店\",\n          \"address\": \"龙湖光年2号楼41层\",\n          \"feature\": \"住宿服务;宾馆酒店;宾馆酒店｜评分4.7\"\n        }\n      ],\n      \"foodRecommendation\": [\n        \"磁器口陈麻花\",\n        \"毛血旺\",\n        \"古镇鸡杂\"\n      ],\n      \"commentTips\": \"磁器口古镇周末及节假日人流量极大，建议早去。参观红色景点请保持肃穆。\",\n      \"activities\": [\n        {\n          \"name\": \"磁器口古镇\",\n          \"description\": \"轻轨2号线穿楼而过的独特景观，可从观景平台拍照。（评分4.7，人均消费待补充）\",\n          \"suggestedHours\": \"0.5小时\",\n          \"ticketPriceCny\": 0,\n          \"openingHours\": \"24小时营业\",\n          \"images\": [\n            {\n              \"description\": \"高德参考图片\",\n              \"imgSrc\": \"http://aos-cdn-image.amap.com/sns/ugccomment/0563885f-17e8-4b9a-b97f-ce1e60360f19.jpg\"\n            },\n            {\n              \"description\": \"高德参考图片\",\n              \"imgSrc\": \"https://aos-comment.amap.com/B00170IFE4/headerImg/29433e01190f6478f1177e6ca16d17ce_2048_2048_80.jpg\"\n            },\n            {\n              \"description\": \"高德参考图片\",\n              \"imgSrc\": \"https://aos-comment.amap.com/B00170IFE4/headerImg/770ffdfe9bb66b332cfd2a2f3bb50d48_2048_2048_80.jpg\"\n            }\n          ]\n        },\n        {\n          \"name\": \"磁器口古镇\",\n          \"description\": \"拥有千年历史的古镇，街道两旁是各种特色商铺和小吃店。（评分4.7，人均消费待补充）\",\n          \"suggestedHours\": \"2-3小时\",\n          \"ticketPriceCny\": 0,\n          \"openingHours\": \"24小时营业\",\n          \"images\": [\n            {\n              \"description\": \"高德参考图片\",\n              \"imgSrc\": \"http://aos-cdn-image.amap.com/sns/ugccomment/0563885f-17e8-4b9a-b97f-ce1e60360f19.jpg\"\n            },\n            {\n              \"description\": \"高德参考图片\",\n              \"imgSrc\": \"https://aos-comment.amap.com/B00170IFE4/headerImg/29433e01190f6478f1177e6ca16d17ce_2048_2048_80.jpg\"\n            },\n            {\n              \"description\": \"高德参考图片\",\n              \"imgSrc\": \"https://aos-comment.amap.com/B00170IFE4/headerImg/770ffdfe9bb66b332cfd2a2f3bb50d48_2048_2048_80.jpg\"\n            }\n          ]\n        },\n        {\n          \"name\": \"歌乐山国家森林公园\",\n          \"description\": \"原四川军阀白驹的别墅，后成为国民党军统局关押政治犯的监狱。（评分4.7，人均消费待补充）\",\n          \"suggestedHours\": \"1小时\",\n          \"ticketPriceCny\": 0,\n          \"openingHours\": \"08:00-18:00\",\n          \"images\": [\n            {\n              \"description\": \"高德参考图片\",\n              \"imgSrc\": \"http://store.is.autonavi.com/showpic/10599f26e4ece4580d2daa2cac2533ab\"\n            },\n            {\n              \"description\": \"歌乐山国家森林公园\",\n              \"imgSrc\": \"http://store.is.autonavi.com/showpic/c0bd6054b7aca1407c2e71c4b000ee89\"\n            },\n            {\n              \"description\": \"歌乐山国家森林公园\",\n              \"imgSrc\": \"http://store.is.autonavi.com/showpic/88b094ce5214b26bbe1aa4bec87f6018\"\n            }\n          ]\n        },\n        {\n          \"name\": \"重庆动物园\",\n          \"description\": \"国民党特务机关关押、迫害革命者的监狱旧址，是重要的爱国主义教育基地。（评分4.8，",
+  "additional_kwargs": {},
+  "response_metadata": {
+    "tokenUsage": {
+      "promptTokens": 9733,
+      "completionTokens": 4096,
+      "totalTokens": 13829
+    },
+    "finish_reason": "length",
+    "model_provider": "openai",
+    "model_name": "deepseek-chat",
+    "usage": {
+      "prompt_tokens": 9733,
+      "completion_tokens": 4096,
+      "total_tokens": 13829,
+      "prompt_tokens_details": {
+        "cached_tokens": 1920
       },
-      {
-        "alias": "洪崖洞",
-        "name": "洪崖洞民俗风貌区",
-        "city": "重庆市",
-        "province": "重庆市"
-      }
-    ],
-    "description": "从长沙出发抵达重庆，办理入住后，在渝中区轻松游览，适应山城地形与炎热气候，晚间欣赏初夜景。",
-    "activities": [
-      {
-        "name": "解放碑步行街",
-        "description": "重庆地标商业区，感受城市繁华氛围与历史印记。",
-        "suggestedHours": "1-2小时",
-        "city": "重庆市",
-        "province": "重庆市"
-      },
-      {
-        "name": "洪崖洞",
-        "description": "依山而建的吊脚楼建筑群，夜晚灯光璀璨，适合拍照和漫步。",
-        "suggestedHours": "2-3小时",
-        "city": "重庆市",
-        "province": "重庆市"
-      }
-    ],
-    "accommodation": [
-      {
-        "name": "重庆解放碑威斯汀酒店",
-        "address": "渝中区新华路222号",
-        "feature": "位于解放碑核心区，交通便利，俯瞰两江夜景。",
-        "city": "重庆市",
-        "province": "重庆市"
-      }
-    ],
-    "foodRecommendation": ["重庆火锅", "重庆小面"],
-    "commentTips": "7月重庆炎热，注意防晒和补水；首日避免过度步行，适应楼梯和坡道；洪崖洞傍晚去最佳，避开中午高温。"
+      "prompt_cache_hit_tokens": 1920,
+      "prompt_cache_miss_tokens": 7813
+    },
+    "system_fingerprint": "fp_eaab8d114b_prod0820_fp8_kvcache_new_kvcache_20260410"
   },
-  {
-    "day": 2,
-    "title": "第2天 | 沙坪坝文化之旅",
-    "waypoints": [
-      {
-        "alias": "磁器口",
-        "name": "磁器口古镇",
-        "city": "重庆市",
-        "province": "重庆市"
-      },
-      {
-        "alias": "歌乐山",
-        "name": "歌乐山烈士陵园",
-        "city": "重庆市",
-        "province": "重庆市"
-      }
-    ],
-    "description": "前往沙坪坝区，探索古镇风情和红色历史景点，体验重庆的文化底蕴。",
-    "activities": [
-      {
-        "name": "磁器口古镇",
-        "description": "历史悠久的古镇街区，遍布小吃、手工艺品店，感受老重庆氛围。",
-        "suggestedHours": "2-3小时",
-        "city": "重庆市",
-        "province": "重庆市"
-      },
-      {
-        "name": "歌乐山烈士陵园",
-        "description": "重要的革命纪念地，了解历史，环境肃穆。",
-        "suggestedHours": "1-2小时",
-        "city": "重庆市",
-        "province": "重庆市"
-      }
-    ],
-    "accommodation": [
-      {
-        "name": "重庆沙坪坝丽笙世嘉酒店",
-        "address": "沙坪坝区三峡广场附近",
-        "feature": "靠近磁器口和歌乐山，便于次日出行，设施现代。",
-        "city": "重庆市",
-        "province": "重庆市"
-      }
-    ],
-    "foodRecommendation": ["陈麻花", "毛血旺"],
-    "commentTips": "磁器口人流密集，注意保管财物；穿着舒适防滑鞋，古镇石板路易滑；歌乐山区需保持肃静。"
-  },
-  {
-    "day": 3,
-    "title": "第3天 | 南岸夜景与长江风光",
-    "waypoints": [
-      {
-        "alias": "长江索道",
-        "name": "长江索道",
-        "city": "重庆市",
-        "province": "重庆市"
-      },
-      {
-        "alias": "南山一棵树",
-        "name": "南山一棵树观景台",
-        "city": "重庆市",
-        "province": "重庆市"
-      }
-    ],
-    "description": "乘坐长江索道横跨江面，下午前往南岸区，登南山欣赏重庆全景和璀璨夜景。",
-    "activities": [
-      {
-        "name": "长江索道",
-        "description": "特色交通工具，从高空俯瞰长江和山城建筑，体验独特视角。",
-        "suggestedHours": "1-2小时",
-        "city": "重庆市",
-        "province": "重庆市"
-      },
-      {
-        "name": "南山一棵树观景台",
-        "description": "最佳观景点之一，傍晚可观赏重庆两江夜景，视野开阔。",
-        "suggestedHours": "2-3小时",
-        "city": "重庆市",
-        "province": "重庆市"
-      }
-    ],
-    "accommodation": [
-      {
-        "name": "重庆南岸万豪酒店",
-        "address": "南岸区南滨路附近",
-        "feature": "位于南滨路，方便欣赏江景和次日出行，环境优雅。",
-        "city": "重庆市",
-        "province": "重庆市"
-      }
-    ],
-    "foodRecommendation": ["南山泉水鸡", "串串香"],
-    "commentTips": "长江索道可能排队较长，建议非高峰时段乘坐；南山傍晚凉爽但蚊虫多，备驱蚊液；夜景拍摄需带相机。"
-  },
-  {
-    "day": 4,
-    "title": "第4天 | 武隆天生三桥自然奇观",
-    "waypoints": [
-      {
-        "alias": "天生三桥",
-        "name": "武隆天生三桥",
-        "city": "重庆市",
-        "province": "重庆市"
-      }
-    ],
-    "description": "长途前往武隆区，参观世界自然遗产天生三桥，感受喀斯特地貌的壮丽与神奇。",
-    "activities": [
-      {
-        "name": "武隆天生三桥",
-        "description": "天然形成的石桥群，曾是电影取景地，步行游览峡谷和瀑布。",
-        "suggestedHours": "3-4小时",
-        "city": "重庆市",
-        "province": "重庆市"
-      }
-    ],
-    "accommodation": [
-      {
-        "name": "重庆渝中区洲际酒店",
-        "address": "渝中区解放碑附近",
-        "feature": "返回市区住宿，交通便利，适合最后一天轻松活动。",
-        "city": "重庆市",
-        "province": "重庆市"
-      }
-    ],
-    "foodRecommendation": ["武隆羊肉", "豆花饭"],
-    "commentTips": "长途车程约2-3小时，建议早起出发；景区内步行较多，穿运动鞋并带足饮水；注意防晒和防雨。"
-  },
-  {
-    "day": 5,
-    "title": "第5天 | 轻松收尾与返程",
-    "waypoints": [
-      {
-        "alias": "动物园",
-        "name": "重庆动物园",
-        "city": "重庆市",
-        "province": "重庆市"
-      }
-    ],
-    "description": "最后一天安排轻松活动，参观动物园或购物，购买重庆特产，然后准备返程回长沙。",
-    "activities": [
-      {
-        "name": "重庆动物园",
-        "description": "园内有熊猫等动物，适合家庭游览，环境清幽。",
-        "suggestedHours": "2-3小时",
-        "city": "重庆市",
-        "province": "重庆市"
-      }
-    ],
-    "accommodation": [
-      {
-        "name": "重庆江北机场附近酒店",
-        "address": "江北区机场路附近",
-        "feature": "靠近机场或高铁站，便于赶早班返程交通，提供接送服务。",
-        "city": "重庆市",
-        "province": "重庆市"
-      }
-    ],
-    "foodRecommendation": ["抄手", "酸辣粉"],
-    "commentTips": "预留足够时间去机场/车站，建议提前3小时出发；购买特产如火锅底料，可在超市或专卖店；注意检查行李。"
+  "tool_calls": [],
+  "invalid_tool_calls": [],
+  "usage_metadata": {
+    "output_tokens": 4096,
+    "input_tokens": 9733,
+    "total_tokens": 13829,
+    "input_token_details": {
+      "cache_read": 1920
+    },
+    "output_token_details": {}
   }
-]
+}

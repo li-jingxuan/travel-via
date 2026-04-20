@@ -12,7 +12,7 @@
 
 import { SystemMessage, HumanMessage } from "@langchain/core/messages"
 import { z } from "zod"
-import { createDeepSeekReasoner } from "../lib/llm.js"
+import { createDeepSeekV3 } from "../lib/llm.js"
 import type { TravelStateAnnotation } from "../graph/state.js"
 import type { RouteSkeletonDay } from "../types/internal.js"
 import { ROUTE_PLANNER_SYSTEM_PROMPT } from "../prompts/index.js"
@@ -20,7 +20,8 @@ import { agentLog } from "../lib/logger.js"
 import { parseRouteWaypoints } from "../lib/waypoint.js"
 
 /** 行程规划专用 LLM 实例 */
-const llm = createDeepSeekReasoner({ temperature: 0.7 })
+const plannerLlm = createDeepSeekV3({ temperature: 0.4 })
+const repairLlm = createDeepSeekV3({ temperature: 0 })
 
 const routeWaypointSchema = z.object({
   alias: z.string().trim().min(1),
@@ -130,6 +131,48 @@ function normalizeSkeletonWaypoints(
   })
 }
 
+async function tryRepairRouteSkeleton(
+  rawOutput: string,
+  expectedDays: number,
+  parseErrorMessage: string,
+): Promise<RouteSkeletonDay[] | null> {
+  const repairPrompt = `你是 JSON 修复器。请修复下方行程骨架输出为合法 JSON 数组，禁止补充解释文本。
+    修复目标：
+    1. 输出必须是 JSON 数组，长度必须为 ${expectedDays}。
+    2. day 必须从 1 开始连续递增。
+    3. 每天必须有：day,title,waypoints,description,activities,accommodation,foodRecommendation,commentTips。
+    4. 只输出修复后的纯 JSON。
+    原始错误：${parseErrorMessage}
+    原始输出：
+    ${rawOutput}`
+
+  const repairResponse = await repairLlm.invoke([
+    new SystemMessage("请严格执行 JSON 修复任务。"),
+    new HumanMessage(repairPrompt),
+  ])
+
+  const repairedText = String(repairResponse.content ?? "")
+    .replace(/```\w*\n?|\n?```/g, "")
+    .trim()
+
+  try {
+    const repairedParsed = JSON.parse(repairedText) as unknown
+    const repairedValidated = validateRouteSkeleton(repairedParsed, expectedDays)
+    if (!repairedValidated.success) {
+      agentLog("路线规划", "JSON 修复失败：修复结果仍不合法", {
+        reason: repairedValidated.message,
+      })
+      return null
+    }
+    return repairedValidated.data
+  } catch (error) {
+    agentLog("路线规划", "JSON 修复失败：解析失败", {
+      error: error instanceof Error ? error.message : String(error),
+    })
+    return null
+  }
+}
+
 /**
  * 路线骨架生成节点：
  * - 输入：intent
@@ -158,7 +201,7 @@ export async function routerPlannerNode(
     String(intent.days),
   )
 
-  const response = await llm.invoke([
+  const response = await plannerLlm.invoke([
     new SystemMessage(prompt),
     new HumanMessage(`请为以下用户需求生成${intent.days}天行程：\n\n${userContext}`),
   ])
@@ -176,6 +219,25 @@ export async function routerPlannerNode(
     }
     routeSkeleton = normalizeSkeletonWaypoints(validated.data, intent.destination)
   } catch (parseError) {
+    const parseErrorMessage =
+      parseError instanceof Error ? parseError.message : String(parseError)
+    const repaired = await tryRepairRouteSkeleton(
+      content,
+      intent.days,
+      parseErrorMessage,
+    )
+    if (repaired) {
+      routeSkeleton = normalizeSkeletonWaypoints(repaired, intent.destination)
+      agentLog("路线规划", "路线骨架修复成功", {
+        dayCount: routeSkeleton.length,
+      })
+      return {
+        routeSkeleton,
+        routePlannerRetryCount: 0,
+        messages: [response],
+      }
+    }
+
     /**
      * 解析失败策略：
      * - 不继续把坏骨架传给下游节点
@@ -183,7 +245,7 @@ export async function routerPlannerNode(
      */
     agentLog("路线规划", "路线骨架生成失败", {
       reason: "模型输出解析失败",
-      error: parseError instanceof Error ? parseError.message : String(parseError),
+      error: parseErrorMessage,
       retryCount: state.routePlannerRetryCount + 1,
     })
     console.error("RouterPlanner JSON parse failed:", parseError)

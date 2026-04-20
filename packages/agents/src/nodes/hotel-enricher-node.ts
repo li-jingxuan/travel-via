@@ -26,8 +26,10 @@ const extractCityFromAddress = (address: string) => {
 function buildDefaultAccommodation(
   seed: { name?: string; address?: string; feature?: string },
 ): IAccommodation {
+  const name = normalizeText(seed.name) || "无推荐住宿"
+
   return {
-    name: normalizeText(seed.name) || "无推荐住宿",
+    name,
     address: normalizeText(seed.address) || "",
     feature: normalizeText(seed.feature) || "",
     price: 0,
@@ -68,7 +70,7 @@ export async function hotelEnricherNode(
         || extractCityFromAddress(seed.address)
       const seedHotelName = normalizeText(seed.name) || "住宿推荐无"
 
-      if(!seedHotelName) {
+      if (!seedHotelName) {
         issues.push(
           createIssue(
             ERROR_CODE.HOTEL_ENRICH,

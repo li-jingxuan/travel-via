@@ -14,7 +14,7 @@ import {
   routerPlannerNode,
   drivingDistanceNode,
   poiEnricherNode,
-  weatherEnricherNode,
+  // weatherEnricherNode,
   hotelEnricherNode,
   formatterNode,
   preFormatterGuardNode,

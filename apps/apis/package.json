@@ -7,6 +7,7 @@
     "dev": "cross-env NODE_ENV=developer tsx watch src/app.ts",
     "build": "tsc",
     "start": "node dist/app.js",
+    "serve": "npm run build && npm run start",
     "lint": "eslint --max-warnings 0 src/",
     "check-types": "tsc --noEmit"
   },

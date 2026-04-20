@@ -75,7 +75,7 @@ function mapPoiTextResponse(
       images:
         poi.photos
           ?.filter((photo) => typeof photo.url === "string")
-          .slice(0, 3)
+          .slice(0, 5)
           .map((photo) => ({
             description: photo.title?.trim() || "高德参考图片",
             imgSrc: photo.url as string,

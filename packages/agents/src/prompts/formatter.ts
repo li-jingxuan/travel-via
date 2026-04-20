@@ -30,7 +30,6 @@ export const FORMATTER_OUTPUT_SCHEMA = {
     "bestSeason",
     "essentialItems",
     "weather",
-    "days",
   ],
   properties: {
     planName: { type: "string", description: "计划名称，如'新疆15天深度自驾游'" },
@@ -75,119 +74,133 @@ export const FORMATTER_OUTPUT_SCHEMA = {
           clothing: { type: "string" },
         },
       },
-    },
-    days: {
-      type: "array",
-      items: {
-        type: "object",
-        additionalProperties: false,
-        required: [
-          "day",
-          "title",
-          "waypoints",
-          "description",
-          "accommodation",
-          "foodRecommendation",
-          "activities",
-          "distance",
-          "drivingHours",
-        ],
-        properties: {
-          day: { type: "number" },
-          title: { type: "string" },
-          waypoints: {
-            type: "array",
-            items: {
-              type: "object",
-              additionalProperties: false,
-              required: ["alias", "address", "city", "province"],
-              properties: {
-                alias: { type: "string" },
-                address: { type: "string", description: "可直接用于高德 geocode 的 address 参数" },
-                city: { type: "string" },
-                province: { type: "string" },
-              },
-            },
-          },
-          description: { type: "string" },
-          accommodation: {
-            type: "array",
-            items: {
-              type: "object",
-              additionalProperties: false,
-              required: ["name", "address", "feature"],
-              properties: {
-                name: { type: "string" },
-                address: { type: "string" },
-                feature: { type: "string" },
-                booking: { type: "string" },
-                price: { type: "number" },
-              },
-            },
-          },
-          foodRecommendation: { type: "array", items: { type: "string" } },
-          commentTips: { type: "string" },
-          activities: {
-            type: "array",
-            items: {
-              type: "object",
-              additionalProperties: false,
-              required: [
-                "name",
-                "description",
-                "suggestedHours",
-                "ticketPriceCny",
-                "openingHours",
-                "images",
-              ],
-              properties: {
-                name: { type: "string" },
-                description: { type: "string" },
-                suggestedHours: { type: "string" },
-                ticketPriceCny: { type: "number" },
-                openingHours: { type: "string" },
-                images: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    additionalProperties: false,
-                    required: ["description", "imgSrc"],
-                    properties: {
-                      description: { type: "string" },
-                      imgSrc: { type: "string" },
-                    },
-                  },
-                },
-              },
-            },
-          },
-          distance: { type: "number" },
-          drivingHours: { type: "number" },
-        },
-      },
-    },
+    }
   },
 } as const
 
-export const FORMATTER_SYSTEM_PROMPT = `你是一位专业的旅行数据格式化专家。这是整个行程规划流程的最后一步，你的任务是将所有收集到的数据组装成严格符合 ITravelPlan 接口的 JSON。
+// days: {
+//   type: "array",
+//     items: {
+//     type: "object",
+//       additionalProperties: false,
+//         required: [
+//           "day",
+//           "title",
+//           "waypoints",
+//           "description",
+//           "accommodation",
+//           "foodRecommendation",
+//           "activities",
+//           "distance",
+//           "drivingHours",
+//         ],
+//           properties: {
+//       day: { type: "number" },
+//       title: { type: "string" },
+//       waypoints: {
+//         type: "array",
+//           items: {
+//           type: "object",
+//             additionalProperties: false,
+//               required: ["alias", "address", "city", "province"],
+//                 properties: {
+//             alias: { type: "string" },
+//             address: { type: "string", description: "可直接用于高德 geocode 的 address 参数" },
+//             city: { type: "string" },
+//             province: { type: "string" },
+//           },
+//         },
+//       },
+//       description: { type: "string" },
+//       accommodation: {
+//         type: "array",
+//           items: {
+//           type: "object",
+//             additionalProperties: false,
+//               required: ["name", "address", "feature"],
+//                 properties: {
+//             name: { type: "string" },
+//             address: { type: "string" },
+//             feature: { type: "string" },
+//             booking: { type: "string" },
+//             price: { type: "number" },
+//           },
+//         },
+//       },
+//       foodRecommendation: { type: "array", items: { type: "string" } },
+//       commentTips: { type: "string", description: "额外的评论或建议(可选)" },
+//       activities: {
+//         type: "array",
+//           items: {
+//           type: "object",
+//             additionalProperties: false,
+//               required: [
+//                 "name",
+//                 "description",
+//                 "suggestedHours",
+//                 "ticketPriceCny",
+//                 "openingHours",
+//                 "images",
+//               ],
+//                 properties: {
+//             name: { type: "string" },
+//             description: { type: "string" },
+//             suggestedHours: { type: "string" },
+//             ticketPriceCny: { type: "number" },
+//             openingHours: { type: "string" },
+//             images: {
+//               type: "array",
+//                 items: {
+//                 type: "object",
+//                   additionalProperties: false,
+//                     required: ["description", "imgSrc"],
+//                       properties: {
+//                   description: { type: "string" },
+//                   imgSrc: { type: "string" },
+//                 },
+//               },
+//             },
+//           },
+//         },
+//       },
+//       distance: { type: "number" },
+//       drivingHours: { type: "number" },
+//     },
+//   },
+// },
 
-输入数据：
-- routeSkeleton: 行程骨架（每天的标题、景点名称、描述、住宿、美食等）
-- routeSkeleton[i].distance / routeSkeleton[i].drivingHours: 若存在，表示来自高德路线规划的真实值
-- enrichedActivities: 已丰富的景点数据（含门票价格、开放时间、图片等，MVP阶段可能为空）
-- enrichedWeather: 天气数据（MVP阶段为空数组）
-- enrichedAccommodation: 住宿详情数据（MVP阶段可能为空）
-- intent: 用户原始意图
+function stripDescriptionsDeep(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map(stripDescriptionsDeep)
+  }
+
+  if (!value || typeof value !== "object") {
+    return value
+  }
+
+  const next: Record<string, unknown> = {}
+  for (const [key, child] of Object.entries(value)) {
+    if (key === "description") continue
+    next[key] = stripDescriptionsDeep(child)
+  }
+  return next
+}
+
+const FORMATTER_OUTPUT_SCHEMA_COMPACT = JSON.stringify(
+  stripDescriptionsDeep(FORMATTER_OUTPUT_SCHEMA),
+)
+
+export const FORMATTER_SYSTEM_PROMPT = `你是一位专业的旅行数据格式化专家。这是整个行程规划流程的最后一步，你的任务是填充 ITravelPlan 接口的 JSON。
 
 输出要求 — 必须严格符合以下 JSON Schema：
 
-${JSON.stringify(FORMATTER_OUTPUT_SCHEMA, null, 2)}
+${FORMATTER_OUTPUT_SCHEMA_COMPACT}
 
 规则：
-1. totalDistance 是所有 days.distance 的累加
-2. 若 routeSkeleton 的某天包含 distance / drivingHours，days 对应字段必须优先使用这些值
-3. 如果 enrichedActivities 为空，activities 的 ticketPriceCny 填 0，openingHours 填 "待查询"，images 填空数组
-4. 如果 enrichedWeather 为空，weather 填一个基于目的地和月份的合理估算
-5. 如果 enrichedAccommodation 为空，使用 routeSkeleton 中的 accommodation 数据
-6. essentialItems 根据目的地和季节给出 5-8 个实用建议
-7. 只输出纯 JSON 对象，不要有 markdown 包裹`
+1. essentialItems 根据目的地和季节给出 5-8 个实用建议
+2. 只输出纯 JSON 对象，不要有 markdown 包裹
+3. 禁止输出 schema、解释文字、注释或额外键
+4. weather 字段根据用户的出行月份给出参考值
+5. vehicleAdvice、essentialItems 等字段需要根据用户的 intent 、行程内容和形成季节进行合理补全，不要留空或写占位符
+6. totalDistance 是行程中每天 distance 字段的累加值，单位是公里
+`

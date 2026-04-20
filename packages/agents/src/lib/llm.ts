@@ -19,6 +19,7 @@ import { loadAgentsEnv } from "./env.js"
 loadAgentsEnv()
 
 const DEEPSEEK_BASE_URL = process.env.DEEPSEEK_BASE_URL
+type LlmOverrides = { temperature?: number; maxTokens?: number }
 
 /**
  * 创建 DeepSeek-V3 模型实例（通用任务）
@@ -29,10 +30,11 @@ const DEEPSEEK_BASE_URL = process.env.DEEPSEEK_BASE_URL
  *
  * @param overrides - 可选覆盖参数，如 { temperature: 0.1 } 进一步降低随机性
  */
-export function createDeepSeekV3(overrides?: { temperature?: number }) {
+export function createDeepSeekV3(overrides?: LlmOverrides) {
   return new ChatOpenAI({
     modelName: "deepseek-chat",
     temperature: overrides?.temperature ?? 0.3,
+    maxTokens: overrides?.maxTokens,
     configuration: { baseURL: DEEPSEEK_BASE_URL },
   })
 }
@@ -50,10 +52,11 @@ export function createDeepSeekV3(overrides?: { temperature?: number }) {
  *
  * @param overrides - 可选覆盖参数
  */
-export function createDeepSeekReasoner(overrides?: { temperature?: number }) {
+export function createDeepSeekReasoner(overrides?: LlmOverrides) {
   return new ChatOpenAI({
     modelName: "deepseek-reasoner",
     temperature: overrides?.temperature ?? 0.7,
+    maxTokens: overrides?.maxTokens,
     configuration: { baseURL: DEEPSEEK_BASE_URL },
   })
 }

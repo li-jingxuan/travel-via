@@ -26,9 +26,7 @@ function normalizeActivity(activity: RawFinalPlan["days"][number]["activities"][
   };
 }
 
-export function normalizeFinalPlan(raw: RawTravelData): TravelPlanViewModel {
-  const plan = raw.finalPlan;
-
+export function normalizeFinalPlanData(plan: RawFinalPlan): TravelPlanViewModel {
   return {
     summary: {
       planName: plan.planName,
@@ -57,4 +55,8 @@ export function normalizeFinalPlan(raw: RawTravelData): TravelPlanViewModel {
       activities: day.activities.map(normalizeActivity),
     })),
   };
+}
+
+export function normalizeFinalPlan(raw: RawTravelData): TravelPlanViewModel {
+  return normalizeFinalPlanData(raw.finalPlan);
 }
