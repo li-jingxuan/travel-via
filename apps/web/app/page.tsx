@@ -7,7 +7,7 @@ import { normalizeFinalPlan } from "../lib/travel-plan/normalize-final-plan";
 import rawPlan from "../mock/mock.json";
 import styles from "./page.module.scss";
 
-const suggestions = ["换成亲子友好", "把预算压到 4000", "增加城市夜景"] as const;
+// const suggestions = ["换成亲子友好", "把预算压到 4000", "增加城市夜景"] as const;
 const initialPlan = normalizeFinalPlan(rawPlan);
 
 function cn(...names: Array<string | false | null | undefined>) {
@@ -81,7 +81,7 @@ export default function Home() {
                 ))}
               </div>
             ) : null}
-
+{/* 
             <div className={styles.suggestionRow}>
               {suggestions.map((item) => (
                 <button
@@ -94,7 +94,7 @@ export default function Home() {
                   {item}
                 </button>
               ))}
-            </div>
+            </div> */}
 
             {needUserInput ? (
               <p className={styles.followupHint}>当前结果需要补充更多信息，请继续描述你的预算或偏好。</p>

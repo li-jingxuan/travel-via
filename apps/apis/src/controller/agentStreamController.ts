@@ -19,6 +19,8 @@ function writeSseEvent(ctx: Context, payload: AgentStreamEvent) {
   ctx.res.write(`id: ${eventId}\n`)
   ctx.res.write(`event: ${payload.event}\n`)
   ctx.res.write(`data: ${JSON.stringify(payload.data)}\n\n`)
+
+  console.log(`[SSE] Sent: id: ${eventId}, event: ${payload.event}, data: ${JSON.stringify(payload.data)}`)
 }
 
 /**
