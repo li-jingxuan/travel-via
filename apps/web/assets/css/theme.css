@@ -1,0 +1,29 @@
+:root {
+  --tv-bg-0: #ebf7ff;
+  --tv-bg-1: #d6ebff;
+  --tv-grid-dot: rgba(37, 108, 172, 0.08);
+  --tv-ink-1: #1d3249;
+  --tv-ink-2: #5a7590;
+  --tv-line-main: #b6d3ee;
+  --tv-panel-bg: rgba(248, 253, 255, 0.8);
+  --tv-panel-line: rgba(148, 184, 217, 0.55);
+  --tv-soft-shadow: 0 8px 24px rgba(30, 77, 121, 0.11);
+  --tv-panel-shadow: 0 24px 70px rgba(26, 76, 128, 0.16);
+  --tv-ai-bubble: rgba(236, 248, 255, 0.95);
+  --tv-user-bubble: rgba(214, 237, 255, 0.92);
+  --tv-error-bubble: rgba(255, 236, 236, 0.88);
+  --tv-progress-bg: rgba(237, 246, 255, 0.95);
+  --tv-progress-border: rgba(89, 134, 176, 0.35);
+  --tv-progress-text: #355c82;
+  --tv-pill-bg: #d7f2eb;
+  --tv-pill-border: rgba(24, 127, 106, 0.42);
+  --tv-pill-text: #0f6151;
+  --tv-input-bg: rgba(255, 255, 255, 0.9);
+  --tv-input-border: rgba(122, 158, 189, 0.58);
+  --tv-input-placeholder: #7592ad;
+  --tv-btn-start: #217ab8;
+  --tv-btn-end: #185f92;
+  --tv-btn-text: #f2f9ff;
+  --tv-panel-header-start: rgba(241, 250, 255, 0.7);
+  --tv-panel-header-end: rgba(220, 238, 255, 0.62);
+}
