@@ -19,6 +19,20 @@ interface StreamParams {
   userInput: string;
 }
 
+const NODE_LABEL_MAP: Record<string, string> = {
+  intent_agent: "正在理解你的需求",
+  ask_clarification: "正在生成补充问题",
+  route_planner: "正在规划路线",
+  route_planner_failed: "路线规划失败，正在结束本次尝试",
+  route_enrich_entry: "正在准备补全路线信息",
+  driving_distance: "正在计算驾车距离与时长",
+  poi_enricher: "正在补全景点信息",
+  hotel_enricher: "正在补全酒店建议",
+  pre_formatter_guard: "正在检查数据完整性",
+  formatter: "正在整理行程结果",
+  validator: "正在校验最终方案",
+};
+
 function createId(prefix: string): string {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
@@ -29,6 +43,13 @@ function formatNow(): string {
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
+}
+
+function mapUpdatedNodesToLabels(updatedNodes: string[] | undefined): string[] {
+  if (!updatedNodes?.length) return [];
+
+  const mapped = updatedNodes.map((node) => NODE_LABEL_MAP[node] ?? node);
+  return Array.from(new Set(mapped));
 }
 
 function toAgentEvent(raw: ParsedSseEvent): AgentStreamEvent | null {
@@ -63,7 +84,7 @@ function toAgentEvent(raw: ParsedSseEvent): AgentStreamEvent | null {
 }
 
 // 业务层 Hook：将流式事件映射为“消息列表 + 行程 + 进度”三类状态。
-export function useChatStream(initialPlan: TravelPlanViewModel) {
+export function useChatStream() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: createId("assistant"),
@@ -73,7 +94,7 @@ export function useChatStream(initialPlan: TravelPlanViewModel) {
     },
   ]);
   const [progressNodes, setProgressNodes] = useState<string[]>([]);
-  const [plan, setPlan] = useState<TravelPlanViewModel>(initialPlan);
+  const [plan, setPlan] = useState<TravelPlanViewModel | null>(null);
   const [needUserInput, setNeedUserInput] = useState(false);
 
   const activeAssistantIdRef = useRef<string | null>(null);
@@ -106,7 +127,7 @@ export function useChatStream(initialPlan: TravelPlanViewModel) {
     onEvent: (event) => {
       // state 事件只用于显示当前工作节点，不写入聊天消息。
       if (event.event === "state") {
-        setProgressNodes(event.data.updatedNodes ?? []);
+        setProgressNodes(mapUpdatedNodesToLabels(event.data.updatedNodes));
         return;
       }
 
@@ -173,10 +194,7 @@ export function useChatStream(initialPlan: TravelPlanViewModel) {
         // done 才是最终态：这里做兜底覆盖，确保数据一致。
         setNeedUserInput(Boolean(event.data.needUserInput));
 
-        if (event.data.finalPlan) {
-          setPlan(normalizeFinalPlanData(event.data.finalPlan));
-        }
-
+        // TODO 异常信息输出就可以了，不要在 UI 里暴露过多技术细节。
         if (event.data.errors?.length) {
           setMessages((prev) => [
             ...prev,

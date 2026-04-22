@@ -2,6 +2,7 @@ import { travelPlannerGraph } from "@repo/agents/src/index.js"
 import { createDeepSeekReasoner } from "@repo/agents/src/lib/llm.js"
 import type { ITravelPlan } from "@repo/shared-types/travel"
 import type { AgentStreamEvent } from "../types/agent.js"
+import { SUMMARY_MARKDOWN_SYSTEM_PROMPT } from "../prompts/summary.js"
 
 interface GraphInvokeResult {
   finalPlan?: ITravelPlan | null
@@ -19,14 +20,6 @@ export interface CreatePlanServiceResult {
 }
 
 const summaryLlm = createDeepSeekReasoner({ temperature: 0.4 })
-
-const SUMMARY_SYSTEM_PROMPT = `你是一名资深旅行顾问。请基于行程规划结果，输出详细、清晰、可执行的中文总结。
-
-要求：
-1. 只基于输入数据总结，不得编造。
-2. 覆盖：行程总览、每日亮点、驾驶强度与节奏、住宿与用餐建议、风险提示与备选方案。
-3. 使用结构化小标题与分段，表达具体。
-4. 只输出纯文本，不要 Markdown 代码块。`
 
 function normalizeErrors(state: GraphInvokeResult): string[] {
   if (Array.isArray(state.errors)) {
@@ -93,7 +86,7 @@ async function* streamPlanSummaryText(
     issues: issues ?? [],
   }
 
-  const prompt = `${SUMMARY_SYSTEM_PROMPT}\n\n输入数据：\n${JSON.stringify(payload, null, 2)}`
+  const prompt = `${SUMMARY_MARKDOWN_SYSTEM_PROMPT}\n\n输入数据：\n${JSON.stringify(payload)}`
   const stream = await summaryLlm.stream(prompt)
 
   for await (const chunk of stream) {
