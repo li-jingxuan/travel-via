@@ -26,12 +26,24 @@ export interface StreamRequestOptions extends RequestOptions {
 
 export type { ParsedSseEvent };
 
+const normalizeBaseURLCandidate = (value: string | undefined) => value?.trim() || undefined;
+const DEFAULT_REQUEST_TIMEOUT_MS = 90_000;
+const DEFAULT_STREAM_TIMEOUT_MS = 15 * 60 * 1000;
+
+// 默认读取环境变量：NEXT_PUBLIC_API_BASE_URL
+function resolveDefaultBaseURL(): string | undefined {
+  return normalizeBaseURLCandidate(process.env.NEXT_PUBLIC_API_BASE_URL);
+}
+
 // 支持通过环境变量统一拼接 API 前缀，也允许直接传完整 URL。
 function withBaseUrl(url: string, baseURL?: string): string {
-  if (!baseURL) return url;
+  const normalizedInputBase = normalizeBaseURLCandidate(baseURL);
+  if (!normalizedInputBase) return url;
   if (/^https?:\/\//.test(url)) return url;
 
-  const normalizedBase = baseURL.endsWith("/") ? baseURL.slice(0, -1) : baseURL;
+  const normalizedBase = normalizedInputBase.endsWith("/")
+    ? normalizedInputBase.slice(0, -1)
+    : normalizedInputBase;
   const normalizedPath = url.startsWith("/") ? url : `/${url}`;
   return `${normalizedBase}${normalizedPath}`;
 }
@@ -59,7 +71,7 @@ function buildHeaders(headers: HeadersInit | undefined, body: unknown): Headers 
 }
 
 // 合并外部 signal 与超时控制，任何一方触发都应中断请求。
-function mergeSignal(signal?: AbortSignal | null, timeoutMs = 90_000): AbortSignal {
+function mergeSignal(signal?: AbortSignal | null, timeoutMs = DEFAULT_REQUEST_TIMEOUT_MS): AbortSignal {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -108,8 +120,9 @@ async function parseError(response: Response): Promise<never> {
 // 通用 JSON 请求封装。
 export async function request<T>(url: string, options: RequestOptions = {}): Promise<T> {
   const { baseURL, timeoutMs, body, headers, signal, ...rest } = options;
+  const resolvedBaseURL = normalizeBaseURLCandidate(baseURL) ?? resolveDefaultBaseURL();
 
-  const response = await fetch(withBaseUrl(url, baseURL), {
+  const response = await fetch(withBaseUrl(url, resolvedBaseURL), {
     ...rest,
     headers: buildHeaders(headers, body),
     body: normalizeBody(body),
@@ -130,12 +143,13 @@ export async function request<T>(url: string, options: RequestOptions = {}): Pro
 // 3. 保持 onEvent 幂等，允许上层自行做去重/忽略
 export async function requestStream(url: string, options: StreamRequestOptions): Promise<void> {
   const { onEvent, baseURL, timeoutMs, body, headers, signal, ...rest } = options;
+  const resolvedBaseURL = normalizeBaseURLCandidate(baseURL) ?? resolveDefaultBaseURL();
 
-  const response = await fetch(withBaseUrl(url, baseURL), {
+  const response = await fetch(withBaseUrl(url, resolvedBaseURL), {
     ...rest,
     headers: buildHeaders(headers, body),
     body: normalizeBody(body),
-    signal: mergeSignal(signal, timeoutMs),
+    signal: mergeSignal(signal, timeoutMs ?? DEFAULT_STREAM_TIMEOUT_MS),
   });
 
   if (!response.ok) {

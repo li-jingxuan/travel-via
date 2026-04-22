@@ -68,7 +68,7 @@ export function useChatStream(initialPlan: TravelPlanViewModel) {
     {
       id: createId("assistant"),
       role: "assistant",
-      content: "告诉我你的预算、出发地和旅行风格，我会实时生成路线。",
+      content: "告诉我你的出发地、目的地和出行方式，我会实时规划您的旅行路线。",
       time: formatNow(),
     },
   ]);
@@ -88,7 +88,6 @@ export function useChatStream(initialPlan: TravelPlanViewModel) {
           userInput: params.userInput,
           debug: false,
         },
-        baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
         signal: context.signal,
         onEvent: (rawEvent) => {
           const parsed = toAgentEvent(rawEvent);
