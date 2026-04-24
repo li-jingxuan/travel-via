@@ -1,6 +1,7 @@
 import { travelPlannerGraph } from "@repo/agents/src/index.js"
 import { createDeepSeekReasoner } from "@repo/agents/src/lib/llm.js"
 import type { ITravelPlan } from "@repo/shared-types/travel"
+import { randomUUID } from "node:crypto"
 import type { AgentStreamEvent } from "../types/agent.js"
 import { SUMMARY_MARKDOWN_SYSTEM_PROMPT } from "../prompts/summary.js"
 
@@ -13,6 +14,7 @@ interface GraphInvokeResult {
 
 export interface CreatePlanServiceResult {
   finalPlan: ITravelPlan | null
+  sessionId: string
   errors: string[]
   needUserInput: boolean
   planSummary: string
@@ -20,6 +22,28 @@ export interface CreatePlanServiceResult {
 }
 
 const summaryLlm = createDeepSeekReasoner({ temperature: 0.4 })
+
+/**
+ * 统一生成/归一化会话 ID：
+ * - 客户端传入非空 sessionId：沿用
+ * - 未传或为空：服务端生成新的 UUID，作为首轮会话 ID
+ */
+function resolveSessionId(sessionId?: string): string {
+  const normalized = sessionId?.trim() ?? ""
+  return normalized || randomUUID()
+}
+
+/**
+ * 将业务层 sessionId 映射为 LangGraph 的 thread_id。
+ * 同一个 thread_id 会命中同一条 checkpoint 记忆链路。
+ */
+function buildGraphConfig(sessionId: string) {
+  return {
+    configurable: {
+      thread_id: sessionId,
+    },
+  }
+}
 
 function normalizeErrors(state: GraphInvokeResult): string[] {
   if (Array.isArray(state.errors)) {
@@ -99,17 +123,22 @@ async function* streamPlanSummaryText(
 
 export async function createTravelPlan(
   userInput: string,
+  sessionId?: string,
   debug = false,
 ): Promise<CreatePlanServiceResult> {
-  const state = (await travelPlannerGraph.invoke({
-    userInput,
-  })) as GraphInvokeResult
+  const resolvedSessionId = resolveSessionId(sessionId)
+
+  const state = (await travelPlannerGraph.invoke(
+    { userInput },
+    buildGraphConfig(resolvedSessionId),
+  )) as GraphInvokeResult
 
   const errors = normalizeErrors(state)
   const needUserInput = hasNeedUserInput(state, errors)
 
   return {
     finalPlan: state.finalPlan ?? null,
+    sessionId: resolvedSessionId,
     errors,
     needUserInput,
     planSummary: "",
@@ -127,19 +156,24 @@ export async function createTravelPlan(
  */
 export async function* streamTravelChat(
   userInput: string,
+  sessionId?: string,
   debug = false,
 ): AsyncGenerator<AgentStreamEvent> {
+  const resolvedSessionId = resolveSessionId(sessionId)
+
   yield {
     event: "start",
     data: {
       message: "stream started",
+      sessionId: resolvedSessionId,
       startedAt: Date.now(),
     },
   }
 
-  const stream = (await travelPlannerGraph.stream({
-    userInput,
-  })) as AsyncIterable<Record<string, unknown>>
+  const stream = (await travelPlannerGraph.stream(
+    { userInput },
+    buildGraphConfig(resolvedSessionId),
+  )) as AsyncIterable<Record<string, unknown>>
   const aggregatedState: GraphInvokeResult = {}
   let hasEmittedPlanReady = false
   let planSummary = ""
@@ -225,6 +259,7 @@ export async function* streamTravelChat(
   yield {
     event: "done",
     data: {
+      sessionId: resolvedSessionId,
       finalPlan: finalState.finalPlan ?? null,
       planSummary,
       errors,

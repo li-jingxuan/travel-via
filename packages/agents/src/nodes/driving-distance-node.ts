@@ -67,11 +67,13 @@ async function attachDrivingMetrics(
       `时长${metrics.drivingHours}h`,
     )
 
-    enriched.push({
+    const drivingEnricher = {
       ...dayPlan,
       distance: metrics.distanceKm,
       drivingHours: metrics.drivingHours,
-    })
+    }
+    console.log("[amap hotel]: ", drivingEnricher)
+    enriched.push(drivingEnricher)
   }
 
   return enriched

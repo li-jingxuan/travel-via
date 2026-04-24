@@ -13,6 +13,7 @@ function parseBody(body: unknown): CreatePlanRequest {
   const input = body as Record<string, unknown>
   return {
     userInput: typeof input.userInput === "string" ? input.userInput : "",
+    sessionId: typeof input.sessionId === "string" ? input.sessionId : undefined,
     debug: typeof input.debug === "boolean" ? input.debug : false,
   }
 }
@@ -28,6 +29,7 @@ export async function createPlanHandler(ctx: Context) {
       message: "`userInput` is required",
       data: {
         finalPlan: null,
+        sessionId: "",
         errors: ["`userInput` is required"],
         needUserInput: false,
         planSummary: "",
@@ -36,7 +38,8 @@ export async function createPlanHandler(ctx: Context) {
     return
   }
 
-  const result = await createTravelPlan(userInput, payload.debug)
+  // sessionId 可选：未传时由 service 自动生成并回传给客户端。
+  const result = await createTravelPlan(userInput, payload.sessionId, payload.debug)
 
   if (result.needUserInput) {
     ctx.status = 422

@@ -55,7 +55,8 @@ import { agentLog } from "../lib/logger.js"
  * - 温度为 0 时 LLM 输出最确定性，JSON 格式错误概率最低
  * - 如果温度 > 0，LLM 可能"自作主张"修改字段名或添加额外内容
  */
-const llm = createDeepSeekReasoner({ temperature: 0 })
+const llm = createDeepSeekReasoner({ temperature: 0.4 })
+llm.withConfig({ response_format: { type: 'json_object' } })
 /** 首次请求 + 2 次重试 */
 const FORMATTER_MAX_ATTEMPTS = 3
 
@@ -209,7 +210,7 @@ export async function formatterNode(
   const baseMessages = [
     new SystemMessage(FORMATTER_SYSTEM_PROMPT),
     new HumanMessage(
-      `请根据以下数据完成数据填充 ITravelPlan JSON：\n\n${contextDataJSONStr}`,
+      `请根据提示词完成以下数据的填充 ITravelPlan JSON：\n\n${contextDataJSONStr}`,
     ),
   ]
 

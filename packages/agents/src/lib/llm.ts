@@ -58,5 +58,7 @@ export function createDeepSeekReasoner(overrides?: LlmOverrides) {
     temperature: overrides?.temperature ?? 0.7,
     maxTokens: overrides?.maxTokens,
     configuration: { baseURL: DEEPSEEK_BASE_URL },
+    
+    // response_format
   })
 }

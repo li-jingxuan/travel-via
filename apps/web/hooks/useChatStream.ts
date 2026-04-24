@@ -17,6 +17,12 @@ interface ChatMessage {
 
 interface StreamParams {
   userInput: string;
+  sessionId?: string;
+}
+
+interface UseChatStreamOptions {
+  initialSessionId?: string;
+  onSessionIdChange?: (sessionId: string) => void;
 }
 
 const NODE_LABEL_MAP: Record<string, string> = {
@@ -84,7 +90,7 @@ function toAgentEvent(raw: ParsedSseEvent): AgentStreamEvent | null {
 }
 
 // 业务层 Hook：将流式事件映射为“消息列表 + 行程 + 进度”三类状态。
-export function useChatStream() {
+export function useChatStream(options: UseChatStreamOptions = {}) {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: createId("assistant"),
@@ -96,6 +102,7 @@ export function useChatStream() {
   const [progressNodes, setProgressNodes] = useState<string[]>([]);
   const [plan, setPlan] = useState<TravelPlanViewModel | null>(null);
   const [needUserInput, setNeedUserInput] = useState(false);
+  const [sessionId, setSessionId] = useState<string | undefined>(options.initialSessionId);
 
   const activeAssistantIdRef = useRef<string | null>(null);
 
@@ -107,6 +114,7 @@ export function useChatStream() {
         method: "POST",
         body: {
           userInput: params.userInput,
+          sessionId: params.sessionId,
           debug: false,
         },
         signal: context.signal,
@@ -125,6 +133,13 @@ export function useChatStream() {
       setNeedUserInput(false);
     },
     onEvent: (event) => {
+      if (event.event === "start" && event.data.sessionId) {
+        // 以服务端返回为准，避免前后端 session 认知不一致。
+        setSessionId(event.data.sessionId);
+        options.onSessionIdChange?.(event.data.sessionId);
+        return;
+      }
+
       // state 事件只用于显示当前工作节点，不写入聊天消息。
       if (event.event === "state") {
         setProgressNodes(mapUpdatedNodesToLabels(event.data.updatedNodes));
@@ -192,6 +207,10 @@ export function useChatStream() {
 
       if (event.event === "done") {
         // done 才是最终态：这里做兜底覆盖，确保数据一致。
+        if (event.data.sessionId) {
+          setSessionId(event.data.sessionId);
+          options.onSessionIdChange?.(event.data.sessionId);
+        }
         setNeedUserInput(Boolean(event.data.needUserInput));
 
         // TODO 异常信息输出就可以了，不要在 UI 里暴露过多技术细节。
@@ -252,7 +271,7 @@ export function useChatStream() {
     ]);
 
     // 真正发起流式请求。
-    await streamRequest.run({ userInput: trimmed });
+    await streamRequest.run({ userInput: trimmed, sessionId });
   };
 
   // 顶部状态文案聚合，避免页面层写重复判断逻辑。
@@ -270,6 +289,7 @@ export function useChatStream() {
     loading: streamRequest.loading,
     error: streamRequest.error,
     statusLabel,
+    sessionId,
     sendMessage,
     stop: streamRequest.cancel,
   };

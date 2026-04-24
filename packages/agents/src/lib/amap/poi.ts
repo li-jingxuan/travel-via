@@ -45,7 +45,7 @@ function buildPoiTextParams(
     ...(options.types ? { types: options.types } : {}),
     ...(options.cityLimit ? { city_limit: "true" } : {}),
   }
-  if(city) {
+  if (city) {
     params.region = city
   }
 
@@ -127,7 +127,7 @@ export async function searchScenicPois(
   limit = 5,
 ): Promise<AmapPoiCandidate[]> {
   const options: SearchPoiOptions = {
-    types: "110000",
+    // types: "110000",
     cityLimit: true,
     minRating: 3
   }
@@ -144,14 +144,12 @@ export async function searchScenicPois(
     mapPoiTextResponse(data, limit),
     options,
   ).slice(0, limit)
-  if (candidates.length === 0) {
-    // 保留日志，便于排查 city/keyword 参数问题。
-    agentLog("高德", "景点检索失败", {
-      path: requestPath,
-      params: requestParams,
-      info: data.info ?? "unknown",
-    })
-  }
+  // 保留日志，便于排查 city/keyword 参数问题。
+  agentLog("高德", candidates.length === 0 ? "景点检索失败" : '景点检索成功', {
+    path: requestPath,
+    params: requestParams,
+    info: data.info ?? "unknown",
+  })
   return candidates
 }
 

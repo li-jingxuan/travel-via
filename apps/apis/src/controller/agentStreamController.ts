@@ -1,6 +1,7 @@
 import type { Context } from "koa"
 import type { CreateChatStreamRequest, AgentStreamEvent } from "../types/agent.js"
 import { streamTravelChat } from "../service/agentService.js"
+import { graphCheckpointer } from "@repo/agents/src/index.js"
 
 function parseBody(body: unknown): CreateChatStreamRequest {
   if (!body || typeof body !== "object") {
@@ -10,6 +11,7 @@ function parseBody(body: unknown): CreateChatStreamRequest {
   const input = body as Record<string, unknown>
   return {
     userInput: typeof input.userInput === "string" ? input.userInput : "",
+    sessionId: typeof input.sessionId === "string" ? input.sessionId : undefined,
     debug: typeof input.debug === "boolean" ? input.debug : false,
   }
 }
@@ -34,6 +36,7 @@ export async function createChatStreamHandler(ctx: Context) {
   const payload = parseBody(ctx.request.body)
   const userInput = payload.userInput.trim()
 
+  console.log('graphCheckpointer: ', graphCheckpointer.storage)
   if (!userInput) {
     ctx.status = 400
     ctx.body = {
@@ -67,7 +70,8 @@ export async function createChatStreamHandler(ctx: Context) {
   }, 15000)
 
   try {
-    for await (const event of streamTravelChat(userInput, payload.debug)) {
+    // sessionId 可选：未传则在 service 中自动生成，并在 start/done 事件回传。
+    for await (const event of streamTravelChat(userInput, payload.sessionId, payload.debug)) {
       if (closed) break
       writeSseEvent(ctx, event)
     }

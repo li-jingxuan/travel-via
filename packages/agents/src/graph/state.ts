@@ -73,10 +73,15 @@ export const TravelStateAnnotation = Annotation.Root({
    *
    * 写入时机：Graph.invoke() 时由外部传入
    * 读取者：IntentAgent
-   * Reducer：首次为空时写入 invoke 传入值，后续不覆盖
+   * Reducer：始终采用本轮最新输入
+   *
+   * 说明：
+   * 接入 checkpointer 后，同一 thread_id 会复用历史 state。
+   * 若这里保留“只写首次值”策略，会导致连续对话场景下 intent
+   * 永远读取第一轮 userInput，无法响应后续补充信息。
    */
   userInput: Annotation<string>({
-    reducer: (current, update) => (current === "" ? update : current),
+    reducer: (_, update) => update,
     default: () => "",
   }),
 

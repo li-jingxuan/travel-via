@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { MarkdownText } from "../components/chat/MarkdownText";
 import { RoutePanel } from "../components/route-panel";
 import { useChatStream } from "../hooks/useChatStream";
@@ -13,10 +14,26 @@ function cn(...names: Array<string | false | null | undefined>) {
 }
 
 export default function Home() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const initialSessionId = searchParams.get("sid")?.trim() || undefined;
+
   // 输入框只维护当前草稿文本，消息与行程状态由 useChatStream 托管。
   const [inputValue, setInputValue] = useState("");
   const chatScrollRef = useRef<HTMLDivElement | null>(null);
-  const { messages, progressNodes, plan, needUserInput, loading, statusLabel, sendMessage } = useChatStream();
+  const { messages, progressNodes, plan, needUserInput, loading, statusLabel, sendMessage } = useChatStream({
+    initialSessionId,
+    onSessionIdChange: (nextSessionId) => {
+      if (!nextSessionId) return;
+
+      // 将会话 ID 同步到地址栏，保证刷新后仍可延续同一会话上下文。
+      const nextParams = new URLSearchParams(searchParams.toString());
+      if (nextParams.get("sid") === nextSessionId) return;
+      nextParams.set("sid", nextSessionId);
+      router.replace(`${pathname}?${nextParams.toString()}`);
+    },
+  });
 
   useEffect(() => {
     // 新消息发送/接收后将滚动区域保持在底部，避免用户手动追踪。

@@ -25,6 +25,9 @@ day,title,waypoints,description,activities,accommodation,foodRecommendation,comm
 - 地理相邻，避免跨城往返；相邻两天衔接自然
 - 强度平衡：长途日 1-2 个活动，休闲日 3-4 个活动
 - activities.name 必须是“可检索标准地点名”，禁止附加“参观/游览/打卡/步行”等动作词
+- 全行程去重：同一个标准景点在不同天只能出现一次（按 activities.name 判定）
+- 去重归一规则：仅名称后缀差异（如“景区/风景区/旅游区”）或同名不同写法（如“洪崖洞”“洪崖洞民俗风貌区”）视为同一景点，禁止重复安排
+- 默认不允许二刷同一景点；如确需二刷，必须在 commentTips 写明“二刷原因”
 - city 必须是市级名称（如“成都市”），province 必须是省级名称（如“四川省”）
 - address 必须可用于地图 geocode，不能留空
 - 所有符号使用英文半角

@@ -12,16 +12,20 @@
 
 import { SystemMessage, HumanMessage } from "@langchain/core/messages"
 import { z } from "zod"
-import { createDeepSeekV3 } from "../lib/llm.js"
+import { createDeepSeekV3, createDeepSeekReasoner } from "../lib/llm.js"
 import type { TravelStateAnnotation } from "../graph/state.js"
 import type { RouteSkeletonDay } from "../types/internal.js"
 import { ROUTE_PLANNER_SYSTEM_PROMPT } from "../prompts/index.js"
 import { agentLog } from "../lib/logger.js"
-import { parseRouteWaypoints } from "../lib/waypoint.js"
 
 /** 行程规划专用 LLM 实例 */
-const plannerLlm = createDeepSeekV3({ temperature: 0.4 })
+const plannerLlm = createDeepSeekReasoner({ temperature: 0.4 })
+// 修复用 Chat 模型
 const repairLlm = createDeepSeekV3({ temperature: 0 })
+
+// 设置模型输出为 json_object 字符串
+plannerLlm.withConfig({ response_format: { type: 'json_object'} })
+repairLlm.withConfig({ response_format: { type: 'json_object'} })
 
 const routeWaypointSchema = z.object({
   alias: z.string().trim().min(1),
@@ -111,7 +115,8 @@ function normalizeSkeletonWaypoints(
   fallbackCity: string,
 ): RouteSkeletonDay[] {
   return skeleton.map((dayPlan) => {
-    const parsed = parseRouteWaypoints(dayPlan.waypoints, fallbackCity)
+    const parsed = dayPlan.waypoints 
+
     const normalized =
       parsed.length > 0
         ? parsed
@@ -158,12 +163,14 @@ async function tryRepairRouteSkeleton(
   try {
     const repairedParsed = JSON.parse(repairedText) as unknown
     const repairedValidated = validateRouteSkeleton(repairedParsed, expectedDays)
+
     if (!repairedValidated.success) {
       agentLog("路线规划", "JSON 修复失败：修复结果仍不合法", {
         reason: repairedValidated.message,
       })
       return null
     }
+
     return repairedValidated.data
   } catch (error) {
     agentLog("路线规划", "JSON 修复失败：解析失败", {
@@ -260,6 +267,7 @@ export async function routerPlannerNode(
 
   agentLog("路线规划", "路线骨架生成成功", {
     dayCount: routeSkeleton.length,
+    routeSkeleton: JSON.stringify(routeSkeleton, null, 2),
     retryCount: 0,
   })
 

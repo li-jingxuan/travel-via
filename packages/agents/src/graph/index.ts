@@ -7,7 +7,7 @@
  * 3. 在不改变行为的前提下提高可读性与可维护性
  */
 
-import { StateGraph, START, END } from "@langchain/langgraph"
+import { StateGraph, START, END, MemorySaver } from "@langchain/langgraph"
 import { TravelStateAnnotation } from "./state.js"
 import {
   intentAgentNode,
@@ -157,6 +157,11 @@ function connectValidationLoop(graph: TravelGraphBuilder): TravelGraphBuilder {
     })
 }
 
+// V1 会话记忆（短期记忆）：
+// - 使用 LangGraph 内存型 checkpointer 保存同一 thread_id 的状态快照
+// - 后续可无缝替换为 Redis/Postgres 等持久化 checkpointer
+export const graphCheckpointer = new MemorySaver()
+
 const travelPlannerGraph = connectValidationLoop(
   connectPreFormatterGuard(
     connectEnrichment(
@@ -169,6 +174,8 @@ const travelPlannerGraph = connectValidationLoop(
       ),
     ),
   ),
-).compile()
+).compile({
+  checkpointer: graphCheckpointer,
+})
 
 export { travelPlannerGraph }

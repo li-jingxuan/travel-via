@@ -3,11 +3,13 @@ import type { ITravelPlan } from "@repo/shared-types/travel"
 
 export interface CreatePlanRequest {
   userInput: string
+  sessionId?: string
   debug?: boolean
 }
 
 export interface CreatePlanResponseData {
   finalPlan: ITravelPlan | null
+  sessionId: string
   errors: string[]
   needUserInput: boolean
   planSummary: string
@@ -18,6 +20,7 @@ export type CreatePlanResponse = ApiResponse<CreatePlanResponseData>
 
 export interface CreateChatStreamRequest {
   userInput: string
+  sessionId?: string
   debug?: boolean
 }
 

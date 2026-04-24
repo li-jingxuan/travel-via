@@ -104,15 +104,17 @@ export async function hotelEnricherNode(
       }
 
       const { rating, name, address, type, avgCostCny } = candidates[0]
-
-      hotels.push({
+      const hotelEnricher = {
         name: normalizeText(name) || seedHotelName,
         address: normalizeText(address) || normalizeText(seed.address) || "地址待补充",
         feature: rating
           ? `${type ?? "酒店"}｜评分${rating}`
           : normalizeText(type) || normalizeText(seed.feature) || "酒店",
         price: avgCostCny ?? undefined,
-      })
+      }
+
+      console.log("[amap hotel]: ", hotelEnricher)
+      hotels.push(hotelEnricher)
     }
 
     hotelMap.set(dayIndex, hotels)

@@ -1,0 +1,17 @@
+# WEB
+
+- web 会展示出 issues 信息（data.errors）
+- web graph 节点显示信息要做优化
+  - 描述优化
+  - 节点 event=done 时，描述信息错误
+- web 界面优化
+  - 使用 gpt-image2 生成设计稿，codex 实现
+  - 会话（规划）历史
+
+# APIS & AGENTS
+
+- agents 要支持连续对话（记忆）
+- apis 在总结阶段吐出的 token 没有按照预设方式吐出（预设方式是段落式的，实际还是单个token吐）
+- apis 增加 sqlit 数据库做
+  - 对话历史
+  - 规划历史

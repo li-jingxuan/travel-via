@@ -14,6 +14,7 @@ export type AgentStreamEventName =
 export interface AgentStreamEventMap {
   start: {
     message: string;
+    sessionId?: string;
     startedAt: number;
   };
   heartbeat: {
@@ -39,6 +40,7 @@ export interface AgentStreamEventMap {
     finishedAt: number;
   };
   done: {
+    sessionId?: string;
     finalPlan: RawFinalPlan | null;
     planSummary: string;
     errors: string[];
