@@ -1,4 +1,5 @@
 export { intentAgentNode } from "./intent-node.js"
+export { mergeCollectedIntentNode } from "./system/merge-collected-intent-node.js"
 export { routerPlannerNode, routerPlannerNode as routePlannerNode } from "./router-planner-node.js"
 export { drivingDistanceNode } from "./driving-distance-node.js"
 export { poiEnricherNode } from "./poi-enricher-node.js"

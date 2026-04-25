@@ -55,6 +55,13 @@
   }
 }
 
+.skeletonHeaderMain {
+  min-width: 0;
+  flex: 1;
+  display: grid;
+  gap: 8px;
+}
+
 .content {
   min-height: 0;
   overflow-y: auto;
@@ -317,6 +324,47 @@
   gap: 10px;
 }
 
+.skeletonDayHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.skeletonStack {
+  display: grid;
+  gap: 8px;
+}
+
+.skeletonFoodRow {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.skeletonActivityList {
+  margin-top: 12px;
+  display: grid;
+  gap: 10px;
+}
+
+.skeletonActivityItem {
+  display: grid;
+  grid-template-columns: minmax(96px, 140px) 1fr;
+  gap: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(164, 196, 224, 0.45);
+  background: rgba(244, 250, 255, 0.66);
+  padding: 12px;
+}
+
+.skeletonMetaGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
 .metaCard {
   border-radius: 14px;
   border: 1px solid rgba(164, 193, 220, 0.55);
@@ -394,6 +442,12 @@
 
   .thumbnailButton {
     height: 92px;
+  }
+
+  .skeletonDayHeader,
+  .skeletonActivityItem,
+  .skeletonMetaGrid {
+    grid-template-columns: 1fr;
   }
 
   .lightboxBackdrop {

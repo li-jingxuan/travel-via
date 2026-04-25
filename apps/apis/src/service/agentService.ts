@@ -2,12 +2,16 @@ import { travelPlannerGraph } from "@repo/agents/src/index.js"
 import { createDeepSeekReasoner } from "@repo/agents/src/lib/llm.js"
 import type { ITravelPlan } from "@repo/shared-types/travel"
 import { randomUUID } from "node:crypto"
-import type { AgentStreamEvent } from "../types/agent.js"
+import type { AgentStreamEvent, TravelClarificationResponse } from "../types/agent.js"
 import { SUMMARY_MARKDOWN_SYSTEM_PROMPT } from "../prompts/summary.js"
 
 interface GraphInvokeResult {
   finalPlan?: ITravelPlan | null
   intent?: unknown
+  collectedIntent?: unknown
+  missingFields?: string[]
+  needUserInput?: boolean
+  clarification?: TravelClarificationResponse | null
   issues?: Array<{ code?: string; message?: string }>
   errors?: string[]
 }
@@ -17,6 +21,9 @@ export interface CreatePlanServiceResult {
   sessionId: string
   errors: string[]
   needUserInput: boolean
+  missingFields?: string[]
+  clarification?: TravelClarificationResponse | null
+  collectedIntent?: unknown
   planSummary: string
   debugState?: unknown
 }
@@ -60,6 +67,10 @@ function normalizeErrors(state: GraphInvokeResult): string[] {
 }
 
 function hasNeedUserInput(state: GraphInvokeResult, errors: string[]): boolean {
+  if (typeof state.needUserInput === "boolean") {
+    return state.needUserInput
+  }
+
   const fromIssues = Array.isArray(state.issues)
     ? state.issues.some((item) => item?.code === "NEED_USER_INPUT")
     : false
@@ -141,6 +152,9 @@ export async function createTravelPlan(
     sessionId: resolvedSessionId,
     errors,
     needUserInput,
+    missingFields: state.missingFields,
+    clarification: state.clarification ?? null,
+    collectedIntent: state.collectedIntent,
     planSummary: "",
     debugState: debug ? state : undefined,
   }
@@ -176,6 +190,7 @@ export async function* streamTravelChat(
   )) as AsyncIterable<Record<string, unknown>>
   const aggregatedState: GraphInvokeResult = {}
   let hasEmittedPlanReady = false
+  let hasEmittedClarification = false
   let planSummary = ""
 
   for await (const chunk of stream) {
@@ -186,6 +201,23 @@ export async function* streamTravelChat(
     for (const nodeUpdate of Object.values(chunk)) {
       if (nodeUpdate && typeof nodeUpdate === "object") {
         Object.assign(aggregatedState, nodeUpdate)
+      }
+    }
+
+    if (
+      updatedNodes.includes("ask_clarification") &&
+      !hasEmittedClarification &&
+      aggregatedState.needUserInput
+    ) {
+      hasEmittedClarification = true
+      yield {
+        event: "clarification_required",
+        data: {
+          clarification: aggregatedState.clarification ?? null,
+          missingFields: aggregatedState.missingFields ?? [],
+          collectedIntent: aggregatedState.collectedIntent ?? null,
+          emittedAt: Date.now(),
+        },
       }
     }
 
@@ -264,6 +296,9 @@ export async function* streamTravelChat(
       planSummary,
       errors,
       needUserInput,
+      missingFields: finalState.missingFields ?? [],
+      clarification: finalState.clarification ?? null,
+      collectedIntent: finalState.collectedIntent ?? null,
       finishedAt: Date.now(),
       ...(debug ? { state: finalState } : {}),
     },

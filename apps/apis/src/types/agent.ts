@@ -1,6 +1,12 @@
 import type { ApiResponse } from "@repo/shared-types/api"
 import type { ITravelPlan } from "@repo/shared-types/travel"
 
+export interface TravelClarificationResponse {
+  prompt: string
+  missingFields: string[]
+  examples?: string[]
+}
+
 export interface CreatePlanRequest {
   userInput: string
   sessionId?: string
@@ -12,6 +18,9 @@ export interface CreatePlanResponseData {
   sessionId: string
   errors: string[]
   needUserInput: boolean
+  missingFields?: string[]
+  clarification?: TravelClarificationResponse | null
+  collectedIntent?: unknown
   planSummary: string
   debugState?: unknown
 }
@@ -27,6 +36,7 @@ export interface CreateChatStreamRequest {
 export type AgentStreamEventName =
   | "start"
   | "state"
+  | "clarification_required"
   | "plan_ready"
   | "summary_start"
   | "summary_delta"

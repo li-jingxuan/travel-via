@@ -11,6 +11,7 @@ import { StateGraph, START, END, MemorySaver } from "@langchain/langgraph"
 import { TravelStateAnnotation } from "./state.js"
 import {
   intentAgentNode,
+  mergeCollectedIntentNode,
   routerPlannerNode,
   drivingDistanceNode,
   poiEnricherNode,
@@ -24,7 +25,7 @@ import {
 } from "../nodes/index.js"
 import { validatorNode } from "../validators/travel-plan.js"
 import {
-  routeAfterIntent,
+  routeAfterRequirementGuard,
   routeAfterPreFormatterGuard,
   routeAfterRoutePlanner,
   shouldRetryOrEnd,
@@ -55,6 +56,8 @@ type TravelGraphBuilder = StateGraph<
 function registerNodes(graph: TravelGraphBuilder): TravelGraphBuilder {
   return graph
     .addNode("intent_agent", intentAgentNode)
+    // 多轮需求收集
+    .addNode("merge_collected_intent", mergeCollectedIntentNode)
     // 条件节点
     .addNode("ask_clarification", askClarificationNode)
     // 规划 骨架
@@ -83,12 +86,13 @@ function registerNodes(graph: TravelGraphBuilder): TravelGraphBuilder {
 
 /**
  * 连接入口阶段：
- * START -> intent_agent -> (ask_clarification | route_planner)
+ * START -> intent_agent -> merge_collected_intent -> (ask_clarification | route_planner)
  */
 function connectEntry(graph: TravelGraphBuilder): TravelGraphBuilder {
   return graph
     .addEdge(START, "intent_agent")
-    .addConditionalEdges("intent_agent", routeAfterIntent, {
+    .addEdge("intent_agent", "merge_collected_intent")
+    .addConditionalEdges("merge_collected_intent", routeAfterRequirementGuard, {
       ask_clarification: "ask_clarification",
       route_planner: "route_planner",
     })

@@ -61,6 +61,7 @@ import type {
 } from "@repo/shared-types/travel"
 import type {
   TravelIntent,
+  TravelClarification,
   RouteSkeletonDay,
 } from "../types/internal.js"
 import type { IssueItem } from "../constants/error-code.js"
@@ -94,6 +95,36 @@ export const TravelStateAnnotation = Annotation.Root({
    * 这是整个管线的"翻译层"，把自然语言变成机器可处理的结构化数据。
    */
   intent: Annotation<TravelIntent | null>({
+    reducer: (_, update) => update,
+    default: () => null,
+  }),
+
+  /**
+   * 多轮对话中已收集到的旅行需求。
+   *
+   * 与 intent 的区别：
+   * - intent 是本轮用户输入的结构化结果
+   * - collectedIntent 是跨轮合并后的完整需求草稿
+   */
+  collectedIntent: Annotation<TravelIntent | null>({
+    reducer: (_, update) => update,
+    default: () => null,
+  }),
+
+  /** 当前仍缺失的必要字段。 */
+  missingFields: Annotation<string[]>({
+    reducer: (_, update) => update,
+    default: () => [],
+  }),
+
+  /** 当前是否需要用户补充信息。 */
+  needUserInput: Annotation<boolean>({
+    reducer: (_, update) => update,
+    default: () => false,
+  }),
+
+  /** 面向用户的追问信息，由 ask_clarification 节点生成。 */
+  clarification: Annotation<TravelClarification | null>({
     reducer: (_, update) => update,
     default: () => null,
   }),

@@ -3,7 +3,12 @@
 import { useMemo, useRef, useState } from "react";
 import { requestStream, type ParsedSseEvent } from "../lib/request";
 import { normalizeFinalPlanData } from "../lib/travel-plan/normalize-final-plan";
-import type { AgentStreamEvent, AgentStreamEventMap, AgentStreamEventName } from "../types/agent-stream";
+import type {
+  AgentStreamEvent,
+  AgentStreamEventMap,
+  AgentStreamEventName,
+  TravelClarification,
+} from "../types/agent-stream";
 import type { TravelPlanViewModel } from "../types/travel-plan";
 import { useRequest } from "./useRequest";
 
@@ -27,6 +32,7 @@ interface UseChatStreamOptions {
 
 const NODE_LABEL_MAP: Record<string, string> = {
   intent_agent: "正在理解你的需求",
+  merge_collected_intent: "正在整理已补充的信息",
   ask_clarification: "正在生成补充问题",
   route_planner: "正在规划路线",
   route_planner_failed: "路线规划失败，正在结束本次尝试",
@@ -36,8 +42,22 @@ const NODE_LABEL_MAP: Record<string, string> = {
   hotel_enricher: "正在补全酒店建议",
   pre_formatter_guard: "正在检查数据完整性",
   formatter: "正在整理行程结果",
-  validator: "正在校验最终方案",
+  validator: "正在完成最后整理",
 };
+
+const PLAN_READY_LABEL = "路径规划完成";
+const supportedEvents: AgentStreamEventName[] = [
+  "start",
+  "heartbeat",
+  "state",
+  "clarification_required",
+  "plan_ready",
+  "summary_start",
+  "summary_delta",
+  "summary_done",
+  "done",
+  "error",
+];
 
 function createId(prefix: string): string {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -60,17 +80,6 @@ function mapUpdatedNodesToLabels(updatedNodes: string[] | undefined): string[] {
 
 function toAgentEvent(raw: ParsedSseEvent): AgentStreamEvent | null {
   const eventName = raw.event as AgentStreamEventName;
-  const supportedEvents: AgentStreamEventName[] = [
-    "start",
-    "heartbeat",
-    "state",
-    "plan_ready",
-    "summary_start",
-    "summary_delta",
-    "summary_done",
-    "done",
-    "error",
-  ];
 
   // 忽略后端新增但前端暂未消费的事件，保证向前兼容。
   if (!supportedEvents.includes(eventName)) {
@@ -102,9 +111,13 @@ export function useChatStream(options: UseChatStreamOptions = {}) {
   const [progressNodes, setProgressNodes] = useState<string[]>([]);
   const [plan, setPlan] = useState<TravelPlanViewModel | null>(null);
   const [needUserInput, setNeedUserInput] = useState(false);
+  // 保存当前追问信息，用于页面展示快捷示例；prompt 本身会进入聊天消息流。
+  const [clarification, setClarification] = useState<TravelClarification | null>(null);
   const [sessionId, setSessionId] = useState<string | undefined>(options.initialSessionId);
 
   const activeAssistantIdRef = useRef<string | null>(null);
+  // SSE 的 clarification_required 和 done 都可能携带 prompt，用 ref 避免重复插入同一条追问。
+  const lastClarificationPromptRef = useRef<string | null>(null);
 
   const streamRequest = useRequest<void, StreamParams, AgentStreamEvent>({
     mode: "stream",
@@ -131,6 +144,8 @@ export function useChatStream(options: UseChatStreamOptions = {}) {
       // 每次新问题开始时重置“过程态”，但保留历史消息与当前 plan。
       setProgressNodes([]);
       setNeedUserInput(false);
+      setClarification(null);
+      lastClarificationPromptRef.current = null;
     },
     onEvent: (event) => {
       if (event.event === "start" && event.data.sessionId) {
@@ -142,13 +157,40 @@ export function useChatStream(options: UseChatStreamOptions = {}) {
 
       // state 事件只用于显示当前工作节点，不写入聊天消息。
       if (event.event === "state") {
+        console.log('------: ', event)
         setProgressNodes(mapUpdatedNodesToLabels(event.data.updatedNodes));
+        return;
+      }
+
+      if (event.event === "clarification_required") {
+        const nextClarification = event.data.clarification;
+
+        setNeedUserInput(true);
+        setClarification(nextClarification);
+
+        // 追问是对话内容的一部分，直接追加为 AI 消息，比放在临时提示条里更容易追溯上下文。
+        const prompt = nextClarification?.prompt?.trim();
+        if (prompt && lastClarificationPromptRef.current !== prompt) {
+          lastClarificationPromptRef.current = prompt;
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: createId("assistant"),
+              role: "assistant",
+              content: prompt,
+              time: formatNow(),
+            },
+          ]);
+        }
+
         return;
       }
 
       if (event.event === "plan_ready" && event.data.finalPlan) {
         // 先行渲染路线，用户能更早看到结构化结果。
         setPlan(normalizeFinalPlanData(event.data.finalPlan));
+        // validator 是内部校验节点；用户侧在计划可渲染时展示明确的完成态。
+        setProgressNodes([PLAN_READY_LABEL]);
         return;
       }
 
@@ -212,6 +254,29 @@ export function useChatStream(options: UseChatStreamOptions = {}) {
           options.onSessionIdChange?.(event.data.sessionId);
         }
         setNeedUserInput(Boolean(event.data.needUserInput));
+        setClarification(event.data.clarification ?? null);
+
+        // 流结束时再兜底一次完成态，覆盖未收到 plan_ready 但最终成功的场景。
+        if (!event.data.needUserInput && !event.data.errors?.length && event.data.finalPlan) {
+          setProgressNodes([PLAN_READY_LABEL]);
+        }
+
+        // done 事件保留一层兜底：如果前面的 clarification_required 丢失，仍能展示追问。
+        if (event.data.clarification?.prompt && !event.data.errors?.length) {
+          const prompt = event.data.clarification.prompt.trim();
+          if (prompt && lastClarificationPromptRef.current !== prompt) {
+            lastClarificationPromptRef.current = prompt;
+            setMessages((prev) => [
+              ...prev,
+              {
+                id: createId("assistant"),
+                role: "assistant",
+                content: prompt,
+                time: formatNow(),
+              },
+            ]);
+          }
+        }
 
         // TODO 异常信息输出就可以了，不要在 UI 里暴露过多技术细节。
         if (event.data.errors?.length) {
@@ -286,6 +351,7 @@ export function useChatStream(options: UseChatStreamOptions = {}) {
     progressNodes,
     plan,
     needUserInput,
+    clarification,
     loading: streamRequest.loading,
     error: streamRequest.error,
     statusLabel,

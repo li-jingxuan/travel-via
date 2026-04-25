@@ -39,6 +39,16 @@ export interface TravelIntent {
   preferences?: string[]
 }
 
+/** 缺少必要旅行信息时返回给调用方的追问信息 */
+export interface TravelClarification {
+  /** 面向用户的自然语言追问 */
+  prompt: string
+  /** 当前缺失的字段 */
+  missingFields: string[]
+  /** 可展示为快捷输入的示例 */
+  examples?: string[]
+}
+
 /** 骨架阶段的活动数据 — 包含基础描述与省市信息，不含 API 查询字段 */
 export interface RouteSkeletonActivity {
   name: string

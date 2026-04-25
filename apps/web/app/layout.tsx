@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import "react-loading-skeleton/dist/skeleton.css";
 import "../assets/css/globals.css";
 
 const geistSans = localFont({

@@ -1,7 +1,7 @@
 import { agentLog } from "../lib/index.js"
-import { ERROR_CODE, RETRYABLE_ISSUE_CODES } from "../constants/error-code.js"
 import { MAX_RETRIES, ROUTE_PLANNER_MAX_RETRIES } from "./constants.js"
 import type { TravelStateAnnotation } from "./state.js"
+import { getMissingRequiredIntentFields } from "../intent/intent-collection.js"
 
 /**
  * 获取意图中缺失的必填字段。
@@ -16,26 +16,21 @@ import type { TravelStateAnnotation } from "./state.js"
 export function getMissingRequiredFields(
   state: typeof TravelStateAnnotation.State,
 ): string[] {
-  const intent = state.intent
-  if (!intent) return ["destination"]
-
-  const missing: string[] = []
-  if (!intent.destination?.trim()) {
-    missing.push("destination")
-  }
-
-  return missing
+  return getMissingRequiredIntentFields(state.collectedIntent ?? state.intent)
 }
 
 /**
- * intent_agent 之后的路由：
+ * requirement_guard 之后的路由：
  * - 信息完整：进入 route_planner
  * - 信息缺失：进入 ask_clarification
  */
-export function routeAfterIntent(
+export function routeAfterRequirementGuard(
   state: typeof TravelStateAnnotation.State,
 ): "ask_clarification" | "route_planner" {
-  const missing = getMissingRequiredFields(state)
+  const missing = state.missingFields.length > 0
+    ? state.missingFields
+    : getMissingRequiredFields(state)
+
   return missing.length > 0 ? "ask_clarification" : "route_planner"
 }
 

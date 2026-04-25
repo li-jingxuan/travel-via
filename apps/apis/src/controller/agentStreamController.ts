@@ -1,7 +1,6 @@
 import type { Context } from "koa"
 import type { CreateChatStreamRequest, AgentStreamEvent } from "../types/agent.js"
 import { streamTravelChat } from "../service/agentService.js"
-import { graphCheckpointer } from "@repo/agents/src/index.js"
 
 function parseBody(body: unknown): CreateChatStreamRequest {
   if (!body || typeof body !== "object") {
@@ -36,7 +35,6 @@ export async function createChatStreamHandler(ctx: Context) {
   const payload = parseBody(ctx.request.body)
   const userInput = payload.userInput.trim()
 
-  console.log('graphCheckpointer: ', graphCheckpointer.storage)
   if (!userInput) {
     ctx.status = 400
     ctx.body = {

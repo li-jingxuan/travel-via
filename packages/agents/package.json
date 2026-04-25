@@ -10,7 +10,8 @@
     "build": "tsc",
     "cli": "node dist/example/ink-cli.js",
     "dev": "tsc --watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "pnpm run build && node --test test/*.test.mjs"
   },
   "dependencies": {
     "@langchain/core": "^1.1.38",

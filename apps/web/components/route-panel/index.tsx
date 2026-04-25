@@ -9,6 +9,8 @@ import { TripMetaCards } from "./TripMetaCards";
 import styles from "./route-panel.module.scss";
 import type { MetaSectionKey, RoutePanelProps } from "./route-panel.types";
 
+export { RoutePanelSkeleton } from "./RoutePanelSkeleton";
+
 const defaultExpanded: Record<MetaSectionKey, boolean> = {
   vehicleAdvice: true,
   bestSeason: false,

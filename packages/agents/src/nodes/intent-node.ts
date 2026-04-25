@@ -32,84 +32,11 @@ import { createDeepSeekV3 } from "../lib/llm.js"
 import { agentLog } from "../lib/logger.js"
 import type { TravelStateAnnotation } from "../graph/state.js"
 import type { TravelIntent } from "../types/internal.js"
-import {
-  DEFAULT_TRAVEL_TYPE,
-  TRAVEL_TYPE_VALUES,
-  type TravelType,
-} from "../types/index.js"
 import { INTENT_SYSTEM_PROMPT } from "../prompts/index.js"
+import { normalizeIntent } from "../intent/travel-intent-schema.js"
 
 /** 意图理解专用 LLM 实例 — 低温度保证输出稳定可预测 */
 const llm = createDeepSeekV3({ temperature: 0.3 })
-
-// 只做合法性校验，不做语义映射；语义归一交由 Intent Prompt 约束 LLM 完成。
-const isTravelType = (value: unknown): value is TravelType =>
-  typeof value === "string" && TRAVEL_TYPE_VALUES.includes(value as TravelType)
-
-const coerceTravelType = (value: unknown): TravelType =>
-  isTravelType(value) ? value : DEFAULT_TRAVEL_TYPE
-
-/**
- * 将 LLM 输出标准化为 TravelIntent，保证字段类型稳定：
- * - 必填字符串字段缺失时返回空字符串（交由 graph 分流到补充信息节点）
- * - days 非法时回退为 5
- * - 可选字段仅在类型匹配时保留
- */
-function normalizeIntent(raw: unknown): TravelIntent {
-  const obj = (typeof raw === "object" && raw !== null
-    ? raw
-    : {}) as Record<string, unknown>
-
-  const toCleanString = (value: unknown): string =>
-    typeof value === "string" ? value.trim() : ""
-
-  const toDays = (value: unknown): number => {
-    if (typeof value === "number" && Number.isFinite(value) && value > 0) {
-      return Math.round(value)
-    }
-    if (typeof value === "string") {
-      const parsed = Number.parseInt(value, 10)
-      if (Number.isFinite(parsed) && parsed > 0) return parsed
-    }
-    return 5
-  }
-
-  const destination = toCleanString(obj.destination)
-  const departurePointRaw = toCleanString(obj.departurePoint)
-
-  const normalized: TravelIntent = {
-    destination,
-    /**
-     * departurePoint 允许为空：
-     * - 若用户未提供出发地，默认与 destination 一致
-     * - destination 也为空时，保持空字符串，交由缺失信息分流处理
-     */
-    departurePoint: departurePointRaw || destination,
-    days: toDays(obj.days),
-    month: toCleanString(obj.month) || "未指定",
-    // travelType 必须落在统一枚举内；异常值统一兜底为默认出行方式。
-    travelType: coerceTravelType(obj.travelType),
-  }
-
-  if (typeof obj.budget === "string" && obj.budget.trim()) {
-    normalized.budget = obj.budget.trim()
-  }
-  if (typeof obj.travelers === "string" && obj.travelers.trim()) {
-    normalized.travelers = obj.travelers.trim()
-  }
-  if (Array.isArray(obj.preferences)) {
-    const prefs = obj.preferences
-      .filter((item): item is string => typeof item === "string")
-      .map((item) => item.trim())
-      .filter(Boolean)
-
-    if (prefs.length > 0) {
-      normalized.preferences = prefs
-    }
-  }
-
-  return normalized
-}
 
 /**
  * IntentAgent 节点函数

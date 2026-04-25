@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { MarkdownText } from "../components/chat/MarkdownText";
-import { RoutePanel } from "../components/route-panel";
+import { RoutePanel, RoutePanelSkeleton } from "../components/route-panel";
 import { useChatStream } from "../hooks/useChatStream";
 import styles from "./page.module.scss";
 
@@ -22,7 +22,16 @@ export default function Home() {
   // 输入框只维护当前草稿文本，消息与行程状态由 useChatStream 托管。
   const [inputValue, setInputValue] = useState("");
   const chatScrollRef = useRef<HTMLDivElement | null>(null);
-  const { messages, progressNodes, plan, needUserInput, loading, statusLabel, sendMessage } = useChatStream({
+  const {
+    messages,
+    progressNodes,
+    plan,
+    needUserInput,
+    clarification,
+    loading,
+    statusLabel,
+    sendMessage,
+  } = useChatStream({
     initialSessionId,
     onSessionIdChange: (nextSessionId) => {
       if (!nextSessionId) return;
@@ -114,8 +123,25 @@ export default function Home() {
               ))}
             </div> */}
 
+            {/* 缺少必要信息时，将 agents 给出的 examples 作为快捷输入，降低用户补充成本。 */}
+            {needUserInput && clarification?.examples?.length ? (
+              <div className={styles.suggestionRow} aria-label="补充信息示例">
+                {clarification.examples.map((item) => (
+                  <button
+                    key={item}
+                    type="button"
+                    className={styles.suggestionBtn}
+                    disabled={loading}
+                    onClick={() => setInputValue(item)}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+
             {needUserInput ? (
-              <p className={styles.followupHint}>当前结果需要补充更多信息，请继续描述你的预算或偏好。</p>
+              <p className={styles.followupHint}>请根据上面的问题补充信息，或选择一个示例后发送。</p>
             ) : null}
           </div>
 
@@ -147,7 +173,10 @@ export default function Home() {
         </aside>
 
         <section className={cn(styles.panel, styles.routePanel)}>
-          {plan ? (
+          {/* 只有真正进入路线生成阶段才显示骨架屏；参数追问阶段继续展示空态。 */}
+          {loading && !plan && !needUserInput ? (
+            <RoutePanelSkeleton />
+          ) : plan ? (
             <RoutePanel plan={plan} />
           ) : (
             <div className={styles.routeEmpty}>

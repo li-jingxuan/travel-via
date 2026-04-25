@@ -1,0 +1,11 @@
+
+> web@0.1.0 build /Volumes/D/projects/travel-via/apps/web
+> next build
+
+▲ Next.js 16.2.0 (Turbopack)
+- Environments: .env
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 2.4s
+  Running TypeScript ...
+ ELIFECYCLE  Command failed with exit code 130.
