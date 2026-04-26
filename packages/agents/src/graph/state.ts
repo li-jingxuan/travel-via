@@ -93,6 +93,9 @@ export const TravelStateAnnotation = Annotation.Root({
    *
    * 包含 destination、days、month、travelType 等关键字段。
    * 这是整个管线的"翻译层"，把自然语言变成机器可处理的结构化数据。
+   *
+   * 在多轮需求收集开启后，intent 还会在 merge_collected_intent 后被更新为
+   * 合并后的完整需求，供 route_planner 继续复用原有读取路径。
    */
   intent: Annotation<TravelIntent | null>({
     reducer: (_, update) => update,

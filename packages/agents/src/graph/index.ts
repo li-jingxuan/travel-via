@@ -91,11 +91,13 @@ function registerNodes(graph: TravelGraphBuilder): TravelGraphBuilder {
 function connectEntry(graph: TravelGraphBuilder): TravelGraphBuilder {
   return graph
     .addEdge(START, "intent_agent")
+    // 入口先做多轮需求合并，再决定是追问用户还是进入正式路线规划。
     .addEdge("intent_agent", "merge_collected_intent")
     .addConditionalEdges("merge_collected_intent", routeAfterRequirementGuard, {
       ask_clarification: "ask_clarification",
       route_planner: "route_planner",
     })
+    // 缺参时本轮对话结束，等待用户下一轮输入继续同一 thread_id。
     .addEdge("ask_clarification", END)
 }
 

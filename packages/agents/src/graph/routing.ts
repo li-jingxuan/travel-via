@@ -16,6 +16,7 @@ import { getMissingRequiredIntentFields } from "../intent/intent-collection.js"
 export function getMissingRequiredFields(
   state: typeof TravelStateAnnotation.State,
 ): string[] {
+  // 多轮对话优先看 collectedIntent；若外部仍直接写 intent，也保持兼容。
   return getMissingRequiredIntentFields(state.collectedIntent ?? state.intent)
 }
 
@@ -27,6 +28,8 @@ export function getMissingRequiredFields(
 export function routeAfterRequirementGuard(
   state: typeof TravelStateAnnotation.State,
 ): "ask_clarification" | "route_planner" {
+  // missingFields 通常由 merge_collected_intent 写入；这里兜底重新计算，
+  // 避免未来新增入口节点时忘记写 missingFields 导致误进规划。
   const missing = state.missingFields.length > 0
     ? state.missingFields
     : getMissingRequiredFields(state)

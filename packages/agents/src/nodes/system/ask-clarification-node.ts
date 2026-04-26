@@ -5,7 +5,8 @@ import { createDeepSeekV3 } from "../../lib/llm.js"
 import { SystemMessage, HumanMessage } from "@langchain/core/messages"
 import { z } from "zod"
 
-const clarificationLlm = createDeepSeekV3({ temperature: 0.4,  })
+// 追问只负责“怎么问得自然”，缺什么仍由确定性代码判断。
+const clarificationLlm = createDeepSeekV3({ temperature: 0.4 })
 clarificationLlm.withConfig({ response_format: { type: "json_object" } })
 
 const clarificationSchema = z.object({
@@ -22,6 +23,7 @@ function getFieldLabel(field: string): string {
 function buildFallbackClarification(missing: string[]) {
   const labels = missing.map(getFieldLabel).join("、")
 
+  // LLM 调用失败时仍要给调用方稳定可展示的追问，避免中断多轮收集。
   return {
     prompt: `还差一个关键信息：${labels}。你可以直接回复想去的目的地，比如“新疆”“云南”或“日本关西”。`,
     missingFields: missing,
@@ -33,6 +35,8 @@ async function createClarification(
   state: typeof TravelStateAnnotation.State,
   missing: string[],
 ) {
+  // 只把必要上下文交给追问模型：用户本轮输入、缺失字段、已知需求。
+  // 这样可以降低模型“顺手规划行程”或编造未知信息的概率。
   const payload = {
     userInput: state.userInput,
     missingFields: missing,
@@ -59,6 +63,7 @@ async function createClarification(
       .trim()
     const parsed = clarificationSchema.safeParse(JSON.parse(content))
 
+    // 只有结构符合预期才采用模型结果；否则走兜底提示。
     if (parsed.success) {
       return {
         ...parsed.data,
@@ -84,6 +89,8 @@ async function createClarification(
 export async function askClarificationNode(
   state: typeof TravelStateAnnotation.State,
 ) {
+  // 优先使用 merge_collected_intent 已经算好的 missingFields；
+  // 直接调用 graph 的旧入口/测试场景下，再用 routing 做兜底计算。
   const missing =
     state.missingFields.length > 0
       ? state.missingFields
