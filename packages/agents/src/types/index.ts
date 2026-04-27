@@ -1,5 +1,8 @@
 export type {
+  IntentField,
   TravelIntent,
+  TravelIntentExtraction,
+  TravelIntentPatch,
   RouteSkeletonDay,
   RouteSkeletonActivity,
   RouteSkeletonAccommodation

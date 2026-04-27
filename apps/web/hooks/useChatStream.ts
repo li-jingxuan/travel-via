@@ -25,6 +25,14 @@ interface StreamParams {
   sessionId?: string;
 }
 
+const RoutePanelPhase = {
+  Empty: "empty",
+  Skeleton: "skeleton",
+  Plan: "plan",
+} as const;
+
+type RoutePanelPhaseType = typeof RoutePanelPhase[keyof typeof RoutePanelPhase];
+
 interface UseChatStreamOptions {
   initialSessionId?: string;
   onSessionIdChange?: (sessionId: string) => void;
@@ -46,6 +54,19 @@ const NODE_LABEL_MAP: Record<string, string> = {
 };
 
 const PLAN_READY_LABEL = "路径规划完成";
+const PLANNING_STAGE_NODES = [
+  "route_planner",
+  "route_enrich_entry",
+  "driving_distance",
+  "poi_enricher",
+  "hotel_enricher",
+  "pre_formatter_guard",
+  "formatter",
+  "validator",
+] as const;
+const PLANNING_STAGE_LABELS = new Set(
+  PLANNING_STAGE_NODES.map((node) => NODE_LABEL_MAP[node] ?? node),
+);
 const supportedEvents: AgentStreamEventName[] = [
   "start",
   "heartbeat",
@@ -76,6 +97,10 @@ function mapUpdatedNodesToLabels(updatedNodes: string[] | undefined): string[] {
 
   const mapped = updatedNodes.map((node) => NODE_LABEL_MAP[node] ?? node);
   return Array.from(new Set(mapped));
+}
+
+function isPlanningStageInProgress(progressNodes: string[]): boolean {
+  return progressNodes.some((node) => PLANNING_STAGE_LABELS.has(node));
 }
 
 function toAgentEvent(raw: ParsedSseEvent): AgentStreamEvent | null {
@@ -157,7 +182,6 @@ export function useChatStream(options: UseChatStreamOptions = {}) {
 
       // state 事件只用于显示当前工作节点，不写入聊天消息。
       if (event.event === "state") {
-        console.log('------: ', event)
         setProgressNodes(mapUpdatedNodesToLabels(event.data.updatedNodes));
         return;
       }
@@ -346,10 +370,27 @@ export function useChatStream(options: UseChatStreamOptions = {}) {
     return "就绪";
   }, [streamRequest.error, streamRequest.loading]);
 
+  // 右侧路线面板展示态：
+  // - plan: 已有可渲染计划
+  // - skeleton: 已进入 route_planner 及后续阶段，且仍在生成中
+  // - empty: 其余情况（包括需求理解/追问阶段）
+  const routePanelPhase = useMemo<RoutePanelPhaseType>(() => {
+    if (plan) return RoutePanelPhase.Plan;
+    if (
+      streamRequest.loading
+      && !needUserInput
+      && isPlanningStageInProgress(progressNodes)
+    ) {
+      return RoutePanelPhase.Skeleton;
+    }
+    return RoutePanelPhase.Empty;
+  }, [plan, streamRequest.loading, needUserInput, progressNodes]);
+
   return {
     messages,
     progressNodes,
     plan,
+    routePanelPhase,
     needUserInput,
     clarification,
     loading: streamRequest.loading,

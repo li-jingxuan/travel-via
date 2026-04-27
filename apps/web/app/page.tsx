@@ -26,6 +26,7 @@ export default function Home() {
     messages,
     progressNodes,
     plan,
+    routePanelPhase,
     needUserInput,
     clarification,
     loading,
@@ -173,10 +174,10 @@ export default function Home() {
         </aside>
 
         <section className={cn(styles.panel, styles.routePanel)}>
-          {/* 只有真正进入路线生成阶段才显示骨架屏；参数追问阶段继续展示空态。 */}
-          {loading && !plan && !needUserInput ? (
+          {/* 右侧面板统一按 routePanelPhase 渲染，避免页面层拼接复杂布尔判断。 */}
+          {routePanelPhase === "skeleton" ? (
             <RoutePanelSkeleton />
-          ) : plan ? (
+          ) : routePanelPhase === "plan" && plan ? (
             <RoutePanel plan={plan} />
           ) : (
             <div className={styles.routeEmpty}>

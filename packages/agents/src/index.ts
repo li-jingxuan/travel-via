@@ -1,8 +1,16 @@
 export { travelPlannerGraph, graphCheckpointer } from "./graph/index.js"
 export { TravelStateAnnotation } from "./graph/state.js"
-export { normalizeIntent } from "./intent/travel-intent-schema.js"
 export {
+  finalizeTravelIntent,
   getMissingRequiredIntentFields,
-  mergeTravelIntent,
-} from "./intent/intent-collection.js"
-export type { TravelIntent, TravelClarification, RouteSkeletonDay } from "./types/internal.js"
+  mergeTravelIntentPatch,
+  normalizeIntentExtraction,
+} from "./intent/index.js"
+export type {
+  IntentField,
+  TravelIntent,
+  TravelIntentExtraction,
+  TravelIntentPatch,
+  TravelClarification,
+  RouteSkeletonDay,
+} from "./types/internal.js"

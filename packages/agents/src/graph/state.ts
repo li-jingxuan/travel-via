@@ -19,48 +19,46 @@
  *
  * Reducer 决定了"新值如何与旧值合并"。LangGraph 提供了几种常见模式：
  *
- * 1. (current, _) => current    → 取第一次写入的值，后续忽略（写一次）
- *     适用场景：userInput、intent、routeSkeleton 等不应被覆盖的字段
+ * 1. (_, update) => update       → 直接替换为新值
+ *     适用场景：userInput、intent、finalPlan、retryCount 每次都取最新值
  *
- * 2. (_, update) => update       → 直接替换为新值
- *     适用场景：finalPlan、retryCount 每次都取最新值
- *
- * 3. (current, update) => [...current, ...update]  → 追加合并
+ * 2. (current, update) => [...current, ...update]  → 追加合并
  *     适用场景：issues 数组累积问题项
- *
- * 4. addMessages（内置）         → 消息列表追加
- *     适用场景：messages 字段，自动去重/追加
  *
  * ============================================================================
  * 数据流向图
  * ============================================================================
  *
- *   userInput ──→ IntentAgent ──→ intent
- *                                    │
+ *   userInput ──→ IntentAgent ──→ intentExtraction
+ *                                      │
+ *                         merge_collected_intent
+ *                                      │
+ *                           collectedIntent + intent
+ *                                      │
  *                              RoutePlanner ──→ routeSkeleton
  *                                                    │
- *                          ┌─────────────────────────┤
- *                          ▼                         ▼                   ▼
- *                    POIAgent                 WeatherAgent          HotelAgent
- *                          │                         │                   │
- *                    enrichedActivities        enrichedWeather    enrichedAccommodation
- *                          └─────────────────────────┴───────────────────┘
+ *                          ┌─────────────────────────┴───────────────────┐
+ *                          ▼                                             ▼
+ *                    POIAgent                                      HotelAgent
+ *                          │                                             │
+ *                    enrichedActivities                         enrichedAccommodation
+ *                          └─────────────────────────┬───────────────────┘
  *                                                    │
  *                                              Formatter ──→ finalPlan
  *                                                            │
  *                                                      Validator ◄── retryCount
  */
 
-import { Annotation, addMessages } from "@langchain/langgraph"
-import type { BaseMessage } from "@langchain/core/messages"
+import { Annotation } from "@langchain/langgraph"
 import type {
   ITravelPlan,
   IActivity,
-  IWeather,
   IAccommodation,
 } from "@repo/shared-types/travel"
 import type {
   TravelIntent,
+  TravelIntentExtraction,
+  TravelIntentPatch,
   TravelClarification,
   RouteSkeletonDay,
 } from "../types/internal.js"
@@ -86,16 +84,27 @@ export const TravelStateAnnotation = Annotation.Root({
     default: () => "",
   }),
 
-  // ==================== Agent 输出层 ====================
+  // ==================== 需求收集层 ====================
 
   /**
-   * 结构化旅行意图 — IntentAgent 的输出
+   * 本轮结构化旅行意图增量 — IntentAgent 的原始输出
+   *
+   * 包含：
+   * - intentPatch：用户本轮明确表达的信息
+   * - explicitFields：本轮允许覆盖历史值的字段
+   *
+   * 这里不包含默认值，默认值只在 merge_collected_intent 后补齐到 intent。
+   */
+  intentExtraction: Annotation<TravelIntentExtraction | null>({
+    reducer: (_, update) => update,
+    default: () => null,
+  }),
+
+  /**
+   * 完整旅行意图 — 下游规划节点读取的稳定输入
    *
    * 包含 destination、days、month、travelType 等关键字段。
-   * 这是整个管线的"翻译层"，把自然语言变成机器可处理的结构化数据。
-   *
-   * 在多轮需求收集开启后，intent 还会在 merge_collected_intent 后被更新为
-   * 合并后的完整需求，供 route_planner 继续复用原有读取路径。
+   * merge_collected_intent 会把 collectedIntent 补齐默认值后写入这里。
    */
   intent: Annotation<TravelIntent | null>({
     reducer: (_, update) => update,
@@ -106,10 +115,10 @@ export const TravelStateAnnotation = Annotation.Root({
    * 多轮对话中已收集到的旅行需求。
    *
    * 与 intent 的区别：
-   * - intent 是本轮用户输入的结构化结果
-   * - collectedIntent 是跨轮合并后的完整需求草稿
+   * - collectedIntent 是跨轮合并后的 patch，不携带默认值
+   * - intent 是补齐默认值后的完整需求，供 route_planner 等节点使用
    */
-  collectedIntent: Annotation<TravelIntent | null>({
+  collectedIntent: Annotation<TravelIntentPatch | null>({
     reducer: (_, update) => update,
     default: () => null,
   }),
@@ -132,17 +141,12 @@ export const TravelStateAnnotation = Annotation.Root({
     default: () => null,
   }),
 
+  // ==================== 规划数据层 ====================
+
   /**
-   * 行程骨架 — RoutePlanner 的输出
+   * 行程骨架 — RoutePlanner 的输出。
    *
-   * 这是一个 RouteSkeletonDay[] 数组，每天包含：
-   * - title / description（当天概要）
-   * - activities[]（景点名称+描述，但无门票/开放时间等详情）
-   * - accommodation[]（住宿名称+地址，但无价格等详情）
-   * - foodRecommendation[]（美食推荐）
-   *
-   * 这个骨架是后续 POI/Weather/Hotel Agent 的输入基础。
-   * Phase 2 中，三个 Agent 会并行往 skeleton 里填充真实 API 数据。
+   * 后续增强节点会基于这个骨架补充 POI/住宿等真实数据。
    */
   routeSkeleton: Annotation<RouteSkeletonDay[] | null>({
     reducer: (_, update) => update,
@@ -173,20 +177,6 @@ export const TravelStateAnnotation = Annotation.Root({
       return merged
     },
     default: () => new Map(),
-  }),
-
-  /**
-   * 天气数据 — WeatherAgent 的输出
-   *
-   * IWeather[] 数组，每个元素代表一个区域的天气情况
-   * （含白天/夜间温度、天气描述、穿衣建议）。
-   *
-   * 与 enrichedActivities 不同，这里用数组而不是 Map，
-   * 因为天气是按"区域"而非"天数"组织的，且通常数量较少。
-   */
-  enrichedWeather: Annotation<IWeather[]>({
-    reducer: (_, update) => update,
-    default: () => [],
   }),
 
   /**
@@ -279,26 +269,6 @@ export const TravelStateAnnotation = Annotation.Root({
    */
   issues: Annotation<IssueItem[]>({
     reducer: (current, update) => [...(current ?? []), ...(update ?? [])],
-    default: () => [],
-  }),
-
-  // ==================== 调试层 ====================
-
-  /**
-   * 消息历史 — 用于调试和 Human-in-the-loop
-   *
-   * 记录每个 LLM 调用的完整对话历史（System/Human/AI/Tool Message）。
-   * 使用 LangGraph 内置的 addMessages reducer，它会：
-   * - 自动追加新消息到末尾
-   * - 根据 message.id 去重（同一消息不会重复添加）
-   *
-   * 用途：
-   * 1. 调试时查看每个 Agent 的完整 prompt/response
-   * 2. Human-in-the-loop 场景下让用户看到 AI 的思考过程
-   * 3. Checkpoint 持久化后可恢复执行上下文
-   */
-  messages: Annotation<BaseMessage[]>({
-    reducer: addMessages,
     default: () => [],
   }),
 })

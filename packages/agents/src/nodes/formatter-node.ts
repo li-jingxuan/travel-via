@@ -18,7 +18,6 @@
  *   ITravelPlan.planName        ← 根据 destination + days 生成
  *   ITravelPlan.totalDays       ← intent.days
  *   ITravelPlan.totalDistance   ← 所有 days.distance 的累加
- *   ITravelPlan.weather         ← enrichedWeather（MVP阶段为空则估算）
  *   ITravelPlan.days[i]         ← routeSkeleton[i] 作为基础框架
  *     .activities               ← enrichedActivities[i] 或 skeleton 原始数据
  *     .accommodation            ← enrichedAccommodation[i] 或 skeleton 原始数据
@@ -31,7 +30,6 @@
  *                      ↑          │
  *   routeSkeleton (读)           finalPlan (写)
  *   enrichedActivities (读)
- *   enrichedWeather (读)
  *   enrichedAccommodation (读)
  *   intent (读)
  *
@@ -167,7 +165,7 @@ const enrichedRouteSkeleton = (state: typeof TravelStateAnnotation.State) => {
  * Formatter 节点函数
  *
  * @param state - 当前 Graph 状态（必须包含 routeSkeleton 和 intent）
- * @returns 需要更新的 State 字段（finalPlan 和 messages）
+ * @returns 需要更新的 State 字段（finalPlan）
  * @throws 当 LLM 无法产出合法 JSON 时抛出错误（触发 Validator 重试机制）
  */
 export async function formatterNode(
@@ -180,7 +178,6 @@ export async function formatterNode(
   agentLog("格式化", "开始组装最终行程", {
     routeDays: skeleton?.length ?? 0,
     enrichedActivityDays: state.enrichedActivities?.size ?? 0,
-    enrichedWeatherCount: state.enrichedWeather?.length ?? 0,
     enrichedAccommodationDays: state.enrichedAccommodation?.size ?? 0,
   })
 
@@ -258,7 +255,6 @@ export async function formatterNode(
 
       return {
         finalPlan,       // 写入最终计划 → State.finalPlan
-        messages: [response], // 追加到消息历史 → State.messages
       }
     } catch (error) {
       lastError = error

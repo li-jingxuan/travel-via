@@ -9,7 +9,7 @@ import { parseRouteWaypoints } from "../lib/waypoint.js"
  * 天气 enrich 节点：
  * - 从 routeSkeleton 的 waypoints 提取城市候选
  * - 查询高德天气并映射到 IWeather[]
- * - 去重后写入 enrichedWeather
+ * - 当前图未接入天气增强节点；需要启用时再恢复对应 State 字段
  */
 export async function weatherEnricherNode(
   state: typeof TravelStateAnnotation.State,
@@ -70,7 +70,6 @@ export async function weatherEnricherNode(
   })
 
   return {
-    enrichedWeather: weatherList,
     ...(issues.length > 0 ? { issues } : {}),
   }
 }
