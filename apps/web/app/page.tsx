@@ -2,6 +2,42 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import type { LucideIcon } from "lucide-react";
+import {
+  Backpack,
+  BatteryCharging,
+  Bug,
+  CalendarDays,
+  CarFront,
+  CalendarRange,
+  ChevronLeft,
+  ChevronRight,
+  Clock3,
+  CircleHelp,
+  Compass,
+  CloudSun,
+  Download,
+  Droplets,
+  Footprints,
+  Glasses,
+  Heart,
+  History,
+  Image as ImageIcon,
+  Map,
+  MapPin,
+  Milestone,
+  Paperclip,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Pill,
+  Route,
+  Save,
+  SendHorizontal,
+  Settings,
+  Share2,
+  Sun,
+  Umbrella,
+} from "lucide-react";
 import { MarkdownText } from "../components/chat/MarkdownText";
 import { useChatStream } from "../hooks/useChatStream";
 import type { DayViewModel, TravelPlanViewModel } from "../types/travel-plan";
@@ -21,7 +57,6 @@ import {
   ROLE_LABEL_MAP,
   SIDEBAR_PRIMARY_NAV,
   SIDEBAR_SECONDARY_NAV,
-  STATUS_TEXT,
 } from "./page.constants";
 import styles from "./page.module.scss";
 
@@ -32,6 +67,69 @@ const ROUTE_PANEL_PHASE = {
 
 const CHAT_PLACEHOLDER_SUMMARY = "你可以告诉我偏好，我可以帮你调整行程：";
 const SIDEBAR_AUTO_COLLAPSE_BREAKPOINT = 1500;
+const WEATHER_PAGE_SIZE = 3;
+
+const SIDEBAR_PRIMARY_ICON_MAP: Record<string, LucideIcon> = {
+  explore: Compass,
+  trips: Map,
+  favorites: Heart,
+  history: History,
+};
+
+const SIDEBAR_SECONDARY_ICON_MAP: Record<string, LucideIcon> = {
+  settings: Settings,
+  help: CircleHelp,
+};
+
+const PLANNER_ACTION_ICON_MAP: Record<string, LucideIcon> = {
+  share: Share2,
+  export: Download,
+  favorite: Heart,
+  save: Save,
+};
+
+const INPUT_TOOLBAR_ICON_MAP: Record<string, LucideIcon> = {
+  attach: Paperclip,
+  location: MapPin,
+  gallery: ImageIcon,
+};
+// 统一控制模块标题图标尺寸，避免在 JSX 中散落魔法数值。
+const SECTION_TITLE_ICON_SIZE = 18;
+const CHECKLIST_ITEM_ICON_SIZE = 12;
+const SUMMARY_STAT_ICON_SIZE = 13;
+
+const SUMMARY_STAT_CONFIG = {
+  totalDays: { label: "总天数", Icon: CalendarDays, tone: "days" },
+  totalDistance: { label: "总距离", Icon: Milestone, tone: "distance" },
+  drivingHours: { label: "行车时间", Icon: Clock3, tone: "duration" },
+} as const;
+
+type ChecklistIconTone = "sun" | "sky" | "green" | "indigo" | "blue" | "cyan" | "violet" | "rose" | "slate";
+
+function resolveChecklistIcon(item: string): { Icon: LucideIcon; tone: ChecklistIconTone } {
+  // 用关键词匹配行李条目图标，避免把具体文案与图标逻辑强耦合。
+  if (item.includes("防晒")) return { Icon: Sun, tone: "sun" };
+  if (item.includes("帽") || item.includes("墨镜")) return { Icon: Glasses, tone: "sky" };
+  if (item.includes("驱蚊")) return { Icon: Bug, tone: "green" };
+  if (item.includes("运动鞋")) return { Icon: Footprints, tone: "indigo" };
+  if (item.includes("雨伞")) return { Icon: Umbrella, tone: "blue" };
+  if (item.includes("水壶")) return { Icon: Droplets, tone: "cyan" };
+  if (item.includes("充电宝") || item.includes("数据线")) return { Icon: BatteryCharging, tone: "violet" };
+  if (item.includes("藿香") || item.includes("正气") || item.includes("药")) return { Icon: Pill, tone: "rose" };
+  return { Icon: Backpack, tone: "slate" };
+}
+
+function resolveChecklistIconToneClass(tone: ChecklistIconTone) {
+  if (tone === "sun") return styles.checklistChipIconSun;
+  if (tone === "sky") return styles.checklistChipIconSky;
+  if (tone === "green") return styles.checklistChipIconGreen;
+  if (tone === "indigo") return styles.checklistChipIconIndigo;
+  if (tone === "blue") return styles.checklistChipIconBlue;
+  if (tone === "cyan") return styles.checklistChipIconCyan;
+  if (tone === "violet") return styles.checklistChipIconViolet;
+  if (tone === "rose") return styles.checklistChipIconRose;
+  return styles.checklistChipIconSlate;
+}
 
 function cn(...names: Array<string | false | null | undefined>) {
   return names.filter(Boolean).join(" ");
@@ -100,6 +198,7 @@ export default function Home() {
   const [inputValue, setInputValue] = useState("");
   const [activeDayIndex, setActiveDayIndex] = useState(0);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [weatherPage, setWeatherPage] = useState(0);
   const chatScrollRef = useRef<HTMLDivElement | null>(null);
 
   const {
@@ -110,7 +209,6 @@ export default function Home() {
     needUserInput,
     clarification,
     loading,
-    statusLabel,
     sendMessage,
   } = useChatStream({
     initialSessionId,
@@ -125,12 +223,17 @@ export default function Home() {
     },
   });
 
-  const usingMockPlan = !plan;
   const plannerSummary = plan?.summary ?? PLAN_MOCK_SUMMARY;
   const plannerBestSeason = plan?.bestSeason || PLAN_MOCK_BEST_SEASON;
   const plannerVehicleAdvice = plan?.vehicleAdvice || PLAN_MOCK_VEHICLE_ADVICE;
   const plannerWeather = plan?.weather?.length ? plan.weather : PLAN_MOCK_WEATHER;
   const plannerDays = plan?.days?.length ? plan.days : PLAN_MOCK_DAYS;
+  const weatherPageCount = Math.max(1, Math.ceil(plannerWeather.length / WEATHER_PAGE_SIZE));
+  const currentWeatherItems = useMemo(() => {
+    // 天气卡按页切片，每页展示固定 3 项。
+    const startIndex = weatherPage * WEATHER_PAGE_SIZE;
+    return plannerWeather.slice(startIndex, startIndex + WEATHER_PAGE_SIZE);
+  }, [plannerWeather, weatherPage]);
 
   const plannerMetaPills = useMemo(
     () => buildMetaPills(plannerSummary, plannerBestSeason),
@@ -144,11 +247,32 @@ export default function Home() {
   const activeDay = plannerDays[activeDayIndex] ?? plannerDays[0] ?? PLAN_MOCK_DAYS[0]!;
   const featuredHotel = getPrimaryAccommodation(activeDay);
   const featuredHotelImage = getPrimaryActivityImage(activeDay);
-  const plannerTagText = usingMockPlan
-    ? routePanelPhase === ROUTE_PANEL_PHASE.Skeleton
-      ? statusLabel
-      : STATUS_TEXT.MockTag
-    : statusLabel;
+  const summaryStats = useMemo(
+    () => [
+      {
+        key: "totalDays",
+        label: SUMMARY_STAT_CONFIG.totalDays.label,
+        value: `${plannerSummary.totalDays} 天`,
+        Icon: SUMMARY_STAT_CONFIG.totalDays.Icon,
+        toneClassName: styles.summaryStatIconDays,
+      },
+      {
+        key: "totalDistance",
+        label: SUMMARY_STAT_CONFIG.totalDistance.label,
+        value: plannerSummary.totalDistanceText,
+        Icon: SUMMARY_STAT_CONFIG.totalDistance.Icon,
+        toneClassName: styles.summaryStatIconDistance,
+      },
+      {
+        key: "drivingHours",
+        label: SUMMARY_STAT_CONFIG.drivingHours.label,
+        value: activeDay.drivingHoursText,
+        Icon: SUMMARY_STAT_CONFIG.drivingHours.Icon,
+        toneClassName: styles.summaryStatIconDuration,
+      },
+    ],
+    [activeDay.drivingHoursText, plannerSummary.totalDays, plannerSummary.totalDistanceText],
+  );
 
   // 新消息发送/接收后将滚动区域保持在底部，避免用户手动追踪。
   useEffect(() => {
@@ -165,6 +289,12 @@ export default function Home() {
     if (activeDayIndex <= plannerDays.length - 1) return;
     setActiveDayIndex(0);
   }, [activeDayIndex, plannerDays]);
+
+  useEffect(() => {
+    // 当天气数据或总页数变化时，兜底修正当前页索引。
+    if (weatherPage <= weatherPageCount - 1) return;
+    setWeatherPage(Math.max(0, weatherPageCount - 1));
+  }, [weatherPage, weatherPageCount]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -208,6 +338,14 @@ export default function Home() {
     setIsSidebarCollapsed((prev) => !prev);
   }
 
+  function handlePrevWeatherPage() {
+    setWeatherPage((prev) => Math.max(0, prev - 1));
+  }
+
+  function handleNextWeatherPage() {
+    setWeatherPage((prev) => Math.min(weatherPageCount - 1, prev + 1));
+  }
+
   return (
     <main className={styles.page}>
       <section
@@ -220,7 +358,9 @@ export default function Home() {
         <aside className={cn(styles.sidebar, isSidebarCollapsed && styles.sidebarCollapsed)}>
           <div className={styles.brandBlock}>
             <div className={styles.brandIdentity}>
-              <div className={styles.brandIcon}>✕</div>
+              <div className={styles.brandIcon}>
+                <Route className={styles.brandGlyph} />
+              </div>
               {!isSidebarCollapsed ? (
                 <div className={styles.brandText}>
                   <h2>AI 旅行规划师</h2>
@@ -235,7 +375,7 @@ export default function Home() {
               title={isSidebarCollapsed ? "展开侧边栏" : "收缩侧边栏"}
               onClick={handleToggleSidebar}
             >
-              {isSidebarCollapsed ? "»" : "«"}
+              {isSidebarCollapsed ? <PanelLeftOpen size={14} /> : <PanelLeftClose size={14} />}
             </button>
           </div>
 
@@ -249,7 +389,9 @@ export default function Home() {
           </button>
 
           <nav className={styles.navGroup} aria-label="主导航">
-            {SIDEBAR_PRIMARY_NAV.map((item) => (
+            {SIDEBAR_PRIMARY_NAV.map((item) => {
+              const NavIcon = SIDEBAR_PRIMARY_ICON_MAP[item.key] ?? Compass;
+              return (
               <button
                 key={item.key}
                 type="button"
@@ -257,14 +399,19 @@ export default function Home() {
                 title={item.label}
                 aria-label={item.label}
               >
-                <span className={styles.navIcon}>{item.icon}</span>
+                <span className={styles.navIcon}>
+                  <NavIcon size={14} />
+                </span>
                 {!isSidebarCollapsed ? item.label : null}
               </button>
-            ))}
+              );
+            })}
           </nav>
 
           <nav className={styles.navGroupSecondary} aria-label="辅助导航">
-            {SIDEBAR_SECONDARY_NAV.map((item) => (
+            {SIDEBAR_SECONDARY_NAV.map((item) => {
+              const NavIcon = SIDEBAR_SECONDARY_ICON_MAP[item.key] ?? CircleHelp;
+              return (
               <button
                 key={item.key}
                 type="button"
@@ -272,10 +419,13 @@ export default function Home() {
                 title={item.label}
                 aria-label={item.label}
               >
-                <span className={styles.navIcon}>{item.icon}</span>
+                <span className={styles.navIcon}>
+                  <NavIcon size={14} />
+                </span>
                 {!isSidebarCollapsed ? item.label : null}
               </button>
-            ))}
+              );
+            })}
           </nav>
 
           <div className={cn(styles.userCard, isSidebarCollapsed && styles.userCardCollapsed)}>
@@ -368,18 +518,21 @@ export default function Home() {
             />
 
             <div className={styles.inputToolbar}>
-              {INPUT_TOOLBAR_ACTIONS.map((item) => (
-                <button key={item.key} type="button" className={styles.toolBtn} disabled={loading} title={item.label}>
-                  {item.icon}
-                </button>
-              ))}
+              {INPUT_TOOLBAR_ACTIONS.map((item) => {
+                const ToolIcon = INPUT_TOOLBAR_ICON_MAP[item.key] ?? Paperclip;
+                return (
+                  <button key={item.key} type="button" className={styles.toolBtn} disabled={loading} title={item.label}>
+                    <ToolIcon className={styles.toolbarIcon} />
+                  </button>
+                );
+              })}
               <button
                 type="button"
                 className={styles.sendBtn}
                 disabled={loading}
                 onClick={() => void handleSubmit()}
               >
-                {loading ? "…" : "➤"}
+                {loading ? "…" : <SendHorizontal className={styles.sendIcon} />}
               </button>
             </div>
             <p className={styles.inputDisclaimer}>内容由 AI 生成，仅供参考，请注意安全出行</p>
@@ -391,28 +544,26 @@ export default function Home() {
             <div className={styles.planTitleRow}>
               <h2>
                 {plannerSummary.planName}
-                <button type="button" className={styles.editBtn} aria-label="编辑行程标题">
-                  ✎
-                </button>
               </h2>
+              <div className={styles.actionRow}>
+                {PLANNER_ACTIONS.map((action) => {
+                  // 通过 in 判断读取可选字段，避免联合类型上的属性访问报错。
+                  const isPrimary = "emphasized" in action && Boolean(action.emphasized);
+                  const ActionIcon = PLANNER_ACTION_ICON_MAP[action.key] ?? Share2;
+                  return (
+                    <button
+                      key={action.key}
+                      type="button"
+                      className={cn(styles.actionBtn, isPrimary && styles.actionBtnPrimary)}
+                    >
+                      <ActionIcon className={styles.actionIcon} />
+                      {action.label}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-            <div className={styles.actionRow}>
-              <span className={styles.mockHint}>{plannerTagText}</span>
-              {PLANNER_ACTIONS.map((action) => {
-                // 通过 in 判断读取可选字段，避免联合类型上的属性访问报错。
-                const isPrimary = "emphasized" in action && Boolean(action.emphasized);
-                return (
-                  <button
-                    key={action.key}
-                    type="button"
-                    className={cn(styles.actionBtn, isPrimary && styles.actionBtnPrimary)}
-                  >
-                    <span>{action.icon}</span>
-                    {action.label}
-                  </button>
-                );
-              })}
-            </div>
+            
             <div className={styles.metaPillRow}>
               {plannerMetaPills.map((pill) => (
                 <span key={pill.key} className={styles.metaPill}>
@@ -436,14 +587,51 @@ export default function Home() {
             <div className={styles.plannerContent}>
               <div className={styles.infoGrid}>
                 <article className={styles.adviceCard}>
-                  <h3>自驾建议</h3>
+                  <h3 className={styles.sectionTitle}>
+                    <span className={cn(styles.sectionIcon, styles.sectionIconAdvice)}>
+                      <CarFront size={SECTION_TITLE_ICON_SIZE} />
+                    </span>
+                    出行建议
+                  </h3>
                   <p>{plannerVehicleAdvice}</p>
                 </article>
 
                 <article className={styles.weatherCard}>
-                  <h3>目的地天气（{weatherMonthLabel}）</h3>
+                  <div className={styles.weatherHeader}>
+                    <h3 className={styles.sectionTitle}>
+                      <span className={cn(styles.sectionIcon, styles.sectionIconWeather)}>
+                        <CloudSun size={SECTION_TITLE_ICON_SIZE} />
+                      </span>
+                      目的地天气（{weatherMonthLabel}）
+                    </h3>
+                    {weatherPageCount > 1 ? (
+                      <div className={styles.weatherPager}>
+                        <button
+                          type="button"
+                          className={styles.pagerBtn}
+                          disabled={weatherPage === 0}
+                          aria-label="上一页天气"
+                          onClick={handlePrevWeatherPage}
+                        >
+                          <ChevronLeft className={styles.pagerIcon} />
+                        </button>
+                        <span className={styles.pagerText}>
+                          {weatherPage + 1}/{weatherPageCount}
+                        </span>
+                        <button
+                          type="button"
+                          className={styles.pagerBtn}
+                          disabled={weatherPage >= weatherPageCount - 1}
+                          aria-label="下一页天气"
+                          onClick={handleNextWeatherPage}
+                        >
+                          <ChevronRight className={styles.pagerIcon} />
+                        </button>
+                      </div>
+                    ) : null}
+                  </div>
                   <div className={styles.weatherGrid}>
-                    {plannerWeather.slice(0, 3).map((item) => {
+                    {currentWeatherItems.map((item) => {
                       const daytime = splitWeatherSlot(item.daytime);
                       const nighttime = splitWeatherSlot(item.nighttime);
                       return (
@@ -467,20 +655,21 @@ export default function Home() {
                 </article>
               </div>
 
-              <div className={styles.dayTabs}>
-                {plannerDays.map((day, index) => (
-                  <button
-                    key={`${day.day}-${day.title}`}
-                    type="button"
-                    className={cn(styles.dayTab, index === activeDayIndex && styles.dayTabActive)}
-                    onClick={() => setActiveDayIndex(index)}
-                  >
-                    第{day.day}天
-                  </button>
-                ))}
-              </div>
+              <section className={styles.tripContentShell}>
+                <div className={styles.dayTabs}>
+                  {plannerDays.map((day, index) => (
+                    <button
+                      key={`${day.day}-${day.title}`}
+                      type="button"
+                      className={cn(styles.dayTab, index === activeDayIndex && styles.dayTabActive)}
+                      onClick={() => setActiveDayIndex(index)}
+                    >
+                      第{day.day}天
+                    </button>
+                  ))}
+                </div>
 
-              <div className={styles.dayGrid}>
+                <div className={styles.dayGrid}>
                 <aside className={styles.routeAside}>
                   <section className={styles.routeBlock}>
                     <h4>途经点（行程路线）</h4>
@@ -489,7 +678,7 @@ export default function Home() {
                         <li key={`${point.name}-${point.address}`}>
                           <div className={styles.routeDot} />
                           <div>
-                            <strong>{point.name}</strong>
+                            <p className={styles.pointName}>{point.name}</p>
                             <p>{point.address}</p>
                           </div>
                         </li>
@@ -497,24 +686,24 @@ export default function Home() {
                     </ul>
                   </section>
 
-                  <section className={styles.routeBlock}>
+                  <section className={cn(styles.routeBlock, styles.overviewBlock)}>
                     <h4>当日概览</h4>
                     <div className={styles.overviewList}>
                       <div>
                         <span>行程主题</span>
-                        <strong>{activeDay.title}</strong>
+                        <span className={styles.activeDayText}>{activeDay.title}</span>
                       </div>
                       <div>
                         <span>总距离</span>
-                        <strong>{activeDay.distanceText}</strong>
+                        <span className={styles.activeDayText}>{activeDay.distanceText}</span>
                       </div>
                       <div>
                         <span>行车时间</span>
-                        <strong>{activeDay.drivingHoursText}</strong>
+                        <span className={styles.activeDayText}>{activeDay.drivingHoursText}</span>
                       </div>
                       <div>
                         <span>游玩时长</span>
-                        <strong>约 4 小时</strong>
+                        <span className={styles.activeDayText}>约 4 小时</span>
                       </div>
                     </div>
                   </section>
@@ -529,7 +718,7 @@ export default function Home() {
                   </section>
                 </aside>
 
-                <section className={styles.dayMain}>
+                <div className={styles.dayMainShell}>
                   <header className={styles.dayHeader}>
                     <div>
                       <h3>
@@ -540,92 +729,123 @@ export default function Home() {
                     <button type="button" className={styles.collapseBtn}>收起</button>
                   </header>
 
-                  <div className={styles.spotSection}>
-                    <h4>景点推荐</h4>
-                    <div className={styles.spotList}>
-                      {activeDay.activities.slice(0, 2).map((activity, index) => (
-                        <article key={activity.name} className={styles.spotItem}>
-                          <div className={styles.spotImageWrap}>
-                            {activity.images[0]?.src ? (
-                              // 这里先用原生 img 兼容动态外链图，后续可统一切换到 next/image。
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img
-                                src={activity.images[0].src}
-                                alt={activity.images[0].alt || activity.name}
-                                className={styles.spotImage}
-                              />
-                            ) : (
-                              <div className={styles.spotImagePlaceholder}>暂无图片</div>
-                            )}
-                          </div>
-                          <div className={styles.spotMeta}>
-                            <h5>
-                              {activity.name}
-                              <span className={styles.ratingTag}>★ {index === 0 ? "4.9" : "4.8"}</span>
-                            </h5>
-                            <p>{activity.description}</p>
-                            <div className={styles.spotStats}>
-                              <span>建议游玩 {activity.suggestedHours}</span>
-                              <span>门票 {activity.ticketText}</span>
-                              <span>{activity.openingHoursText}</span>
-                            </div>
-                          </div>
-                        </article>
-                      ))}
-                    </div>
-                  </div>
+                  <div className={styles.dayMainGrid}>
+                    <section className={styles.dayMain}>
+                      <div className={styles.spotSection}>
+                        <h4>景点推荐</h4>
+                        <div className={styles.spotList}>
+                          {activeDay.activities.slice(0, 2).map((activity, index) => (
+                            <article key={activity.name} className={styles.spotItem}>
+                              <div className={styles.spotImageWrap}>
+                                {activity.images[0]?.src ? (
+                                  // 这里先用原生 img 兼容动态外链图，后续可统一切换到 next/image。
+                                  // eslint-disable-next-line @next/next/no-img-element
+                                  <img
+                                    src={activity.images[0].src}
+                                    alt={activity.images[0].alt || activity.name}
+                                    className={styles.spotImage}
+                                  />
+                                ) : (
+                                  <div className={styles.spotImagePlaceholder}>暂无图片</div>
+                                )}
+                              </div>
+                              <div className={styles.spotMeta}>
+                                <h5>
+                                  {activity.name}
+                                  <span className={styles.ratingTag}>★ {index === 0 ? "4.9" : "4.8"}</span>
+                                </h5>
+                                <p>{activity.description}</p>
+                                {/* 统计信息按“标题在上、值在下”的两行布局，贴近设计稿信息层级。 */}
+                                <div className={styles.spotStats}>
+                                  <div className={styles.spotStatItem}>
+                                    <span className={styles.spotStatLabel}>建议游玩</span>
+                                    <strong className={styles.spotStatValue}>{activity.suggestedHours}</strong>
+                                  </div>
+                                  <div className={styles.spotStatItem}>
+                                    <span className={styles.spotStatLabel}>门票</span>
+                                    <strong className={styles.spotStatValue}>{activity.ticketText}</strong>
+                                  </div>
+                                  <div className={styles.spotStatItem}>
+                                    <span className={styles.spotStatLabel}>开放时间</span>
+                                    <strong className={styles.spotStatValue}>{activity.openingHoursText}</strong>
+                                  </div>
+                                </div>
+                              </div>
+                            </article>
+                          ))}
+                        </div>
+                      </div>
 
-                  <footer className={styles.tipBox}>
-                    <strong>小贴士</strong>
-                    <p>{activeDay.tips}</p>
-                  </footer>
-                </section>
+                      <footer className={styles.tipBox}>
+                        <strong>小贴士</strong>
+                        <p>{activeDay.tips}</p>
+                      </footer>
+                    </section>
 
-                <aside className={styles.hotelPanel}>
-                  <h4>住宿推荐</h4>
-                  <div className={styles.hotelImageWrap}>
-                    {featuredHotelImage ? (
-                      // 这里先用原生 img 兼容动态外链图，后续可统一切换到 next/image。
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={featuredHotelImage} alt={featuredHotel.name} className={styles.hotelImage} />
-                    ) : (
-                      <div className={styles.hotelImagePlaceholder}>酒店图片占位</div>
-                    )}
+                    <aside className={styles.hotelPanel}>
+                      <h4>住宿推荐</h4>
+                      <div className={styles.hotelImageWrap}>
+                        {featuredHotelImage ? (
+                          // 这里先用原生 img 兼容动态外链图，后续可统一切换到 next/image。
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={featuredHotelImage} alt={featuredHotel.name} className={styles.hotelImage} />
+                        ) : (
+                          <div className={styles.hotelImagePlaceholder}>酒店图片占位</div>
+                        )}
+                      </div>
+                      <h5>{featuredHotel.name}</h5>
+                      <p>{featuredHotel.feature}</p>
+                      <small>{featuredHotel.address}</small>
+                    </aside>
                   </div>
-                  <h5>{featuredHotel.name}</h5>
-                  <p>{featuredHotel.feature}</p>
-                  <small>{featuredHotel.address}</small>
-                </aside>
-              </div>
+                </div>
+                </div>
+
+              </section>
 
               <div className={styles.bottomGrid}>
                 <section className={styles.checklistPanel}>
                   <header>
-                    <h4>出行必备清单</h4>
+                    <h4 className={styles.sectionTitle}>
+                      出行必备清单
+                    </h4>
                     <button type="button">查看全部</button>
                   </header>
                   <div className={styles.checklistChips}>
-                    {PACKING_CHECKLIST.map((item) => (
-                      <span key={item}>{item}</span>
-                    ))}
+                    {PACKING_CHECKLIST.map((item) => {
+                      const iconConfig = resolveChecklistIcon(item);
+                      const ChecklistIcon = iconConfig.Icon;
+                      return (
+                        <span key={item} className={styles.checklistChip}>
+                          <span
+                            className={cn(
+                              styles.checklistChipIcon,
+                              resolveChecklistIconToneClass(iconConfig.tone),
+                            )}
+                          >
+                            <ChecklistIcon size={CHECKLIST_ITEM_ICON_SIZE} />
+                          </span>
+                          <span>{item}</span>
+                        </span>
+                      );
+                    })}
                   </div>
                 </section>
 
                 <section className={styles.tripSummaryPanel}>
-                  <h4>行程总览</h4>
+                  <h4 className={styles.sectionTitle}>
+                    行程总览
+                  </h4>
                   <div className={styles.summaryStats}>
-                    <div>
-                      <span>总天数</span>
-                      <strong>{plannerSummary.totalDays} 天</strong>
-                    </div>
-                    <div>
-                      <span>总距离</span>
-                      <strong>{plannerSummary.totalDistanceText}</strong>
-                    </div>
-                    <div>
-                      <span>行车时长</span>
-                      <strong>{activeDay.drivingHoursText}</strong>
-                    </div>
+                    {summaryStats.map((item) => (
+                      <div key={item.key} className={styles.summaryStatItem}>
+                        <span className={styles.summaryStatLabel}>
+                          <item.Icon className={cn(styles.summaryStatIcon, item.toneClassName)} size={SUMMARY_STAT_ICON_SIZE} />
+                          {item.label}
+                        </span>
+                        <span className={styles.summaryStatsValue}>{item.value}</span>
+                      </div>
+                    ))}
                   </div>
                 </section>
               </div>

@@ -75,7 +75,13 @@ export const PLAN_MOCK_WEATHER: TravelPlanViewModel["weather"] = [
     clothing: "短袖+防晒衣，峡谷内建议防蚊",
   },
   {
-    area: "大足",
+    area: "大足111",
+    daytime: "24 ~ 36°C 晴，高温",
+    nighttime: "25 ~ 30°C 晴",
+    clothing: "短袖短裤，带上遮阳伞",
+  },
+  {
+    area: "大足222",
     daytime: "24 ~ 36°C 晴，高温",
     nighttime: "25 ~ 30°C 晴",
     clothing: "短袖短裤，带上遮阳伞",

@@ -46,7 +46,21 @@
         "clothing": "短袖+防晒衣，峡谷内建议穿长裤防蚊虫"
       },
       {
-        "area": "大足",
+        "area": "大足22",
+        "daytime": {
+          "tempMax": 36,
+          "tempMin": 28,
+          "weather": "晴，高温"
+        },
+        "nighttime": {
+          "tempMax": 30,
+          "tempMin": 25,
+          "weather": "晴"
+        },
+        "clothing": "短袖短裤，带上遮阳伞"
+      },
+      {
+        "area": "大足11",
         "daytime": {
           "tempMax": 36,
           "tempMin": 28,

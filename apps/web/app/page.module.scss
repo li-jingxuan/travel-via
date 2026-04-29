@@ -1,4 +1,7 @@
 .page {
+  // 统一管理布局尺寸，避免散落魔法值。
+  --sidebar-width: 240px;
+  --sidebar-collapsed-width: 76px;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
@@ -7,14 +10,16 @@
 
 .desktopShell {
   display: grid;
-  grid-template-columns: 200px 292px minmax(0, 1fr);
+  // 常态：侧栏固定宽度，剩余空间按 chat:planner = 1:2 分配。
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr) minmax(0, 2fr);
   width: 100%;
   height: 100%;
   transition: grid-template-columns 0.22s ease;
 }
 
 .desktopShellSidebarCollapsed {
-  grid-template-columns: 76px 292px minmax(0, 1fr);
+  // 收缩态：侧栏使用收缩宽度，主区仍保持 1:2。
+  grid-template-columns: var(--sidebar-collapsed-width) minmax(0, 1fr) minmax(0, 2fr);
 }
 
 .sidebar,
@@ -72,10 +77,16 @@
   font-weight: 700;
 }
 
+.brandGlyph {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.2;
+}
+
 .brandText {
   h2 {
     margin: 0;
-    font-size: 22px;
+    font-size: 20px;
     line-height: 1.12;
     color: #111827;
     font-weight: 700;
@@ -149,6 +160,9 @@
   text-align: center;
   color: #4b5563;
   font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .userCard {
@@ -230,37 +244,34 @@
 }
 
 .chatHeader {
-  border-bottom: 1px solid #edf0f6;
-  padding: 14px 14px 12px;
+  padding: 15px;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 10px;
 
   h1 {
     margin: 0;
     color: #111827;
-    font-size: 26px;
+    font-size: 20px;
     line-height: 1;
     font-weight: 700;
     letter-spacing: -0.01em;
   }
 
   p {
-    margin: 4px 0 0;
+    margin: 10px 0 0;
     color: #6b7280;
-    font-size: 14px;
+    font-size: 12px;
   }
 }
 
 .spark {
   color: #2563eb;
-  font-size: 15px;
 }
 
 .chatScroll {
   background: #fff;
-  padding: 10px;
+  padding: 0 10px;
   overflow-y: auto;
   display: grid;
   align-content: start;
@@ -431,6 +442,12 @@
   font-size: 12px;
 }
 
+.toolbarIcon {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2;
+}
+
 .sendBtn {
   margin-left: auto;
   width: 32px;
@@ -449,6 +466,12 @@
   }
 }
 
+.sendIcon {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.2;
+}
+
 .inputDisclaimer {
   margin: 0;
   color: #98a2b3;
@@ -462,10 +485,8 @@
 }
 
 .plannerHeader {
-  border-bottom: 1px solid #edf0f6;
-  padding: 10px 16px 10px;
+  padding: 15px;
   display: grid;
-  gap: 8px;
 }
 
 .planTitleRow {
@@ -475,15 +496,13 @@
   gap: 12px;
 
   h2 {
-    margin: 0;
     color: #111827;
-    font-size: 48px;
+    font-size: 26px;
     line-height: 1;
     font-weight: 700;
     letter-spacing: -0.02em;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
   }
 }
 
@@ -507,16 +526,6 @@
   gap: 8px;
 }
 
-.mockHint {
-  margin-right: auto;
-  color: #2563eb;
-  font-size: 12px;
-  border-radius: 999px;
-  border: 1px solid #d4e0fb;
-  background: #eff5ff;
-  padding: 3px 9px;
-}
-
 .actionBtn,
 .actionBtnPrimary {
   min-height: 34px;
@@ -531,6 +540,12 @@
   padding: 0 11px;
 }
 
+.actionIcon {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2;
+}
+
 .actionBtnPrimary {
   border-color: #2a64e7;
   background: linear-gradient(140deg, #4386ff 0%, #235ee5 100%);
@@ -540,6 +555,7 @@
 .metaPillRow {
   display: flex;
   gap: 8px;
+  margin-top: 5px;
 }
 
 .metaPill {
@@ -549,8 +565,8 @@
   border: 1px solid #dae1ef;
   background: #f8faff;
   color: #374151;
-  font-size: 13px;
-  padding: 6px 11px;
+  font-size: 12px;
+  padding: 3px 6px;
 }
 
 .skeletonWrap {
@@ -587,58 +603,151 @@
 }
 
 .plannerContent {
-  padding: 12px;
+  padding: 0 15px 15px 15px;
   overflow-y: auto;
-  display: grid;
-  gap: 12px;
   align-content: start;
 }
 
 .infoGrid {
   display: grid;
-  grid-template-columns: 1fr 1.2fr;
+  grid-template-columns: 1fr 2fr;
   gap: 10px;
+}
+
+// 统一模块标题与图标风格，保持四个信息卡片的视觉语义一致。
+.sectionTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sectionIcon {
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  border: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 14px;
+    height: 14px;
+    stroke-width: 2.15;
+  }
+}
+
+.sectionIconAdvice {
+  color: #c2410c;
+  background: #fff2e8;
+  border-color: #ffd8ba;
+}
+
+.sectionIconWeather {
+  color: #0c4a6e;
+  background: #eef7ff;
+  border-color: #cde4ff;
+}
+
+.sectionIconChecklist {
+  color: #047857;
+  background: #ecfdf5;
+  border-color: #c8f1de;
+}
+
+.sectionIconSummary {
+  color: #1d4ed8;
+  background: #eef4ff;
+  border-color: #d3e1ff;
 }
 
 .adviceCard,
 .weatherCard,
-.routeBlock,
-.dayMain,
-.hotelPanel,
-.checklistPanel,
-.tripSummaryPanel {
+.tripContentShell {
   border-radius: 10px;
   border: 1px solid #e2e8f3;
   background: #fff;
+  margin: 8px 0;
+  overflow: hidden;
 }
 
 .adviceCard {
   padding: 12px;
-
+  background-color: #fdfbf5;
   h3 {
     margin: 0 0 8px;
     color: #111827;
-    font-size: 24px;
+    font-size: 20px;
+    font-weight: 500;
     line-height: 1;
   }
 
   p {
     margin: 0;
-    color: #4b5563;
-    font-size: 14px;
+    color: #333333;
+    font-size: 12px;
     line-height: 1.7;
   }
 }
 
 .weatherCard {
   padding: 12px;
+  background-color: #fbfafc;
 
   h3 {
-    margin: 0 0 10px;
+    margin: 0;
     color: #111827;
-    font-size: 30px;
+    font-size: 20px;
     line-height: 1;
+    font-weight: 500;
   }
+}
+
+.weatherHeader {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.weatherPager {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pagerBtn {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  border: 1px solid #d9e2f3;
+  background: #fff;
+  color: #334155;
+  font-size: 14px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  &:disabled {
+    opacity: 0.42;
+    cursor: not-allowed;
+  }
+}
+
+.pagerIcon {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.2;
+}
+
+.pagerText {
+  min-width: 34px;
+  text-align: center;
+  color: #64748b;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
 }
 
 .weatherGrid {
@@ -650,29 +759,34 @@
 .weatherItem {
   border-radius: 10px;
   border: 1px solid #e2e8f3;
-  background: #fcfdff;
-  padding: 9px;
+  background: #ffffff;
+  padding: 10px;
   display: grid;
   gap: 4px;
 
   h4 {
-    margin: 0 0 3px;
     color: #111827;
-    font-size: 22px;
+    font-size: 14px;
     line-height: 1;
+    font-weight: 500;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e2e8f3;
   }
 
   p {
-    margin: 0;
     color: #6b7280;
     font-size: 12px;
+    text-align: right;
   }
 
   small {
     margin-top: 4px;
     color: #4b5563;
     font-size: 11px;
-    line-height: 1.45;
+    line-height: 16px;
+    padding-top: 10px;
+    height: 43px;
+    border-top: 1px solid #e2e8f3;
   }
 }
 
@@ -680,31 +794,32 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   span {
     color: #475569;
     font-size: 12px;
   }
 
   strong {
-    color: #111827;
-    font-size: 27px;
-    font-weight: 600;
+    color: #333333;
+    font-size: 14px;
+    font-weight: 500;
   }
 }
 
 .dayTabs {
   display: flex;
-  gap: 2px;
+  gap: 0;
+  border-bottom: 1px solid #e2e8f3;
+  background: #fff;
 }
 
 .dayTab,
 .dayTabActive {
-  min-width: 88px;
+  min-width: 90px;
   min-height: 36px;
-  border-radius: 8px 8px 0 0;
-  border: 1px solid #dbe3f2;
-  background: #fff;
+  border: 0;
+  border-right: 1px solid #e2e8f3;
+  background: transparent;
   color: #374151;
   font-size: 14px;
 }
@@ -713,19 +828,20 @@
   color: #1d4ed8;
   font-weight: 600;
   background: #e8f0ff;
-  border-color: #bfd0f8;
 }
 
 .dayGrid {
   display: grid;
-  grid-template-columns: 182px minmax(0, 1fr) 338px;
-  gap: 10px;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 0;
+  background: #fff;
 }
 
 .routeAside {
   display: grid;
-  gap: 10px;
+  gap: 0;
   align-content: start;
+  border-right: 1px solid #e2e8f3;
 }
 
 .routeBlock {
@@ -734,7 +850,8 @@
   h4 {
     margin: 0 0 9px;
     color: #111827;
-    font-size: 18px;
+    font-size: 14px;
+    font-weight: 500;
     line-height: 1.1;
   }
 }
@@ -750,10 +867,11 @@
     align-items: start;
   }
 
-  strong {
+  .pointName {
     display: block;
-    color: #111827;
-    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+    font-size: 12px;
   }
 
   p {
@@ -772,6 +890,12 @@
   border: 2px solid #3b82f6;
 }
 
+.overviewBlock{
+  background-color: #fafafd;
+  border: 1px solid #e2e8f3;
+  border-radius: 6px;
+  margin: 0 8px;
+}
 .overviewList {
   display: grid;
   gap: 7px;
@@ -788,10 +912,10 @@
     font-size: 12px;
   }
 
-  strong {
+  .activeDayText {
     color: #1f2937;
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 500;
     text-align: right;
   }
 }
@@ -818,10 +942,12 @@
   }
 }
 
-.dayMain {
-  padding: 12px;
+.dayMainShell {
+  min-width: 0;
+  padding: 8px;
+  padding-bottom: 0;
   display: grid;
-  gap: 10px;
+  grid-template-rows: auto minmax(0, 1fr);
 }
 
 .dayHeader {
@@ -829,19 +955,34 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 10px;
+  border-bottom: 1px solid #d8deeb;
+  padding: 12px;
 
   h3 {
-    margin: 0;
     color: #111827;
-    font-size: 38px;
+    font-weight: 500;
+    font-size: 18px;
     line-height: 1;
   }
 
   p {
     margin: 6px 0 0;
     color: #4b5563;
-    font-size: 14px;
+    font-size: 12px;
   }
+}
+
+.dayMainGrid {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+}
+
+.dayMain {
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+  border-right: 1px solid #e2e8f3;
 }
 
 .collapseBtn {
@@ -858,7 +999,8 @@
   h4 {
     margin: 0 0 8px;
     color: #111827;
-    font-size: 24px;
+    font-size: 14px;
+    font-weight: 500;
     line-height: 1;
   }
 }
@@ -872,16 +1014,17 @@
   border: 1px solid #e3e9f4;
   border-radius: 10px;
   background: #fcfdff;
-  padding: 9px;
   display: grid;
   grid-template-columns: 208px minmax(0, 1fr);
   gap: 10px;
+  // padding: 1px;
 }
 
 .spotImageWrap {
-  border-radius: 8px;
+  border-radius: 9px;
   overflow: hidden;
-  min-height: 132px;
+  height: 132px;
+  max-height: 132px;
 }
 
 .spotImage {
@@ -891,7 +1034,7 @@
 }
 
 .spotImagePlaceholder {
-  min-height: 132px;
+  height: 132px;
   border: 1px dashed #cfd8e6;
   border-radius: 8px;
   display: grid;
@@ -901,10 +1044,12 @@
 }
 
 .spotMeta {
+  padding: 8px;
   h5 {
     margin: 0;
     color: #111827;
-    font-size: 22px;
+    font-size: 12px;
+    font-weight: 500;
     line-height: 1;
     display: flex;
     align-items: center;
@@ -914,7 +1059,7 @@
   p {
     margin: 5px 0 0;
     color: #4b5563;
-    font-size: 13px;
+    font-size: 12px;
     line-height: 1.6;
   }
 }
@@ -923,20 +1068,37 @@
   display: inline-flex;
   align-items: center;
   color: #1d4ed8;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 600;
 }
 
 .spotStats {
   margin-top: 10px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+}
 
-  span {
-    color: #475569;
-    font-size: 12px;
-  }
+.spotStatItem {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+  padding-right: 8px;
+}
+
+.spotStatLabel {
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.spotStatValue {
+  color: #334155;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+  white-space: nowrap;
 }
 
 .tipBox {
@@ -967,21 +1129,23 @@
   h4 {
     margin: 0;
     color: #111827;
-    font-size: 24px;
+    font-size: 14px;
+    font-weight: 500;
     line-height: 1;
   }
 
   h5 {
     margin: 0;
     color: #111827;
-    font-size: 18px;
+    font-size: 12px;
+    font-weight: 500;
     line-height: 1.05;
   }
 
   p {
     margin: 0;
     color: #334155;
-    font-size: 13px;
+    font-size: 12px;
   }
 
   small {
@@ -995,16 +1159,18 @@
   border-radius: 8px;
   overflow: hidden;
   border: 1px solid #e2e8f3;
+  height: 198px;
+  max-height: 198px;
 }
 
 .hotelImage {
   width: 100%;
-  height: 198px;
+  height: 100%;
   object-fit: cover;
 }
 
 .hotelImagePlaceholder {
-  height: 198px;
+  height: 100%;
   display: grid;
   place-items: center;
   color: #6b7280;
@@ -1020,6 +1186,9 @@
 
 .checklistPanel {
   padding: 10px;
+  border: 1px solid #e2e8f3;
+  border-radius: 10px;
+  background: #fff;
 
   header {
     margin-bottom: 9px;
@@ -1031,7 +1200,8 @@
   h4 {
     margin: 0;
     color: #111827;
-    font-size: 24px;
+    font-size: 14px;
+    font-weight: 500;
     line-height: 1;
   }
 
@@ -1049,51 +1219,158 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
 
-  span {
-    border-radius: 999px;
-    border: 1px solid #dbe4f3;
-    background: #f9fbff;
-    color: #334155;
-    font-size: 12px;
-    padding: 3px 10px;
+.checklistChip {
+  border-radius: 6px;
+  border: 1px solid #dbe4f3;
+  background: #f9fbff;
+  color: #334155;
+  font-size: 12px;
+  padding: 2px 8px 2px 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  > span:last-child {
+    line-height: 1.35;
   }
+}
+
+.checklistChipIcon {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+
+  svg {
+    width: 12px;
+    height: 12px;
+    stroke-width: 2.2;
+  }
+}
+
+.checklistChipIconSun {
+  color: #c2410c;
+  background: #ffedd5;
+  border-color: #fed7aa;
+}
+
+.checklistChipIconSky {
+  color: #0369a1;
+  background: #e0f2fe;
+  border-color: #bae6fd;
+}
+
+.checklistChipIconGreen {
+  color: #047857;
+  background: #dcfce7;
+  border-color: #bbf7d0;
+}
+
+.checklistChipIconIndigo {
+  color: #4338ca;
+  background: #e0e7ff;
+  border-color: #c7d2fe;
+}
+
+.checklistChipIconBlue {
+  color: #1d4ed8;
+  background: #dbeafe;
+  border-color: #bfdbfe;
+}
+
+.checklistChipIconCyan {
+  color: #0e7490;
+  background: #cffafe;
+  border-color: #a5f3fc;
+}
+
+.checklistChipIconViolet {
+  color: #6d28d9;
+  background: #ede9fe;
+  border-color: #ddd6fe;
+}
+
+.checklistChipIconRose {
+  color: #be123c;
+  background: #ffe4e6;
+  border-color: #fecdd3;
+}
+
+.checklistChipIconSlate {
+  color: #334155;
+  background: #e2e8f0;
+  border-color: #cbd5e1;
 }
 
 .tripSummaryPanel {
   padding: 10px;
+  border: 1px solid #ecdcc7;
+  border-radius: 10px;
+  background: #fdf8ef;
 
   h4 {
     margin: 0 0 9px;
     color: #111827;
-    font-size: 24px;
+    font-size: 14px;
+    font-weight: 500;
     line-height: 1;
   }
 }
 
 .summaryStats {
   display: grid;
-  gap: 8px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+}
 
-  div {
-    border-radius: 8px;
-    border: 1px solid #e3e9f4;
-    background: #fbfdff;
-    padding: 7px 9px;
-  }
+.summaryStatItem {
+  border: 0;
+  border-right: 1px solid #ecdcc7;
+  background: transparent;
+  padding: 7px 9px;
+}
 
-  span {
-    display: block;
-    color: #64748b;
-    font-size: 12px;
-  }
+.summaryStatItem:last-child {
+  border-right: 0;
+}
 
-  strong {
-    display: block;
-    margin-top: 2px;
-    color: #0f172a;
-    font-size: 15px;
-  }
+.summaryStatLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.summaryStatIcon {
+  width: 13px;
+  height: 13px;
+  stroke-width: 2.2;
+}
+
+.summaryStatIconDays {
+  color: #2563eb;
+}
+
+.summaryStatIconDistance {
+  color: #7c3aed;
+}
+
+.summaryStatIconDuration {
+  color: #d97706;
+}
+
+.summaryStatsValue {
+  display: block;
+  font-weight: 500;
+  margin-top: 3px;
+  color: #0f172a;
+  font-size: 12px;
 }
 
 @keyframes rise {
