@@ -12,7 +12,7 @@ import type {
 import type { TravelPlanViewModel } from "../types/travel-plan";
 import { useRequest } from "./useRequest";
 
-interface ChatMessage {
+export interface ChatMessage {
   id: string;
   role: "assistant" | "user" | "system" | "error";
   content: string;
@@ -25,13 +25,13 @@ interface StreamParams {
   sessionId?: string;
 }
 
-const RoutePanelPhase = {
+export const ROUTE_PANEL_PHASE = {
   Empty: "empty",
   Skeleton: "skeleton",
   Plan: "plan",
 } as const;
 
-type RoutePanelPhaseType = typeof RoutePanelPhase[keyof typeof RoutePanelPhase];
+export type RoutePanelPhaseType = typeof ROUTE_PANEL_PHASE[keyof typeof ROUTE_PANEL_PHASE];
 
 interface UseChatStreamOptions {
   initialSessionId?: string;
@@ -375,15 +375,15 @@ export function useChatStream(options: UseChatStreamOptions = {}) {
   // - skeleton: 已进入 route_planner 及后续阶段，且仍在生成中
   // - empty: 其余情况（包括需求理解/追问阶段）
   const routePanelPhase = useMemo<RoutePanelPhaseType>(() => {
-    if (plan) return RoutePanelPhase.Plan;
+    if (plan) return ROUTE_PANEL_PHASE.Plan;
     if (
       streamRequest.loading
       && !needUserInput
       && isPlanningStageInProgress(progressNodes)
     ) {
-      return RoutePanelPhase.Skeleton;
+      return ROUTE_PANEL_PHASE.Skeleton;
     }
-    return RoutePanelPhase.Empty;
+    return ROUTE_PANEL_PHASE.Empty;
   }, [plan, streamRequest.loading, needUserInput, progressNodes]);
 
   return {

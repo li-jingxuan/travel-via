@@ -9,6 +9,27 @@
  * - temperature=0 配合此 Prompt 实现零随机性输出
  */
 
+const ESSENTIAL_ICON_WHITELIST = [
+  "Backpack",
+  "BatteryCharging",
+  "Bug",
+  "CalendarDays",
+  "CarFront",
+  "CloudSun",
+  "Compass",
+  "Droplets",
+  "Footprints",
+  "Glasses",
+  "Heart",
+  "Image",
+  "MapPin",
+  "Paperclip",
+  "Pill",
+  "Route",
+  "Sun",
+  "Umbrella",
+] as const
+
 /**
  * Formatter 输出结构参考（用于提示词注入）。
  *
@@ -40,7 +61,18 @@ export const FORMATTER_OUTPUT_SCHEMA = {
     bestSeason: { type: "string", description: "推荐出行季节" },
     essentialItems: {
       type: "array",
-      items: { type: "string" },
+      items: {
+        type: "object",
+        additionalProperties: false,
+        required: ["name", "icon"],
+        properties: {
+          name: { type: "string" },
+          icon: {
+            type: "string",
+            enum: ESSENTIAL_ICON_WHITELIST,
+          },
+        },
+      },
       description: "必备物品列表",
     },
     weather: {
@@ -198,9 +230,11 @@ ${FORMATTER_OUTPUT_SCHEMA_COMPACT}
 
 规则：
 1. essentialItems 根据目的地和季节给出 5-8 个实用建议
-2. 只输出纯 JSON 对象，不要有 markdown 包裹
-3. 禁止输出 schema、解释文字、注释或额外键
-4. weather 字段根据用户的出行月份给出参考值
-5. vehicleAdvice、essentialItems 等字段需要根据用户的 intent 、行程内容和形成季节进行合理补全，不要留空或写占位符
-6. totalDistance 是行程中每天 distance 字段的累加值，单位是公里
+2. essentialItems[].icon 只能从以下白名单中选择：${ESSENTIAL_ICON_WHITELIST.join(", ")}
+3. 不确定图标时优先使用 Backpack，不要自造图标名
+4. 只输出纯 JSON 对象，不要有 markdown 包裹
+5. 禁止输出 schema、解释文字、注释或额外键
+6. weather 字段根据用户的出行月份给出参考值
+7. vehicleAdvice、essentialItems 等字段需要根据用户的 intent 、行程内容和形成季节进行合理补全，不要留空或写占位符
+8. totalDistance 是行程中每天 distance 字段的累加值，单位是公里
 `

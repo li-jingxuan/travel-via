@@ -47,6 +47,10 @@ export function normalizeFinalPlanData(plan: RawFinalPlan): TravelPlanViewModel 
       day: day.day,
       title: day.title,
       description: day.description,
+      waypoints: (day.waypoints ?? []).map((waypoint) => ({
+        name: waypoint.alias,
+        address: waypoint.address,
+      })),
       distanceText: formatDistanceKm(day.distance),
       drivingHoursText: formatDrivingHours(day.drivingHours),
       tips: day.commentTips,

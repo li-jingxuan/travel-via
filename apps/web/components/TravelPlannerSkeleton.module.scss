@@ -1,0 +1,11 @@
+.skeletonWrap {
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.skeletonGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}

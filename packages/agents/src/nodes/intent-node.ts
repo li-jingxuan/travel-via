@@ -73,6 +73,11 @@ export async function intentAgentNode(
     // 清理可能的 markdown 代码块包裹（LLM 有时会在 JSON 外面包 ```json ... ```）
     const jsonStr = content.replace(/```json\n?|\n?```/g, "").trim()
     intentExtraction = normalizeIntentExtraction(JSON.parse(jsonStr))
+
+    agentLog("意图识别", "LLM 输出解析成功", {
+      rawOutput: content,
+      parsedIntentExtraction: intentExtraction,
+    })
   } catch {
     agentLog("意图识别", "识别失败，已降级为空意图", {
       reason: "模型输出 JSON 解析失败",

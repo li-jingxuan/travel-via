@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "react-loading-skeleton/dist/skeleton.css";
 import "../assets/css/globals.css";
+import { AppDesktopShell } from "../components/AppDesktopShell";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -25,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="zh-CN">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
+        <AppDesktopShell>{children}</AppDesktopShell>
       </body>
     </html>
   );

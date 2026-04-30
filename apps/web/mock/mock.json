@@ -1,401 +1,425 @@
 {
   "finalPlan": {
-    "planName": "重庆5日自驾之旅",
-    "totalDays": 5,
-    "totalDistance": 155.5,
+    "planName": "新疆15日自驾游",
+    "totalDays": 15,
+    "totalDistance": 476.2,
     "vehicleType": "自驾",
-    "vehicleAdvice": "重庆多山路、隧道和立交，建议驾驶经验丰富。出发前检查轮胎、刹车和空调系统，备好行车记录仪和手机支架。山区路段注意限速和急弯，武隆与大足之间高速较多，预留充足时间。",
-    "bestSeason": "夏季（7月虽然炎热，但适合体验山城夜景与武隆清凉峡谷）",
+    "vehicleAdvice": "建议驾驶性能良好的SUV或越野车，出发前全面检查轮胎、刹车、空调和车况；独库公路弯多坡陡，注意安全驾驶，提前规划加油点（部分路段加油站稀少）；携带备用油桶和应急工具。",
+    "bestSeason": "7-8月",
     "essentialItems": [
-      "防晒霜（SPF50+）",
-      "遮阳帽和墨镜",
-      "驱蚊液",
-      "舒适运动鞋（武隆景区步行多）",
-      "折叠雨伞（7月多阵雨）",
-      "便携水壶",
-      "充电宝和数据线",
-      "藿香正气水（防中暑）"
+      {
+        "name": "防晒霜（SPF50+）",
+        "icon": "Sun"
+      },
+      {
+        "name": "墨镜",
+        "icon": "Glasses"
+      },
+      {
+        "name": "遮阳帽",
+        "icon": "Sun"
+      },
+      {
+        "name": "保暖外套/冲锋衣",
+        "icon": "CloudSun"
+      },
+      {
+        "name": "保湿护肤品",
+        "icon": "Droplets"
+      },
+      {
+        "name": "身份证、驾驶证",
+        "icon": "MapPin"
+      },
+      {
+        "name": "现金（部分景区信号差）",
+        "icon": "Backpack"
+      },
+      {
+        "name": "晕车药、常用药品",
+        "icon": "Pill"
+      }
     ],
     "weather": [
       {
-        "area": "重庆市区",
+        "area": "乌鲁木齐",
         "daytime": {
-          "tempMax": 38,
-          "tempMin": 30,
-          "weather": "晴转多云，午后可能有雷阵雨"
+          "tempMax": 33,
+          "tempMin": 22,
+          "weather": "晴"
         },
         "nighttime": {
-          "tempMax": 32,
-          "tempMin": 27,
-          "weather": "多云，闷热"
+          "tempMax": 22,
+          "tempMin": 15,
+          "weather": "晴"
         },
-        "clothing": "短袖短裤，速干材质，夜间可备薄外套"
+        "clothing": "短袖+薄外套"
       },
       {
-        "area": "武隆",
+        "area": "天山天池",
         "daytime": {
-          "tempMax": 32,
-          "tempMin": 24,
-          "weather": "多云，偶有阵雨"
+          "tempMax": 25,
+          "tempMin": 15,
+          "weather": "多云"
         },
         "nighttime": {
-          "tempMax": 26,
+          "tempMax": 15,
+          "tempMin": 8,
+          "weather": "多云"
+        },
+        "clothing": "长袖+外套"
+      },
+      {
+        "area": "喀纳斯",
+        "daytime": {
+          "tempMax": 28,
+          "tempMin": 16,
+          "weather": "多云转阵雨"
+        },
+        "nighttime": {
+          "tempMax": 16,
+          "tempMin": 10,
+          "weather": "多云"
+        },
+        "clothing": "长袖+保暖外套"
+      },
+      {
+        "area": "布尔津",
+        "daytime": {
+          "tempMax": 32,
           "tempMin": 20,
-          "weather": "阵雨转阴"
-        },
-        "clothing": "短袖+防晒衣，峡谷内建议穿长裤防蚊虫"
-      },
-      {
-        "area": "大足22",
-        "daytime": {
-          "tempMax": 36,
-          "tempMin": 28,
-          "weather": "晴，高温"
-        },
-        "nighttime": {
-          "tempMax": 30,
-          "tempMin": 25,
           "weather": "晴"
         },
-        "clothing": "短袖短裤，带上遮阳伞"
-      },
-      {
-        "area": "大足11",
-        "daytime": {
-          "tempMax": 36,
-          "tempMin": 28,
-          "weather": "晴，高温"
-        },
         "nighttime": {
-          "tempMax": 30,
-          "tempMin": 25,
+          "tempMax": 20,
+          "tempMin": 14,
           "weather": "晴"
         },
-        "clothing": "短袖短裤，带上遮阳伞"
+        "clothing": "短袖+薄外套"
+      },
+      {
+        "area": "克拉玛依",
+        "daytime": {
+          "tempMax": 35,
+          "tempMin": 24,
+          "weather": "晴"
+        },
+        "nighttime": {
+          "tempMax": 24,
+          "tempMin": 18,
+          "weather": "晴"
+        },
+        "clothing": "短袖，注意防晒"
+      },
+      {
+        "area": "赛里木湖",
+        "daytime": {
+          "tempMax": 22,
+          "tempMin": 12,
+          "weather": "多云"
+        },
+        "nighttime": {
+          "tempMax": 12,
+          "tempMin": 5,
+          "weather": "多云"
+        },
+        "clothing": "冲锋衣+保暖"
+      },
+      {
+        "area": "伊宁",
+        "daytime": {
+          "tempMax": 33,
+          "tempMin": 20,
+          "weather": "晴"
+        },
+        "nighttime": {
+          "tempMax": 20,
+          "tempMin": 14,
+          "weather": "晴"
+        },
+        "clothing": "短袖+薄外套"
+      },
+      {
+        "area": "那拉提草原",
+        "daytime": {
+          "tempMax": 28,
+          "tempMin": 15,
+          "weather": "多云"
+        },
+        "nighttime": {
+          "tempMax": 15,
+          "tempMin": 8,
+          "weather": "多云"
+        },
+        "clothing": "长袖+外套"
+      },
+      {
+        "area": "巴音布鲁克草原",
+        "daytime": {
+          "tempMax": 20,
+          "tempMin": 10,
+          "weather": "多云"
+        },
+        "nighttime": {
+          "tempMax": 10,
+          "tempMin": 3,
+          "weather": "多云"
+        },
+        "clothing": "厚外套/羽绒服"
+      },
+      {
+        "area": "吐鲁番",
+        "daytime": {
+          "tempMax": 40,
+          "tempMin": 28,
+          "weather": "晴"
+        },
+        "nighttime": {
+          "tempMax": 28,
+          "tempMin": 20,
+          "weather": "晴"
+        },
+        "clothing": "短袖，注意防暑"
       }
     ],
     "days": [
       {
-        "distance": 5.7,
-        "drivingHours": 0.4,
+        "distance": 48.3,
+        "drivingHours": 1.2,
         "day": 1,
-        "title": "第1天 | 主城经典初体验",
+        "title": "第1天 | 抵达乌鲁木齐与城市初探",
         "waypoints": [
           {
-            "alias": "解放碑",
-            "address": "重庆市渝中区民族路177号",
-            "city": "重庆市",
-            "province": "重庆市"
+            "alias": "乌鲁木齐地窝堡国际机场",
+            "address": "乌鲁木齐地窝堡国际机场",
+            "city": "乌鲁木齐市",
+            "province": "新疆维吾尔自治区"
           },
           {
-            "alias": "洪崖洞",
-            "address": "重庆市渝中区嘉陵江滨江路88号",
-            "city": "重庆市",
-            "province": "重庆市"
+            "alias": "新疆国际大巴扎",
+            "address": "乌鲁木齐市天山区解放南路",
+            "city": "乌鲁木齐市",
+            "province": "新疆维吾尔自治区"
           }
         ],
-        "description": "首日以解放碑和洪崖洞为主，感受山城地标与魔幻夜景。",
+        "description": "抵达乌鲁木齐，入住酒店后游览新疆国际大巴扎，感受浓郁的民族风情，晚上品尝当地美食。",
         "foodRecommendation": [
-          "重庆老火锅（解放碑附近）",
-          "花市豌杂面",
-          "冰粉凉虾"
+          "大盘鸡",
+          "烤羊肉串",
+          "手工酸奶"
         ],
-        "commentTips": "洪崖洞建议18:00后亮灯再去，拍照人很多注意安全。",
+        "commentTips": "首日避免剧烈活动，适应气候干燥，多喝水。",
         "activities": [
           {
-            "name": "解放碑步行街",
-            "description": "重庆地标商业中心，周边可逛时代广场（评分4.9，）",
-            "suggestedHours": "1.5小时",
+            "name": "新疆国际大巴扎",
+            "description": "世界规模最大的巴扎，集购物、餐饮、娱乐于一体（评分4.8，）",
+            "suggestedHours": "2-3小时",
             "ticketPriceCny": 0,
-            "openingHours": "24小时营业",
+            "openingHours": "00:00-24:00 20:30-21:30",
             "images": [
               {
                 "description": "高德参考图片",
-                "imgSrc": "https://store.is.autonavi.com/showpic/27134418fa2f22e40000001501908122?type=pic"
+                "imgSrc": "http://store.is.autonavi.com/showpic/0fbaa36d8ce8de891efb62590c367603"
               },
               {
                 "description": "高德参考图片",
-                "imgSrc": "https://store.is.autonavi.com/showpic/15b6945c6cc3d85e0000002256460159?type=pic"
+                "imgSrc": "http://store.is.autonavi.com/showpic/4bc1665549a3b69ba0551208004eda2f"
               },
               {
                 "description": "高德参考图片",
-                "imgSrc": "https://store.is.autonavi.com/showpic/fb640448f3377ea70000001985648875?type=pic"
+                "imgSrc": "http://store.is.autonavi.com/showpic/0905c734d9ccbe77b55d599daa4a24f8"
               }
             ]
           },
           {
-            "name": "洪崖洞民俗风貌区",
-            "description": "吊脚楼建筑群，夜景惊艳（评分4.8，）",
-            "suggestedHours": "2.5小时",
+            "name": "红山公园",
+            "description": "乌鲁木齐地标，可俯瞰城市全貌（评分4.7，）",
+            "suggestedHours": "1-2小时",
             "ticketPriceCny": 0,
-            "openingHours": "09:00-23:00",
+            "openingHours": "08:00-22:00",
             "images": [
               {
                 "description": "高德参考图片",
-                "imgSrc": "http://store.is.autonavi.com/showpic/ba42dbbf1e38e41ba65a84f3d021b96b"
+                "imgSrc": "http://store.is.autonavi.com/showpic/d6780a28eb0a58ceb88f4866eb256e4c"
               },
               {
                 "description": "高德参考图片",
-                "imgSrc": "http://store.is.autonavi.com/showpic/d69a8d621edd4c1fc967029ac5011785"
+                "imgSrc": "https://aos-comment.amap.com/B03DF066YE/comment/2A8DAC34_D066_4564_967A_55C3D7D92B90_L0_001_1500_200_1773019196992_19911404.jpg"
               },
               {
                 "description": "高德参考图片",
-                "imgSrc": "http://store.is.autonavi.com/showpic/b8524c74749d6e6147994eba24c363a7"
+                "imgSrc": "https://store.is.autonavi.com/showpic/e886970a180fc1440000001921094435?type=pic"
               }
             ]
           }
         ],
         "accommodation": [
           {
-            "name": "布丁酒店(重庆解放碑洪崖洞步行街店)",
-            "address": "帝都广场写字楼A栋11层(小什字地铁站6号口步行230米)",
-            "feature": "住宿服务;宾馆酒店;经济型连锁酒店｜评分4.1"
+            "name": "乌鲁木齐华凌美爵大饭店",
+            "address": "西虹东路109号",
+            "feature": "住宿服务;宾馆酒店;五星级宾馆|餐饮服务;餐饮相关场所;餐饮相关｜评分4.4"
           }
         ]
       },
       {
-        "distance": 23.9,
-        "drivingHours": 0.7,
+        "distance": 0,
+        "drivingHours": 0,
         "day": 2,
-        "title": "第2天 | 武隆喀斯特探险",
+        "title": "第2天 | 乌鲁木齐→天山天池→富蕴",
         "waypoints": [
           {
-            "alias": "天生三桥入口",
-            "address": "重庆市武隆区仙女山镇天生三桥景区",
-            "city": "重庆市",
-            "province": "重庆市"
+            "alias": "天山天池",
+            "address": "昌吉回族自治州阜康市天山天池风景名胜区",
+            "city": "昌吉回族自治州",
+            "province": "新疆维吾尔自治区"
           },
           {
-            "alias": "龙水峡地缝",
-            "address": "重庆市武隆区仙女山镇龙水峡地缝景区",
-            "city": "重庆市",
-            "province": "重庆市"
-          },
-          {
-            "alias": "武隆住宿",
-            "address": "重庆市武隆区芙蓉中路53号",
-            "city": "重庆市",
-            "province": "重庆市"
+            "alias": "富蕴县",
+            "address": "阿勒泰地区富蕴县",
+            "city": "阿勒泰地区",
+            "province": "新疆维吾尔自治区"
           }
         ],
-        "description": "自驾前往武隆，探索世界自然遗产天坑地缝，晚住武隆县城。",
+        "description": "上午前往天山天池游览，午后驱车前往富蕴县，沿途欣赏戈壁风光。",
         "foodRecommendation": [
-          "武隆碗碗羊肉",
-          "江口鱼",
-          "烤全羊（可选）"
+          "大盘鸡",
+          "皮带面"
         ],
-        "commentTips": "景区内步行较多，穿舒适运动鞋，带足水。7月注意防暑。",
+        "commentTips": "天池温度较低，备外套；自驾注意加油，富蕴是进入可可托海前一站。",
         "activities": [
           {
-            "name": "重庆武隆天生三桥风景区",
-            "description": "《变形金刚4》取景地，天坑与天生桥壮丽（评分4.7，）",
-            "suggestedHours": "3小时",
-            "ticketPriceCny": 0,
-            "openingHours": "09:00-16:00",
-            "images": [
-              {
-                "description": "高德参考图片",
-                "imgSrc": "http://store.is.autonavi.com/showpic/e6fe25b445e04e5d48344d4927386e0a"
-              },
-              {
-                "description": "高德参考图片",
-                "imgSrc": "http://aos-cdn-image.amap.com/sns/ugccomment/d0c673e0-9e6e-4820-8c4e-4c93dab47274.jpg"
-              },
-              {
-                "description": "高德参考图片",
-                "imgSrc": "http://store.is.autonavi.com/showpic/14c6d1e57e717acafa0f896dc1e917c7"
-              }
-            ]
-          },
-          {
-            "name": "武隆龙水峡地缝国家地质公园",
-            "description": "幽深峡谷，瀑布飞流（评分4.6，）",
-            "suggestedHours": "2.5小时",
+            "name": "天山天池风景区",
+            "description": "高山冰碛湖，雪峰倒映，风景如画（评分4.7，）",
+            "suggestedHours": "3-4小时",
             "ticketPriceCny": 0,
             "openingHours": "待查询",
             "images": [
               {
                 "description": "高德参考图片",
-                "imgSrc": "http://store.is.autonavi.com/showpic/ef16a76fec453ea320d8dc0a0b960a42"
+                "imgSrc": "http://store.is.autonavi.com/showpic/88fc405ea55a9935ab1818fdb5473086"
               },
               {
-                "description": "高德参考图片",
-                "imgSrc": "http://aos-cdn-image.amap.com/sns/ugccomment/df661a04-68d3-4597-a9a2-c9a15e15e18b.jpg"
+                "description": "天山天池风景区",
+                "imgSrc": "http://store.is.autonavi.com/showpic/80ffbe56e08ce441cbb0eaf8942b02c0"
               },
               {
-                "description": "龙水峡地缝",
-                "imgSrc": "http://store.is.autonavi.com/showpic/a141d0362cd114740187d8984414f040"
+                "description": "天山天池风景区",
+                "imgSrc": "http://store.is.autonavi.com/showpic/e2244d74f36fc3c1abf738e15b2337e7"
               }
             ]
           }
         ],
         "accommodation": [
           {
-            "name": "丫丫小姐的民宿(芙蓉东路分店)",
-            "address": "芙蓉东路利丰印象望江苑-3栋",
-            "feature": "住宿服务;住宿服务相关;住宿服务相关｜评分4.3"
+            "name": "富蕴可可托海亲亲家庭公寓(迎宾西路1号分店)",
+            "address": "可可托海镇文化西路棚户区5号楼3单元",
+            "feature": "住宿服务;住宿服务相关;住宿服务相关｜评分4.8"
           }
         ]
       },
       {
-        "distance": 103.1,
-        "drivingHours": 1.8,
+        "distance": 309.3,
+        "drivingHours": 4.3,
         "day": 3,
-        "title": "第3天 | 大足石刻艺术之旅",
+        "title": "第3天 | 富蕴→可可托海→布尔津",
         "waypoints": [
           {
-            "alias": "大足石刻宝顶山",
-            "address": "重庆市大足区宝顶镇大足石刻景区",
-            "city": "重庆市",
-            "province": "重庆市"
+            "alias": "可可托海国家地质公园",
+            "address": "阿勒泰地区富蕴县可可托海镇",
+            "city": "阿勒泰地区",
+            "province": "新疆维吾尔自治区"
           },
           {
-            "alias": "返程住宿地",
-            "address": "重庆市渝中区民族路177号",
-            "city": "重庆市",
-            "province": "重庆市"
+            "alias": "布尔津县",
+            "address": "阿勒泰地区布尔津县",
+            "city": "阿勒泰地区",
+            "province": "新疆维吾尔自治区"
           }
         ],
-        "description": "从武隆自驾到大足（约2小时），参观世界文化遗产大足石刻，下午返回市区。",
+        "description": "早晨游览可可托海国家地质公园，欣赏花岗岩地貌和额尔齐斯河，下午驱车前往童话边城布尔津。",
         "foodRecommendation": [
-          "大足邮亭鲫鱼",
-          "丁家坡洋芋",
-          "重庆小面"
+          "额河烤鱼",
+          "卡瓦斯"
         ],
-        "commentTips": "石刻景区有电瓶车，建议乘坐节省体力。返程注意高速路况。",
+        "commentTips": "可可托海景区较大，建议乘坐区间车；布尔津夜市非常热闹，可品尝冷水鱼。",
         "activities": [
           {
-            "name": "大足石刻名胜风景区",
-            "description": "宝顶山摩崖造像，精美绝伦（评分4.7，）",
-            "suggestedHours": "3.5小时",
+            "name": "可可托海景区",
+            "description": "以花岗岩地貌和稀有矿藏闻名，神钟山壮观（评分4.6，）",
+            "suggestedHours": "3-4小时",
             "ticketPriceCny": 0,
-            "openingHours": "08:30-18:00 08:30-16:00 08:30-16:00 08:40-19:00 09:00-18:30",
+            "openingHours": "10:00-18:00",
             "images": [
               {
                 "description": "高德参考图片",
-                "imgSrc": "http://store.is.autonavi.com/showpic/e255d2bd73f1fc3fe51b21401e837a33"
+                "imgSrc": "http://store.is.autonavi.com/showpic/cc04fdc6a3e9fc025b062fbf30b0e378"
               },
               {
                 "description": "高德参考图片",
-                "imgSrc": "http://store.is.autonavi.com/showpic/f94b0c54eada345f0fc9a54c0b22c653"
+                "imgSrc": "http://store.is.autonavi.com/showpic/362e1aa26067caaee11e778fe8ead7df"
               },
               {
                 "description": "高德参考图片",
-                "imgSrc": "http://store.is.autonavi.com/showpic/338362ac59cbb9026da7749860650212"
+                "imgSrc": "http://store.is.autonavi.com/showpic/e6b5f125381d1a8519876987f087c69a"
               }
             ]
           }
         ],
         "accommodation": [
           {
-            "name": "布丁酒店(重庆解放碑洪崖洞步行街店)",
-            "address": "帝都广场写字楼A栋11层(小什字地铁站6号口步行230米)",
-            "feature": "住宿服务;宾馆酒店;经济型连锁酒店｜评分4.1"
+            "name": "丽枫酒店(布尔津友谊峰路店)",
+            "address": "友谊峰路5号",
+            "feature": "住宿服务;宾馆酒店;宾馆酒店｜评分4.6"
           }
         ]
       },
       {
-        "distance": 22.8,
-        "drivingHours": 1,
+        "distance": 0,
+        "drivingHours": 0,
         "day": 4,
-        "title": "第4天 | 市区网红打卡线",
+        "title": "第4天 | 布尔津→喀纳斯",
         "waypoints": [
           {
-            "alias": "磁器口古镇",
-            "address": "重庆市沙坪坝区磁器口古镇",
-            "city": "重庆市",
-            "province": "重庆市"
-          },
-          {
-            "alias": "李子坝观景台",
-            "address": "重庆市渝中区李子坝正街62号",
-            "city": "重庆市",
-            "province": "重庆市"
-          },
-          {
-            "alias": "长江索道北站",
-            "address": "重庆市渝中区新华路153号",
-            "city": "重庆市",
-            "province": "重庆市"
+            "alias": "喀纳斯景区",
+            "address": "阿勒泰地区布尔津县喀纳斯景区",
+            "city": "阿勒泰地区",
+            "province": "新疆维吾尔自治区"
           }
         ],
-        "description": "轻松一日，打卡磁器口、李子坝轻轨穿楼、体验长江索道。",
+        "description": "全天深度游览喀纳斯景区，乘区间车观三湾（神仙湾、月亮湾、卧龙湾），登观鱼台俯瞰全景。",
         "foodRecommendation": [
-          "磁器口毛血旺",
-          "酸辣粉",
-          "重庆烤鱼"
+          "烤狗鱼",
+          "图瓦人奶茶"
         ],
-        "commentTips": "长江索道排队可能较长，建议早上早去。李子坝观景台在轻轨站下方。",
+        "commentTips": "喀纳斯天气多变，带雨具和保暖衣物；建议住景区内，节省时间。",
         "activities": [
           {
-            "name": "磁器口古镇",
-            "description": "千年古镇，品尝陈麻花等小吃（评分4.7，）",
-            "suggestedHours": "2小时",
+            "name": "喀纳斯景区",
+            "description": "中国最美湖泊之一，湖水随季节变色（评分4.8，）",
+            "suggestedHours": "5-6小时",
             "ticketPriceCny": 0,
-            "openingHours": "24小时营业",
+            "openingHours": "08:00-20:00 10:00-18:00",
             "images": [
               {
                 "description": "高德参考图片",
-                "imgSrc": "http://aos-cdn-image.amap.com/sns/ugccomment/0563885f-17e8-4b9a-b97f-ce1e60360f19.jpg"
+                "imgSrc": "http://store.is.autonavi.com/showpic/4105142028b50b44168aebb0e638604a"
               },
               {
                 "description": "高德参考图片",
-                "imgSrc": "https://aos-comment.amap.com/B00170IFE4/headerImg/29433e01190f6478f1177e6ca16d17ce_2048_2048_80.jpg"
+                "imgSrc": "http://store.is.autonavi.com/showpic/af4b9956ce2aa2ee6f4c28fd87ff0de6"
               },
               {
                 "description": "高德参考图片",
-                "imgSrc": "https://aos-comment.amap.com/B00170IFE4/headerImg/770ffdfe9bb66b332cfd2a2f3bb50d48_2048_2048_80.jpg"
-              }
-            ]
-          },
-          {
-            "name": "李子坝单轨穿楼观景平台",
-            "description": "观看轻轨从居民楼穿过的奇景（评分4.8，）",
-            "suggestedHours": "1小时",
-            "ticketPriceCny": 0,
-            "openingHours": "06:30-23:00",
-            "images": [
-              {
-                "description": "高德参考图片",
-                "imgSrc": "http://aos-cdn-image.amap.com/sns/ugccomment/07332bed-1d8e-4b26-a5cc-715fa266137d.jpg"
-              },
-              {
-                "description": "高德参考图片",
-                "imgSrc": "https://store.is.autonavi.com/showpic/142c2d5f6a00aa590000000973364013?type=pic"
-              },
-              {
-                "description": "高德参考图片",
-                "imgSrc": "https://aos-comment.amap.com/B0FFLH5QFT/comment/20260319-c5d4246d026850ca9915d1d7-8Oj4VgS5BF87NNsKRFZnz4.jpg"
-              }
-            ]
-          },
-          {
-            "name": "重庆长江索道北站",
-            "description": "横跨长江的空中巴士，俯瞰山城（评分4.7，）",
-            "suggestedHours": "1小时",
-            "ticketPriceCny": 0,
-            "openingHours": "待查询",
-            "images": [
-              {
-                "description": "高德参考图片",
-                "imgSrc": "https://aos-comment.amap.com/B0FFKC768W/comment/176589459413_1765894611108_36037213.jpg"
-              },
-              {
-                "description": "高德参考图片",
-                "imgSrc": "https://aos-comment.amap.com/B0FFKC768W/comment/content_media_external_file_2429_1760229556600_54724423.jpg"
-              },
-              {
-                "description": "高德参考图片",
-                "imgSrc": "https://aos-comment.amap.com/B0FFKC768W/comment/CF860762_331B_46AE_B6F6_4ADA6B5B6183_L0_001_2000_150_1763788780229_28919158.jpg"
+                "imgSrc": "http://store.is.autonavi.com/showpic/babd44a3038e8f0efefba7702b325bd7"
               }
             ]
           }
         ],
         "accommodation": [
           {
-            "name": "布丁酒店(重庆解放碑洪崖洞步行街店)",
-            "address": "帝都广场写字楼A栋11层(小什字地铁站6号口步行230米)",
-            "feature": "住宿服务;宾馆酒店;经济型连锁酒店｜评分4.1"
+            "name": "喀纳斯阅湖酒店",
+            "address": "喀纳斯湖西岸观鱼台脚下",
+            "feature": "住宿服务;住宿服务相关;住宿服务相关｜评分4.4"
           }
         ]
       },
@@ -403,54 +427,629 @@
         "distance": 0,
         "drivingHours": 0,
         "day": 5,
-        "title": "第5天 | 南山俯瞰与返程",
+        "title": "第5天 | 喀纳斯→禾木",
         "waypoints": [
           {
-            "alias": "南山一棵树观景台",
-            "address": "重庆市南岸区龙黄公路南山风景区",
-            "city": "重庆市",
-            "province": "重庆市"
+            "alias": "禾木村",
+            "address": "阿勒泰地区布尔津县禾木喀纳斯蒙古族乡",
+            "city": "阿勒泰地区",
+            "province": "新疆维吾尔自治区"
           }
         ],
-        "description": "上午前往南山一棵树观景台，俯瞰重庆全景，下午自由安排后返程。",
+        "description": "上午从喀纳斯出发前往禾木村，下午在禾木村漫步，感受图瓦人木屋和原始风光。",
         "foodRecommendation": [
-          "南山泉水鸡",
-          "重庆小面",
-          "老麻抄手"
+          "土火锅",
+          "烤馕"
         ],
-        "commentTips": "观景台有停车场，自驾方便。如果时间充裕可去抗战遗址博物馆。",
+        "commentTips": "禾木夜间温度较低，注意保暖；提前订房，旺季非常紧张。",
         "activities": [
           {
-            "name": "南山一棵树景区",
-            "description": "重庆最佳夜景观景点之一，白天视野开阔（评分4.6，）",
-            "suggestedHours": "2小时",
+            "name": "禾木村·悦溪别院",
+            "description": "原始图瓦人村落，晨雾炊烟宛如仙境（评分4.8，）",
+            "suggestedHours": "3-4小时",
             "ticketPriceCny": 0,
-            "openingHours": "09:00-22:30",
+            "openingHours": "待查询",
             "images": [
               {
-                "description": "高德参考图片",
-                "imgSrc": "https://aos-comment.amap.com/B0FFGAMI8G/comment/34B6CF01_E49C_4A7C_81AF_732571BBD83B_L0_001_1170_154_1766394585852_36077043.jpg"
+                "description": "Logo",
+                "imgSrc": "https://store.is.autonavi.com/showpic/62bc43092cf3c9d3719ebd30f6473c56"
               },
               {
-                "description": "高德参考图片",
-                "imgSrc": "https://aos-comment.amap.com/B0FFGAMI8G/headerImg/0A261BE7_F0BA_4215_809F_BAA8DB65436F_L0_001_IMG_0300_1659882165807_bd817f48.JPG"
+                "description": "豪华复式套房",
+                "imgSrc": "https://store.is.autonavi.com/showpic/197dcca09ccb37cdeb319d19db813ba2"
               },
               {
-                "description": "高德参考图片",
-                "imgSrc": "http://aos-cdn-image.amap.com/sns/ugccomment/7c011f0e-17f3-40e5-85ee-cdc239f7d415.jpg"
+                "description": "外观",
+                "imgSrc": "https://store.is.autonavi.com/showpic/1b54e50ef2cb38ee206d0e4466fd2170"
               }
             ]
           }
         ],
         "accommodation": [
           {
-            "name": "城口县方斗村传统村落老房子农家乐",
-            "address": "重庆市渝中区",
-            "feature": "体育休闲服务;休闲场所;休闲场所|住宿服务;住宿服务相关;住宿服务相关｜评分3.4"
+            "name": "禾木桃源山庄(禾木桥店)",
+            "address": "禾木喀纳斯乡禾木村(桥头)",
+            "feature": "住宿服务;住宿服务相关;住宿服务相关|体育休闲服务;休闲场所;休闲场所｜评分4.5"
+          }
+        ]
+      },
+      {
+        "distance": 99.2,
+        "drivingHours": 1.1,
+        "day": 6,
+        "title": "第6天 | 禾木→世界魔鬼城→克拉玛依",
+        "waypoints": [
+          {
+            "alias": "世界魔鬼城",
+            "address": "克拉玛依市乌尔禾区",
+            "city": "克拉玛依市",
+            "province": "新疆维吾尔自治区"
+          },
+          {
+            "alias": "克拉玛依市",
+            "address": "克拉玛依市克拉玛依区",
+            "city": "克拉玛依市",
+            "province": "新疆维吾尔自治区"
+          }
+        ],
+        "description": "清晨从禾木出发，沿217国道南下，游览世界魔鬼城，观赏雅丹地貌，傍晚抵达克拉玛依。",
+        "foodRecommendation": [
+          "克拉玛依凉皮",
+          "烤包子"
+        ],
+        "commentTips": "魔鬼城风大沙多，注意防晒防风；建议傍晚前游览，光线适合拍照。",
+        "activities": [
+          {
+            "name": "世界魔鬼城",
+            "description": "典型的雅丹地貌，风蚀形成的城堡状景观（评分4.7，）",
+            "suggestedHours": "2-3小时",
+            "ticketPriceCny": 0,
+            "openingHours": "10:00-19:00 09:30-20:00",
+            "images": [
+              {
+                "description": "高德参考图片",
+                "imgSrc": "http://store.is.autonavi.com/showpic/a09e9d2b2c3c55c373121cb57a4c6e4d"
+              },
+              {
+                "description": "高德参考图片",
+                "imgSrc": "http://store.is.autonavi.com/showpic/54852aedb196e151413da0ea5da0748c"
+              },
+              {
+                "description": "高德参考图片",
+                "imgSrc": "http://store.is.autonavi.com/showpic/186c1f2b6397044dd199cfe467c527a5"
+              }
+            ]
+          }
+        ],
+        "accommodation": [
+          {
+            "name": "克拉玛依雪莲宾馆",
+            "address": "油建南路1号",
+            "feature": "住宿服务;宾馆酒店;五星级宾馆｜评分4.6"
+          }
+        ]
+      },
+      {
+        "distance": 0,
+        "drivingHours": 0,
+        "day": 7,
+        "title": "第7天 | 克拉玛依→赛里木湖→伊宁",
+        "waypoints": [
+          {
+            "alias": "赛里木湖",
+            "address": "博尔塔拉蒙古自治州博乐市赛里木湖景区",
+            "city": "博尔塔拉蒙古自治州",
+            "province": "新疆维吾尔自治区"
+          },
+          {
+            "alias": "伊宁市",
+            "address": "伊犁哈萨克自治州伊宁市",
+            "city": "伊犁哈萨克自治州",
+            "province": "新疆维吾尔自治区"
+          }
+        ],
+        "description": "上午驱车前往赛里木湖，环湖游览，之后穿越果子沟大桥前往伊宁。",
+        "foodRecommendation": [
+          "锡伯大饼",
+          "椒麻鸡"
+        ],
+        "commentTips": "赛里木湖海拔较高，注意防晒；环湖路程较长，建议自驾分段游览。",
+        "activities": [
+          {
+            "name": "赛里木湖国家级风景名胜区",
+            "description": "大西洋最后一滴眼泪，湖水清澈湛蓝（评分4.9，）",
+            "suggestedHours": "3-4小时",
+            "ticketPriceCny": 0,
+            "openingHours": "待查询",
+            "images": [
+              {
+                "description": "高德参考图片",
+                "imgSrc": "http://store.is.autonavi.com/showpic/b9525fee05ebe4b885dcda1378db0f53"
+              },
+              {
+                "description": "高德参考图片",
+                "imgSrc": "http://store.is.autonavi.com/showpic/72c94042bcf8676ce1ce2155af65154e"
+              },
+              {
+                "description": "高德参考图片",
+                "imgSrc": "http://store.is.autonavi.com/showpic/799013830aa6992c282113812ad1ae85"
+              }
+            ]
+          }
+        ],
+        "accommodation": [
+          {
+            "name": "伊犁丝路天山酒店",
+            "address": "红旗路68号伊犁大巴扎内(老电视台对面)",
+            "feature": "住宿服务;宾馆酒店;四星级宾馆｜评分4.7"
+          }
+        ]
+      },
+      {
+        "distance": 0,
+        "drivingHours": 0,
+        "day": 8,
+        "title": "第8天 | 伊宁→那拉提草原",
+        "waypoints": [
+          {
+            "alias": "那拉提草原",
+            "address": "伊犁哈萨克自治州新源县那拉提镇",
+            "city": "伊犁哈萨克自治州",
+            "province": "新疆维吾尔自治区"
+          }
+        ],
+        "description": "上午从伊宁出发前往那拉提草原，下午游览空中草原和河谷草原。",
+        "foodRecommendation": [
+          "马肉纳仁",
+          "奶茶"
+        ],
+        "commentTips": "草原温差大，带厚外套；骑马注意安全，选择正规马队。",
+        "activities": [
+          {
+            "name": "那拉提空中草原",
+            "description": "世界四大草原之一，水草丰美，景色壮丽（评分4.4，）",
+            "suggestedHours": "4-5小时",
+            "ticketPriceCny": 0,
+            "openingHours": "待查询",
+            "images": [
+              {
+                "description": "高德参考图片",
+                "imgSrc": "https://aos-comment.amap.com/B0FFHD4G0I/comment/content_media_external_images_media_1000106814_ss__1727150353811_93050345.jpg"
+              },
+              {
+                "description": "高德参考图片",
+                "imgSrc": "https://aos-comment.amap.com/B0FFHD4G0I/comment/content_media_external_images_media_23920_1726500950715_57506679.jpg"
+              },
+              {
+                "description": "高德参考图片",
+                "imgSrc": "https://aos-comment.amap.com/B0FFHD4G0I/comment/content_media_external_images_media_1000014079_ss__1765442785519_72724865.jpg"
+              }
+            ]
+          }
+        ],
+        "accommodation": [
+          {
+            "name": "三和贵酒店(那拉提游客接待中心店)",
+            "address": "那拉提镇那拉提街201号",
+            "feature": "住宿服务;旅馆招待所;旅馆招待所｜评分4.3"
+          }
+        ]
+      },
+      {
+        "distance": 0,
+        "drivingHours": 0,
+        "day": 9,
+        "title": "第9天 | 那拉提→巴音布鲁克草原",
+        "waypoints": [
+          {
+            "alias": "巴音布鲁克草原",
+            "address": "巴音郭楞蒙古自治州和静县巴音布鲁克镇",
+            "city": "巴音郭楞蒙古自治州",
+            "province": "新疆维吾尔自治区"
+          }
+        ],
+        "description": "沿独库公路中段前往巴音布鲁克草原，下午游览天鹅湖和九曲十八弯，拍摄落日。",
+        "foodRecommendation": [
+          "牦牛肉火锅",
+          "烤羊排"
+        ],
+        "commentTips": "巴音布鲁克海拔约2500米，避免剧烈运动；日落时间约晚上9点，注意保暖。",
+        "activities": [
+          {
+            "name": "巴音布鲁克大草原",
+            "description": "中国第二大草原，九曲十八弯落日闻名（评分4.6，）",
+            "suggestedHours": "4-5小时",
+            "ticketPriceCny": 0,
+            "openingHours": "09:00-18:30",
+            "images": [
+              {
+                "description": "高德参考图片",
+                "imgSrc": "https://aos-comment.amap.com/B0FFGLQNN0/comment/73399A30_67F2_447E_9E50_4849320A028D_L0_001_1320_174_1766797911523_60068956.jpg"
+              },
+              {
+                "description": "高德参考图片",
+                "imgSrc": "https://aos-comment.amap.com/comment/content_service__1772467908516_08367945_1772467909110_00777256.jpg"
+              },
+              {
+                "description": "高德参考图片",
+                "imgSrc": "https://aos-comment.amap.com/B0FFGLQNN0/comment/29B17825_D535_41D8_A7AB_A9E7EEC54384_L0_001_800_54_1772467908520_56781094.jpg"
+              }
+            ]
+          }
+        ],
+        "accommodation": [
+          {
+            "name": "龙兴国际大酒店",
+            "address": "独库公路巴音布鲁克景区游客中心正门西南一百三十米",
+            "feature": "住宿服务;宾馆酒店;宾馆酒店｜评分4.5"
+          }
+        ]
+      },
+      {
+        "distance": 0,
+        "drivingHours": 0,
+        "day": 10,
+        "title": "第10天 | 巴音布鲁克→独库公路北段→奎屯",
+        "waypoints": [
+          {
+            "alias": "乔尔玛烈士陵园",
+            "address": "伊犁哈萨克自治州尼勒克县乔尔玛",
+            "city": "伊犁哈萨克自治州",
+            "province": "新疆维吾尔自治区"
+          },
+          {
+            "alias": "独山子大峡谷",
+            "address": "克拉玛依市独山子区",
+            "city": "克拉玛依市",
+            "province": "新疆维吾尔自治区"
+          },
+          {
+            "alias": "奎屯市",
+            "address": "伊犁哈萨克自治州奎屯市",
+            "city": "伊犁哈萨克自治州",
+            "province": "新疆维吾尔自治区"
+          }
+        ],
+        "description": "沿独库公路北段北上，在乔尔玛烈士陵园缅怀先烈，游览独山子大峡谷，傍晚抵达奎屯。",
+        "foodRecommendation": [
+          "奎屯凉皮",
+          "炒米粉"
+        ],
+        "commentTips": "独库公路弯多坡陡，注意安全驾驶；7月可能堵车，预留充足时间。",
+        "activities": [
+          {
+            "name": "乔尔玛烈士陵园",
+            "description": "纪念独库公路建设牺牲的战士（评分4.6，）",
+            "suggestedHours": "1小时",
+            "ticketPriceCny": 0,
+            "openingHours": "10:00-20:00",
+            "images": [
+              {
+                "description": "高德参考图片",
+                "imgSrc": "https://store.is.autonavi.com/showpic/e1f0ce6feb98b1932af589340bb49a5d"
+              },
+              {
+                "description": "高德参考图片",
+                "imgSrc": "https://store.is.autonavi.com/showpic/be689af1a9a46b5fcefc2b400df428e3"
+              },
+              {
+                "description": "高德参考图片",
+                "imgSrc": "http://store.is.autonavi.com/showpic/8e1c389fc3d2add761f07cf62fcf585b"
+              }
+            ]
+          },
+          {
+            "name": "独山子大峡谷",
+            "description": "天山雪水冲刷形成的壮丽峡谷（评分4.7，）",
+            "suggestedHours": "1-2小时",
+            "ticketPriceCny": 0,
+            "openingHours": "10:00-19:30",
+            "images": [
+              {
+                "description": "高德参考图片",
+                "imgSrc": "http://store.is.autonavi.com/showpic/cb0329322ee623384e80f609de64e688"
+              },
+              {
+                "description": "高德参考图片",
+                "imgSrc": "https://aos-comment.amap.com/B0FFG2BGUQ/comment/0761B0BF_252B_4597_8874_201162139943_L0_001_1440_171_1757238674720_14036838.jpg"
+              },
+              {
+                "description": "高德参考图片",
+                "imgSrc": "https://aos-comment.amap.com/B0FFG2BGUQ/comment/20783BD6_D21D_4236_914B_4C3C31C0F4D6_L0_001_2000_150_1762679216894_65602881.jpg"
+              }
+            ]
+          }
+        ],
+        "accommodation": [
+          {
+            "name": "奎屯豪丰国际大酒店",
+            "address": "伊犁哈萨克自治州奎屯市团结南街",
+            "feature": "新开业，设施现代",
+            "price": 0,
+            "booking": ""
+          }
+        ]
+      },
+      {
+        "distance": 3.5,
+        "drivingHours": 0.2,
+        "day": 11,
+        "title": "第11天 | 奎屯→吐鲁番",
+        "waypoints": [
+          {
+            "alias": "火焰山",
+            "address": "吐鲁番市高昌区",
+            "city": "吐鲁番市",
+            "province": "新疆维吾尔自治区"
+          },
+          {
+            "alias": "葡萄沟",
+            "address": "吐鲁番市高昌区葡萄沟街道",
+            "city": "吐鲁番市",
+            "province": "新疆维吾尔自治区"
+          }
+        ],
+        "description": "早晨从奎屯出发，沿连霍高速东行，下午游览火焰山和葡萄沟，感受火洲魅力。",
+        "foodRecommendation": [
+          "吐鲁番葡萄",
+          "烤全羊"
+        ],
+        "commentTips": "吐鲁番非常炎热，注意补水和防晒；下午游览火焰山建议避开最热时段。",
+        "activities": [
+          {
+            "name": "火焰山大景区",
+            "description": "红色砂岩山体，地表温度极高（评分4.4，）",
+            "suggestedHours": "1-2小时",
+            "ticketPriceCny": 0,
+            "openingHours": "08:30-20:00",
+            "images": [
+              {
+                "description": "火焰山[吐鲁番火焰山]",
+                "imgSrc": "http://store.is.autonavi.com/showpic/6b33aa8c3a345a16a9670e1169fb4e3d"
+              },
+              {
+                "description": "火焰山[吐鲁番火焰山]",
+                "imgSrc": "http://store.is.autonavi.com/showpic/ab0665246653738d6d851d1fa10d1bda"
+              },
+              {
+                "description": "火焰山[吐鲁番火焰山]",
+                "imgSrc": "http://store.is.autonavi.com/showpic/33fd5da3473e1eb30f5b4fd486bc571e"
+              }
+            ]
+          },
+          {
+            "name": "吐鲁番葡萄沟风景区",
+            "description": "绿树成荫的葡萄园，体验维吾尔族风情（评分4.6，）",
+            "suggestedHours": "2-3小时",
+            "ticketPriceCny": 0,
+            "openingHours": "待查询",
+            "images": [
+              {
+                "description": "高德参考图片",
+                "imgSrc": "http://store.is.autonavi.com/showpic/c27c78920c25c6942b299add3196987c"
+              },
+              {
+                "description": "高德参考图片",
+                "imgSrc": "http://store.is.autonavi.com/showpic/18227555c9fb857e35ab6e5080197934"
+              },
+              {
+                "description": "高德参考图片",
+                "imgSrc": "http://store.is.autonavi.com/showpic/0b0d4e4aaae06e62ae5278f43209e226"
+              }
+            ]
+          }
+        ],
+        "accommodation": [
+          {
+            "name": "吐鲁番双城宾馆",
+            "address": "312国道1088号",
+            "feature": "住宿服务;宾馆酒店;宾馆酒店｜评分4.7"
+          }
+        ]
+      },
+      {
+        "distance": 0,
+        "drivingHours": 0,
+        "day": 12,
+        "title": "第12天 | 吐鲁番→库木塔格沙漠→吐鲁番",
+        "waypoints": [
+          {
+            "alias": "库木塔格沙漠",
+            "address": "吐鲁番市鄯善县公园路",
+            "city": "吐鲁番市",
+            "province": "新疆维吾尔自治区"
+          }
+        ],
+        "description": "上午前往鄯善县的库木塔格沙漠，体验沙漠越野和滑沙，下午返回吐鲁番。",
+        "foodRecommendation": [
+          "豆豆面",
+          "烤鸽子"
+        ],
+        "commentTips": "沙漠紫外线强，带好墨镜和防风面纱；玩沙注意电子设备防护。",
+        "activities": [
+          {
+            "name": "库木塔格沙漠",
+            "description": "世界离城市最近的沙漠，沙山壮观",
+            "suggestedHours": "3-4小时",
+            "ticketPriceCny": 0,
+            "openingHours": "",
+            "images": []
+          }
+        ],
+        "accommodation": [
+          {
+            "name": "吐鲁番双城宾馆",
+            "address": "312国道1088号",
+            "feature": "住宿服务;宾馆酒店;宾馆酒店｜评分4.7"
+          }
+        ]
+      },
+      {
+        "distance": 0,
+        "drivingHours": 0,
+        "day": 13,
+        "title": "第13天 | 吐鲁番→交河故城→乌鲁木齐",
+        "waypoints": [
+          {
+            "alias": "交河故城",
+            "address": "吐鲁番市高昌区雅尔乡",
+            "city": "吐鲁番市",
+            "province": "新疆维吾尔自治区"
+          },
+          {
+            "alias": "乌鲁木齐市",
+            "address": "乌鲁木齐市天山区",
+            "city": "乌鲁木齐市",
+            "province": "新疆维吾尔自治区"
+          }
+        ],
+        "description": "上午参观交河故城，了解古代车师文化，之后驱车返回乌鲁木齐。",
+        "foodRecommendation": [
+          "拌面",
+          "手抓饭"
+        ],
+        "commentTips": "交河故城无遮挡，注意防晒；返回乌鲁木齐路程约3小时，注意休息。",
+        "activities": [
+          {
+            "name": "交河故城",
+            "description": "世界上最大最古老的生土建筑城市遗址（评分4.6，）",
+            "suggestedHours": "2-3小时",
+            "ticketPriceCny": 0,
+            "openingHours": "10:00-19:00",
+            "images": [
+              {
+                "description": "高德参考图片",
+                "imgSrc": "http://store.is.autonavi.com/showpic/9ae3c96d9f1902a2ec71b47ac4dd0591"
+              },
+              {
+                "description": "高德参考图片",
+                "imgSrc": "http://store.is.autonavi.com/showpic/2b86ae61da81d0d58112870041d16ff2"
+              },
+              {
+                "description": "高德参考图片",
+                "imgSrc": "http://store.is.autonavi.com/showpic/278dcab2a98ee655ee0e1b2148d6fd7c"
+              }
+            ]
+          }
+        ],
+        "accommodation": [
+          {
+            "name": "乌鲁木齐华凌美爵大饭店",
+            "address": "西虹东路109号",
+            "feature": "住宿服务;宾馆酒店;五星级宾馆|餐饮服务;餐饮相关场所;餐饮相关｜评分4.4"
+          }
+        ]
+      },
+      {
+        "distance": 0,
+        "drivingHours": 0,
+        "day": 14,
+        "title": "第14天 | 乌鲁木齐→南山牧场→乌鲁木齐",
+        "waypoints": [
+          {
+            "alias": "南山牧场",
+            "address": "乌鲁木齐县水西沟镇",
+            "city": "乌鲁木齐市",
+            "province": "新疆维吾尔自治区"
+          }
+        ],
+        "description": "前往乌鲁木齐南山的西白杨沟或菊花台，感受草原牧场风光，体验骑马或徒步。",
+        "foodRecommendation": [
+          "土火锅",
+          "奶茶"
+        ],
+        "commentTips": "南山温度比市区低，带件薄外套；可参加骑马活动，价格需提前谈好。",
+        "activities": [
+          {
+            "name": "南山牧场",
+            "description": "乌鲁木齐近郊的草原避暑胜地，适合休闲（评分4.6，）",
+            "suggestedHours": "4-5小时",
+            "ticketPriceCny": 0,
+            "openingHours": "10:00-19:00",
+            "images": [
+              {
+                "description": "乌鲁木齐南山天然风景区",
+                "imgSrc": "http://store.is.autonavi.com/showpic/11c8ce1f74bd3f1a48edd1e78402ac01"
+              },
+              {
+                "description": "高德参考图片",
+                "imgSrc": "http://store.is.autonavi.com/showpic/b2a420037f0754c4c75bd9f94890f143"
+              },
+              {
+                "description": "高德参考图片",
+                "imgSrc": "http://store.is.autonavi.com/showpic/d58481c6e67ece62d575f513cf3cb869"
+              }
+            ]
+          }
+        ],
+        "accommodation": [
+          {
+            "name": "乌鲁木齐华凌美爵大饭店",
+            "address": "西虹东路109号",
+            "feature": "住宿服务;宾馆酒店;五星级宾馆|餐饮服务;餐饮相关场所;餐饮相关｜评分4.4"
+          }
+        ]
+      },
+      {
+        "distance": 15.9,
+        "drivingHours": 0.4,
+        "day": 15,
+        "title": "第15天 | 乌鲁木齐→新疆博物馆→返程",
+        "waypoints": [
+          {
+            "alias": "新疆博物馆",
+            "address": "乌鲁木齐市沙依巴克区西北路581号",
+            "city": "乌鲁木齐市",
+            "province": "新疆维吾尔自治区"
+          },
+          {
+            "alias": "乌鲁木齐地窝堡国际机场",
+            "address": "乌鲁木齐地窝堡国际机场",
+            "city": "乌鲁木齐市",
+            "province": "新疆维吾尔自治区"
+          }
+        ],
+        "description": "上午参观新疆博物馆，欣赏楼兰干尸等珍贵文物，下午根据航班返程。",
+        "foodRecommendation": [
+          "酸奶粽子",
+          "抓饭"
+        ],
+        "commentTips": "博物馆免费但需预约，周一闭馆；预留充足时间前往机场，避免误机。",
+        "activities": [
+          {
+            "name": "新疆维吾尔自治区博物馆",
+            "description": "了解新疆历史与民族文化，镇馆之宝为楼兰干尸（评分4.9，）",
+            "suggestedHours": "2-3小时",
+            "ticketPriceCny": 0,
+            "openingHours": "待查询",
+            "images": [
+              {
+                "description": "高德参考图片",
+                "imgSrc": "https://aos-comment.amap.com/B03DF016C6/comment/20260320-bf0fbcc1a674235f538f7c3d-96Qf0wdRkVZAVbwSbe6kOx.jpg"
+              },
+              {
+                "description": "高德参考图片",
+                "imgSrc": "https://store.is.autonavi.com/showpic/cc5ea847ca1613950000000731176061?type=pic"
+              },
+              {
+                "description": "高德参考图片",
+                "imgSrc": "https://aos-comment.amap.com/B03DF016C6/comment/45D920FE_A484_4C1B_8CC8_D91E8C8C7804_L0_001_1500_200_1773019052077_23217107.jpg"
+              }
+            ]
+          }
+        ],
+        "accommodation": [
+          {
+            "name": "乌鲁木齐华凌美爵大饭店",
+            "address": "西虹东路109号",
+            "feature": "住宿服务;宾馆酒店;五星级宾馆|餐饮服务;餐饮相关场所;餐饮相关｜评分4.4"
           }
         ]
       }
     ]
   },
-  "emittedAt": 1777276979494
+  "emittedAt": 1777532049805,
+  "errors": "N/A",
+  "needUserInput": "N/A",
+  "finishedAt": "N/A"
 }

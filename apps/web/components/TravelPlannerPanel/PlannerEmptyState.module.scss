@@ -1,0 +1,60 @@
+.emptyState {
+  margin: 15px;
+  height: calc(100% - 30px);
+  width: 100%;
+  border: 1px solid #dce7fb;
+  border-radius: 18px;
+  background:
+    radial-gradient(120% 160% at 10% -20%, rgba(111, 146, 255, 0.14), transparent 58%),
+    radial-gradient(120% 140% at 90% 120%, rgba(35, 197, 165, 0.13), transparent 55%),
+    #ffffff;
+  padding: 50px 30px;
+  box-shadow: 0 10px 34px rgba(62, 109, 210, 0.08);
+}
+
+.emptyBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  margin: auto;
+  color: #2f64cc;
+  background: rgba(76, 129, 252, 0.12);
+}
+
+.emptyTitle {
+  margin: 20px 0 10px 0;
+  font-size: 24px;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  color: #1b2f57;
+}
+
+.emptyDescription {
+  margin: 0;
+  margin-bottom: 20px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #51617f;
+}
+
+.hintRow {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.hintChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #2b4374;
+  background: #edf3ff;
+}
