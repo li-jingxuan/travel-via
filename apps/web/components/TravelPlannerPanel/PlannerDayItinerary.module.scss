@@ -1,0 +1,395 @@
+.tripContentShell {
+  border-radius: 10px;
+  border: 1px solid #e2e8f3;
+  background: #fff;
+  margin: 8px 0;
+  overflow: hidden;
+}
+
+.dayTabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid #e2e8f3;
+  background: #fff;
+}
+
+.dayTab,
+.dayTabActive {
+  min-width: 90px;
+  min-height: 36px;
+  border: 0;
+  border-right: 1px solid #e2e8f3;
+  background: transparent;
+  color: #374151;
+  font-size: 14px;
+}
+
+.dayTabActive {
+  color: #1d4ed8;
+  font-weight: 600;
+  background: #e8f0ff;
+}
+
+.dayGrid {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 0;
+  background: #fff;
+}
+
+.routeAside {
+  display: grid;
+  gap: 0;
+  align-content: start;
+  border-right: 1px solid #e2e8f3;
+}
+
+.routeBlock {
+  padding: 10px;
+
+  h4 {
+    margin: 0 0 9px;
+    color: #111827;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.1;
+  }
+}
+
+.routeList {
+  display: grid;
+  gap: 10px;
+
+  li {
+    display: grid;
+    grid-template-columns: 12px minmax(0, 1fr);
+    gap: 8px;
+    align-items: start;
+    position: relative;
+  }
+
+  li:not(:last-child)::after {
+    // 途经点时间轴连接线：从当前圆点下方延伸到下一项圆点上方。
+    content: "";
+    position: absolute;
+    left: 4.5px;
+    top: 20px;
+    bottom: -15px;
+    width: 1px;
+    background: #cddcf8;
+  }
+
+  .pointName {
+    display: block;
+    color: #333;
+    font-weight: 500;
+    font-size: 12px;
+  }
+
+  p {
+    margin: 4px 0 0;
+    color: #6b7280;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+}
+
+.routeDot {
+  width: 10px;
+  height: 10px;
+  margin-top: 8px;
+  border-radius: 50%;
+  border: 2px solid #3b82f6;
+  background: #fff;
+  position: relative;
+  z-index: 1;
+}
+
+.overviewBlock {
+  background-color: #fafafd;
+  border: 1px solid #e2e8f3;
+  border-radius: 6px;
+  margin: 0 8px;
+}
+
+.overviewList {
+  display: grid;
+  gap: 7px;
+
+  div {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  span {
+    color: #6b7280;
+    font-size: 12px;
+  }
+
+  .activeDayText {
+    color: #1f2937;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: right;
+  }
+}
+
+.foodList {
+  display: grid;
+  gap: 8px;
+
+  li {
+    color: #374151;
+    font-size: 13px;
+    line-height: 1.35;
+    position: relative;
+    padding-left: 14px;
+  }
+
+  li::before {
+    content: "●";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #f97316;
+    font-size: 10px;
+  }
+}
+
+.dayMainShell {
+  min-width: 0;
+  padding: 8px;
+  padding-bottom: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.dayHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  border-bottom: 1px solid #d8deeb;
+  padding: 12px;
+
+  h3 {
+    color: #111827;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  p {
+    margin: 6px 0 0;
+    color: #4b5563;
+    font-size: 12px;
+  }
+}
+
+.dayMainGrid {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+}
+
+.dayMain {
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+  border-right: 1px solid #e2e8f3;
+}
+
+.collapseBtn {
+  border-radius: 999px;
+  border: 1px solid #d8deeb;
+  background: #fff;
+  color: #4b5563;
+  min-height: 28px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+.spotSection {
+  h4 {
+    margin: 0 0 8px;
+    color: #111827;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1;
+  }
+}
+
+.spotList {
+  display: grid;
+  gap: 8px;
+}
+
+.spotItem {
+  border: 1px solid #e3e9f4;
+  border-radius: 10px;
+  background: #fcfdff;
+  display: grid;
+  grid-template-columns: 208px minmax(0, 1fr);
+  gap: 10px;
+}
+
+.spotImageWrap {
+  border-radius: 9px;
+  overflow: hidden;
+  height: 132px;
+  max-height: 132px;
+}
+
+.spotImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.spotImagePlaceholder {
+  height: 132px;
+  border: 1px dashed #cfd8e6;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.spotMeta {
+  padding: 8px;
+
+  h5 {
+    margin: 0;
+    color: #111827;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  p {
+    margin: 5px 0 0;
+    color: #4b5563;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+}
+
+.ratingTag {
+  display: inline-flex;
+  align-items: center;
+  color: #1d4ed8;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.spotStats {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+}
+
+.spotStatItem {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+  padding-right: 8px;
+}
+
+.spotStatLabel {
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.spotStatValue {
+  color: #334155;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+.tipBox {
+  border-radius: 8px;
+  border: 1px solid #f0dfc2;
+  background: #fff8ee;
+  padding: 9px;
+
+  strong {
+    color: #92400e;
+    font-size: 13px;
+  }
+
+  p {
+    margin: 4px 0 0;
+    color: #a16207;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+}
+
+.hotelPanel {
+  padding: 10px;
+  display: grid;
+  gap: 8px;
+  align-content: start;
+
+  h4 {
+    margin: 0;
+    color: #111827;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  h5 {
+    margin: 0;
+    color: #111827;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.05;
+  }
+
+  p {
+    margin: 0;
+    color: #334155;
+    font-size: 12px;
+  }
+
+  small {
+    color: #6b7280;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+}
+
+.hotelImageWrap {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e2e8f3;
+  height: 198px;
+  max-height: 198px;
+}
+
+.hotelImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hotelImagePlaceholder {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: #6b7280;
+  font-size: 12px;
+  background: #f8fafc;
+}

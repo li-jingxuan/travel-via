@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsc",
     "cli": "node dist/example/ink-cli.js",
-    "dev": "tsc --watch",
+    "dev": "./build.sh",
     "typecheck": "tsc --noEmit",
     "test": "pnpm run build && node --test test/*.test.mjs"
   },

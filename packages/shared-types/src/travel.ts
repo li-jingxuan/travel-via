@@ -4,6 +4,31 @@ export interface IWeatherDay {
   weather: string
 }
 
+export type EssentialIconName =
+  | "Backpack"
+  | "BatteryCharging"
+  | "Bug"
+  | "CalendarDays"
+  | "CarFront"
+  | "CloudSun"
+  | "Compass"
+  | "Droplets"
+  | "Footprints"
+  | "Glasses"
+  | "Heart"
+  | "Image"
+  | "MapPin"
+  | "Paperclip"
+  | "Pill"
+  | "Route"
+  | "Sun"
+  | "Umbrella"
+
+export interface IEssentialItem {
+  name: string
+  icon: EssentialIconName
+}
+
 export interface IWeather {
   area: string
   daytime: IWeatherDay
@@ -11,17 +36,18 @@ export interface IWeather {
   clothing: string
 }
 
+export interface IActivityImage {
+  description: string
+  imgSrc: string
+}
+
 export interface IAccommodation {
   name: string
   address: string
   feature: string
+  images: IActivityImage[]
   booking?: string
   price?: number
-}
-
-export interface IActivityImage {
-  description: string
-  imgSrc: string
 }
 
 export interface IActivity {
@@ -61,7 +87,7 @@ export interface ITravelPlan {
   vehicleType: string
   vehicleAdvice: string
   bestSeason: string
-  essentialItems: string[]
+  essentialItems: IEssentialItem[]
   weather: IWeather[]
   days: ITravel[]
 }

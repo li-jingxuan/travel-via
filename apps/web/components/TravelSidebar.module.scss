@@ -1,0 +1,206 @@
+.sidebar {
+  background: #f5f7fb;
+  border-right: 1px solid #e6e9f0;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+  overflow: hidden;
+}
+
+.brandBlock {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 14px 12px;
+}
+
+.brandIdentity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.sidebarToggleBtn {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  border: 1px solid #d7dfed;
+  background: #fff;
+  color: #4b5563;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brandIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(140deg, #4a86ff 0%, #2f64e5 100%);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.brandGlyph {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.2;
+}
+
+.brandText {
+  h2 {
+    margin: 0;
+    font-size: 20px;
+    line-height: 1.12;
+    color: #111827;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 4px 0 0;
+    color: #6b7280;
+    font-size: 13px;
+  }
+}
+
+.createTripBtn {
+  margin: 8px 12px 12px;
+  min-height: 40px;
+  border-radius: 10px;
+  border: 1px solid #d8deeb;
+  background: #fff;
+  color: #1d4ed8;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.createTripBtnCollapsed {
+  width: 42px;
+  justify-self: center;
+  margin-inline: 0;
+  font-size: 20px;
+  line-height: 1;
+  padding: 0;
+}
+
+.navGroup,
+.navGroupSecondary {
+  display: grid;
+  align-content: start;
+}
+
+.navGroupSecondary {
+  margin-top: auto;
+  padding-top: 6px;
+}
+
+.navItem,
+.navItemActive {
+  min-height: 44px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #374151;
+  font-size: 15px;
+  text-align: left;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.navItem:hover {
+  background: rgba(37, 99, 235, 0.05);
+}
+
+.navItemActive {
+  color: #1d4ed8;
+  font-weight: 600;
+  background: rgba(37, 99, 235, 0.08);
+}
+
+.navIcon {
+  width: 18px;
+  text-align: center;
+  color: #4b5563;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.userCard {
+  margin: 12px;
+  border-radius: 10px;
+  border: 1px solid #dfe5f0;
+  background: #e9eef8;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.userCardCollapsed {
+  justify-content: center;
+  padding-inline: 0;
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #d5def0;
+  color: #1e40af;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.userMeta {
+  strong {
+    display: block;
+    color: #1f2937;
+    font-size: 14px;
+  }
+
+  span {
+    display: inline-flex;
+    margin-top: 2px;
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: #f2f6ff;
+    border: 1px solid #d8e4ff;
+    color: #1d4ed8;
+    font-size: 11px;
+  }
+}
+
+.sidebarCollapsed {
+  .brandBlock {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 8px;
+    padding: 12px 6px 8px;
+  }
+
+  .brandIdentity {
+    justify-content: center;
+  }
+
+  .navItem,
+  .navItemActive {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .navIcon {
+    width: auto;
+    font-size: 14px;
+  }
+}

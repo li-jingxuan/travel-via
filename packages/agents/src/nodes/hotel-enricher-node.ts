@@ -1,10 +1,11 @@
-import type { IAccommodation } from "@repo/shared-types/travel"
+import type { IAccommodation, IActivityImage } from "@repo/shared-types/travel"
 import type { TravelStateAnnotation } from "../graph/state.js"
 import { searchHotels } from "../lib/amap/index.js"
 import { ERROR_CODE, createIssue, type IssueItem } from "../constants/error-code.js"
 import { agentLog } from "../lib/logger.js"
 
 const normalizeText = (value: unknown) => typeof value === "string" ? value.trim() : ""
+const EMPTY_IMAGES: IActivityImage[] = []
 
 /**
  * 从地址中提取粗粒度 cityHint（如“成都市”“乌鲁木齐市”）。
@@ -32,9 +33,31 @@ function buildDefaultAccommodation(
     name,
     address: normalizeText(seed.address) || "",
     feature: normalizeText(seed.feature) || "",
+    // 兜底对象也保持 images 字段稳定存在，减少下游判空分支。
+    images: EMPTY_IMAGES,
     price: 0,
     booking: ''
   }
+}
+
+/**
+ * 清洗住宿图片列表：
+ * - 仅保留合法的图片 URL
+ * - 统一 description 文案兜底
+ */
+function normalizeAccommodationImages(value: unknown): IActivityImage[] {
+  if (!Array.isArray(value)) return EMPTY_IMAGES
+
+  return value
+    .filter((item) => item && typeof item === "object")
+    .map((item) => {
+      const normalized = item as { description?: unknown; imgSrc?: unknown }
+      return {
+        description: normalizeText(normalized.description) || "酒店参考图片",
+        imgSrc: normalizeText(normalized.imgSrc),
+      }
+    })
+    .filter((item) => item.imgSrc.length > 0)
 }
 
 /**
@@ -103,13 +126,14 @@ export async function hotelEnricherNode(
         continue
       }
 
-      const { rating, name, address, type, avgCostCny } = candidates[0]
-      const hotelEnricher = {
+      const { rating, name, address, type, avgCostCny, images } = candidates[0]
+      const hotelEnricher: IAccommodation = {
         name: normalizeText(name) || seedHotelName,
         address: normalizeText(address) || normalizeText(seed.address) || "地址待补充",
         feature: rating
           ? `${type ?? "酒店"}｜评分${rating}`
           : normalizeText(type) || normalizeText(seed.feature) || "酒店",
+        images: normalizeAccommodationImages(images),
         price: avgCostCny ?? undefined,
       }
 

@@ -35,5 +35,9 @@ export function formatWeatherLine(
   tempMin: number,
   tempMax: number,
 ): string {
+  if (!weather || !Number.isFinite(tempMin) || !Number.isFinite(tempMax)) {
+    return "N/A";
+  }
+
   return `${weather} · ${tempMin}-${tempMax}°C`;
 }

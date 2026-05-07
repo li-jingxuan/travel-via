@@ -183,7 +183,7 @@ async function tryRepairRouteSkeleton(
 /**
  * 路线骨架生成节点：
  * - 输入：intent
- * - 输出：routeSkeleton + messages
+ * - 输出：routeSkeleton
  */
 export async function routerPlannerNode(
   state: typeof TravelStateAnnotation.State,
@@ -241,7 +241,6 @@ export async function routerPlannerNode(
       return {
         routeSkeleton,
         routePlannerRetryCount: 0,
-        messages: [response],
       }
     }
 
@@ -261,7 +260,6 @@ export async function routerPlannerNode(
     return {
       routeSkeleton: null,
       routePlannerRetryCount: state.routePlannerRetryCount + 1,
-      messages: [response],
     }
   }
 
@@ -275,6 +273,5 @@ export async function routerPlannerNode(
   return {
     routeSkeleton,
     routePlannerRetryCount: 0,
-    messages: [response],
   }
 }

@@ -28,7 +28,8 @@ day,title,waypoints,description,activities,accommodation,foodRecommendation,comm
 - 全行程去重：同一个标准景点在不同天只能出现一次（按 activities.name 判定）
 - 去重归一规则：仅名称后缀差异（如“景区/风景区/旅游区”）或同名不同写法（如“洪崖洞”“洪崖洞民俗风貌区”）视为同一景点，禁止重复安排
 - 默认不允许二刷同一景点；如确需二刷，必须在 commentTips 写明“二刷原因”
-- city 必须是市级名称（如“成都市”），province 必须是省级名称（如“四川省”）
+- city 必须填写高德可识别的地级行政区名称，可为市、地区、自治州、盟（如“成都市”“阿勒泰地区”“伊犁哈萨克自治州”），不要强行把地区/州/盟改写成“市”
+- province 必须是省级名称（如“四川省”“新疆维吾尔自治区”）
 - address 必须可用于地图 geocode，不能留空
 - 所有符号使用英文半角
 

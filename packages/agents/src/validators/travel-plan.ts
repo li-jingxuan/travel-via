@@ -43,6 +43,27 @@ import type { TravelStateAnnotation } from "../graph/state.js"
 import { ERROR_CODE, createIssue, type IssueItem } from "../constants/error-code.js"
 import { agentLog } from "../lib/logger.js"
 
+const ESSENTIAL_ICON_WHITELIST = [
+  "Backpack",
+  "BatteryCharging",
+  "Bug",
+  "CalendarDays",
+  "CarFront",
+  "CloudSun",
+  "Compass",
+  "Droplets",
+  "Footprints",
+  "Glasses",
+  "Heart",
+  "Image",
+  "MapPin",
+  "Paperclip",
+  "Pill",
+  "Route",
+  "Sun",
+  "Umbrella",
+] as const
+
 // ==================== Zod Schema 定义 ====================
 // 与 @repo/shared-types/travel 中的接口保持一致
 
@@ -76,6 +97,7 @@ const accommodationSchema = z
     name: z.string(),
     address: z.string(),
     feature: z.string(),
+    images: z.array(activityImageSchema),
     booking: z.string().optional(),
     price: z.number().optional(),
   })
@@ -95,6 +117,13 @@ const weatherSchema = z
     daytime: weatherDaySchema,
     nighttime: weatherDaySchema,
     clothing: z.string(),
+  })
+  .strict()
+
+const essentialItemSchema = z
+  .object({
+    name: z.string(),
+    icon: z.enum(ESSENTIAL_ICON_WHITELIST),
   })
   .strict()
 
@@ -130,7 +159,7 @@ const travelPlanSchema = z
     vehicleType: z.string(),
     vehicleAdvice: z.string(),
     bestSeason: z.string(),
-    essentialItems: z.array(z.string()),
+    essentialItems: z.array(essentialItemSchema),
     weather: z.array(weatherSchema),
     days: z.array(travelDaySchema).nonempty("days 必须是非空数组"),
   })

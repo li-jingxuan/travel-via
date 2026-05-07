@@ -1,5 +1,6 @@
 import { travelPlannerGraph } from "@repo/agents/src/index.js"
 import { createDeepSeekReasoner } from "@repo/agents/src/lib/llm.js"
+import { AGENT_STAGE, AGENT_STAGE_STATUS, type AgentStage } from "@repo/shared-types/agent-stream"
 import type { ITravelPlan } from "@repo/shared-types/travel"
 import { randomUUID } from "node:crypto"
 import type { AgentStreamEvent, TravelClarificationResponse } from "../types/agent.js"
@@ -29,6 +30,18 @@ export interface CreatePlanServiceResult {
 }
 
 const summaryLlm = createDeepSeekReasoner({ temperature: 0.4 })
+
+// 规划阶段节点集合：用于把底层节点更新归一为“planning”语义事件。
+const PLANNING_STAGE_NODE_SET = new Set([
+  "route_planner",
+  "route_enrich_entry",
+  "driving_distance",
+  "poi_enricher",
+  "hotel_enricher",
+  "pre_formatter_guard",
+  "formatter",
+  "validator",
+])
 
 /**
  * 统一生成/归一化会话 ID：
@@ -174,6 +187,31 @@ export async function* streamTravelChat(
   debug = false,
 ): AsyncGenerator<AgentStreamEvent> {
   const resolvedSessionId = resolveSessionId(sessionId)
+  let currentStage: AgentStage | null = null
+
+  function createStageEvent(
+    stage: AgentStage,
+    status: "start" | "progress" | "end",
+    reason: string,
+  ): AgentStreamEvent {
+    return {
+      event: "stage",
+      data: {
+        stage,
+        status,
+        at: Date.now(),
+        reason,
+      },
+    }
+  }
+
+  function* emitStageIfChanged(stage: AgentStage, reason: string): Generator<AgentStreamEvent> {
+    if (currentStage === stage) {
+      return
+    }
+    currentStage = stage
+    yield createStageEvent(stage, AGENT_STAGE_STATUS.Start, reason)
+  }
 
   yield {
     event: "start",
@@ -183,6 +221,7 @@ export async function* streamTravelChat(
       startedAt: Date.now(),
     },
   }
+  yield* emitStageIfChanged(AGENT_STAGE.IntentCollecting, "stream_started")
 
   const stream = (await travelPlannerGraph.stream(
     { userInput },
@@ -209,6 +248,7 @@ export async function* streamTravelChat(
       !hasEmittedClarification &&
       aggregatedState.needUserInput
     ) {
+      yield* emitStageIfChanged(AGENT_STAGE.Clarification, "ask_clarification_node")
       hasEmittedClarification = true
       yield {
         event: "clarification_required",
@@ -237,6 +277,11 @@ export async function* streamTravelChat(
       }
     }
 
+    const hasPlanningNodeUpdated = updatedNodes.some((node) => PLANNING_STAGE_NODE_SET.has(node))
+    if (hasPlanningNodeUpdated) {
+      yield* emitStageIfChanged(AGENT_STAGE.Planning, "planning_node_updated")
+    }
+
     yield {
       event: "state",
       data: {
@@ -251,6 +296,7 @@ export async function* streamTravelChat(
   const needUserInput = hasNeedUserInput(finalState, errors)
 
   if (finalState.finalPlan) {
+    yield* emitStageIfChanged(AGENT_STAGE.Summarizing, "summary_started")
     yield {
       event: "summary_start",
       data: { startedAt: Date.now() },
@@ -287,6 +333,13 @@ export async function* streamTravelChat(
       }
     }
   }
+
+  // done 前补发一次阶段结束语义，便于前端/埋点明确本轮的收敛结果。
+  const doneStage = needUserInput
+    ? AGENT_STAGE.Clarification
+    : (errors.length > 0 ? AGENT_STAGE.Failed : AGENT_STAGE.Completed)
+  currentStage = doneStage
+  yield createStageEvent(doneStage, AGENT_STAGE_STATUS.End, "stream_done")
 
   yield {
     event: "done",

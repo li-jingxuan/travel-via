@@ -1,7 +1,7 @@
 import type { IActivity } from "@repo/shared-types/travel"
 import type { TravelStateAnnotation } from "../graph/state.js"
 import type { RouteSkeletonActivity } from "../types/index.js"
-import { searchScenicPois } from "../lib/amap/index.js"
+import { AmapPoiCandidate, searchScenicPois } from "../lib/amap/index.js"
 import { ERROR_CODE, createIssue, type IssueItem } from "../constants/error-code.js"
 import { agentLog } from "../lib/logger.js"
 
@@ -41,17 +41,17 @@ const calcCharJaccard = (a: string, b: string): number => {
 // 1) 归一化后全等
 // 2) 归一化后互相包含
 // 3) 字符级相似度达到阈值（0.65）
-function isNameMatch(expectedName: string, candidateName: string): boolean {
-  const expected = normalizePoiName(expectedName)
-  const candidate = normalizePoiName(candidateName)
-  if (!expected || !candidate) return false
-  if (expected === candidate) return true
-  if (expected.includes(candidate) || candidate.includes(expected)) return true
+// function isNameMatch(expectedName: string, candidateName: string): boolean {
+//   const expected = normalizePoiName(expectedName)
+//   const candidate = normalizePoiName(candidateName)
+//   if (!expected || !candidate) return false
+//   if (expected === candidate) return true
+//   if (expected.includes(candidate) || candidate.includes(expected)) return true
 
-  // 相似度阈值先调低
-  // 比如：李子坝轻轨站 -> 李子坝（地铁站），实际是一个地方，但是相似度只有 0.4 左右。
-  return calcCharJaccard(expected, candidate) >= 0.4
-}
+//   // 相似度阈值先调低
+//   // 比如：李子坝轻轨站 -> 李子坝（地铁站），实际是一个地方，但是相似度只有 0.4 左右。
+//   return calcCharJaccard(expected, candidate) >= 0.4
+// }
 
 const buildFallbackActivity = ({
   name,
@@ -101,8 +101,16 @@ const buildEnrichedActivity = (
 function selectBestMatchedCandidate(
   activityName: string,
   candidates: Awaited<ReturnType<typeof searchScenicPois>>,
-): (Awaited<ReturnType<typeof searchScenicPois>>)[number] | undefined {
-  return candidates.find((item) => isNameMatch(activityName, item.name))
+): AmapPoiCandidate | undefined {
+  const firstCandidate = candidates[0]
+
+  // TODO AI 返回的名称很有可能和实际地名不一致，暂时先选择第一个
+  // return candidates.find((item) => isNameMatch(activityName, item.name))
+
+  return firstCandidate && {
+    ...firstCandidate,
+    name: activityName,
+  }
 }
 
 /**

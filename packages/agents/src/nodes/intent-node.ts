@@ -22,7 +22,7 @@
  *      userInput (读)    intent (写)
  *
  * - 输入：从 State 中读取 userInput
- * - 输出：向 State 写入 intent + messages
+ * - 输出：向 State 写入 intentExtraction
  * - 模型：deepseek-v3（通用任务模型，不需要强推理能力）
  * - Tools：无（纯 LLM 推理，不需要调用外部 API）
  */
@@ -31,12 +31,14 @@ import { SystemMessage, HumanMessage } from "@langchain/core/messages"
 import { createDeepSeekV3 } from "../lib/llm.js"
 import { agentLog } from "../lib/logger.js"
 import type { TravelStateAnnotation } from "../graph/state.js"
-import type { TravelIntent } from "../types/internal.js"
+import type { TravelIntentExtraction } from "../types/internal.js"
 import { INTENT_SYSTEM_PROMPT } from "../prompts/index.js"
-import { normalizeIntent } from "../intent/travel-intent-schema.js"
+import { normalizeIntentExtraction } from "../intent/travel-intent-schema.js"
 
 /** 意图理解专用 LLM 实例 — 低温度保证输出稳定可预测 */
 const llm = createDeepSeekV3({ temperature: 0.3 })
+// 强制 LLM 输出纯 JSON，减少解析错误风险
+llm.withConfig({ response_format: { type: "json_object" } })
 
 /**
  * IntentAgent 节点函数
@@ -46,7 +48,7 @@ const llm = createDeepSeekV3({ temperature: 0.3 })
  *   - 返回值: Partial<State> —— 只返回需要更新的字段，其余保持不变
  *
  * @param state - 当前 Graph 状态（至少包含 userInput）
- * @returns 需要更新的 State 字段（intent 和 messages）
+ * @returns 需要更新的 State 字段（intentExtraction）
  */
 export async function intentAgentNode(
   state: typeof TravelStateAnnotation.State,
@@ -65,33 +67,35 @@ export async function intentAgentNode(
 
   // 从 LLM 返回的 content 中提取结构化 JSON
   const content = response.content as string
-  let intent: TravelIntent
+  let intentExtraction: TravelIntentExtraction
 
   try {
     // 清理可能的 markdown 代码块包裹（LLM 有时会在 JSON 外面包 ```json ... ```）
     const jsonStr = content.replace(/```json\n?|\n?```/g, "").trim()
-    intent = normalizeIntent(JSON.parse(jsonStr))
+    intentExtraction = normalizeIntentExtraction(JSON.parse(jsonStr))
+
+    agentLog("意图识别", "LLM 输出解析成功", {
+      rawOutput: content,
+      parsedIntentExtraction: intentExtraction,
+    })
   } catch {
     agentLog("意图识别", "识别失败，已降级为空意图", {
       reason: "模型输出 JSON 解析失败",
     })
     console.error("IntentAgent JSON parsing error. Raw output:", content)
-    // JSON 解析失败时使用兜底默认值，避免整个管线崩溃
+    // JSON 解析失败时使用空增量，避免整个管线崩溃。
     // 这种情况通常是因为 LLM 输出了额外文字而非纯 JSON。
-    // 注意必填字段使用空字符串，后续由 graph 分流给用户补充信息。
-    intent = normalizeIntent({})
+    // 缺失的必填字段会由 merge_collected_intent 节点继续触发追问。
+    intentExtraction = normalizeIntentExtraction({})
   }
 
   agentLog("意图识别", "识别成功", {
-    destination: intent.destination,
-    departurePoint: intent.departurePoint,
-    days: intent.days,
-    travelType: intent.travelType,
+    intentPatch: intentExtraction.intentPatch,
+    explicitFields: intentExtraction.explicitFields,
   })
 
   // 返回部分更新 —— LangGraph 会用各字段的 reducer 合并到当前 State
   return {
-    intent,           // 写入意图结果 → State.intent
-    messages: [response], // 追加 AI 回复到消息历史 → State.messages
+    intentExtraction, // 写入本轮意图增量 → State.intentExtraction
   }
 }

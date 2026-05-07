@@ -11,7 +11,8 @@
     "check-types": "next typegen && tsc --noEmit"
   },
   "dependencies": {
-    "@repo/components": "workspace:*",
+    "@repo/shared-types": "workspace:*",
+    "lucide-react": "^1.14.0",
     "next": "16.2.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

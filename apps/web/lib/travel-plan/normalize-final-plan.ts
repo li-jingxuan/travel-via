@@ -26,6 +26,15 @@ function normalizeActivity(activity: RawFinalPlan["days"][number]["activities"][
   };
 }
 
+function normalizeAccommodationImages(
+  accommodation: RawFinalPlan["days"][number]["accommodation"][number],
+): Array<{ src: string; alt: string }> {
+  return (accommodation.images ?? []).map((image, index) => ({
+    src: image.imgSrc,
+    alt: (image.description || `${accommodation.name} 图片 ${index + 1}`).replace("高德参考图片", "参考图片"),
+  }));
+}
+
 export function normalizeFinalPlanData(plan: RawFinalPlan): TravelPlanViewModel {
   return {
     summary: {
@@ -47,11 +56,21 @@ export function normalizeFinalPlanData(plan: RawFinalPlan): TravelPlanViewModel 
       day: day.day,
       title: day.title,
       description: day.description,
+      waypoints: (day.waypoints ?? []).map((waypoint) => ({
+        name: waypoint.alias,
+        address: waypoint.address,
+      })),
       distanceText: formatDistanceKm(day.distance),
       drivingHoursText: formatDrivingHours(day.drivingHours),
       tips: day.commentTips,
       foods: day.foodRecommendation,
-      accommodations: day.accommodation,
+      // 住宿图片在这里统一做结构归一，页面层直接消费 src/alt。
+      accommodations: (day.accommodation ?? []).map((item) => ({
+        name: item.name,
+        address: item.address,
+        feature: item.feature,
+        images: normalizeAccommodationImages(item),
+      })),
       activities: day.activities.map(normalizeActivity),
     })),
   };

@@ -1,8 +1,33 @@
+export type EssentialIconName =
+  | "Backpack"
+  | "BatteryCharging"
+  | "Bug"
+  | "CalendarDays"
+  | "CarFront"
+  | "CloudSun"
+  | "Compass"
+  | "Droplets"
+  | "Footprints"
+  | "Glasses"
+  | "Heart"
+  | "Image"
+  | "MapPin"
+  | "Paperclip"
+  | "Pill"
+  | "Route"
+  | "Sun"
+  | "Umbrella";
+
+export interface EssentialItem {
+  name: string;
+  icon: EssentialIconName;
+}
+
 export interface RawTravelData {
   finalPlan: RawFinalPlan;
-  errors: unknown[];
-  needUserInput: boolean;
-  finishedAt: number;
+  errors?: unknown[];
+  needUserInput?: boolean;
+  finishedAt?: number | string;
 }
 
 export interface RawFinalPlan {
@@ -12,7 +37,7 @@ export interface RawFinalPlan {
   vehicleType: string;
   vehicleAdvice: string;
   bestSeason: string;
-  essentialItems: string[];
+  essentialItems: EssentialItem[];
   weather: RawWeather[];
   days: RawDayPlan[];
 }
@@ -54,6 +79,7 @@ export interface RawAccommodation {
   name: string;
   address: string;
   feature: string;
+  images: RawImage[];
 }
 
 export interface RawActivity {
@@ -79,7 +105,7 @@ export interface TravelPlanViewModel {
   };
   bestSeason: string;
   vehicleAdvice: string;
-  essentials: string[];
+  essentials: EssentialItem[];
   weather: Array<{
     area: string;
     daytime: string;
@@ -93,6 +119,10 @@ export interface DayViewModel {
   day: number;
   title: string;
   description: string;
+  waypoints: Array<{
+    name: string;
+    address: string;
+  }>;
   distanceText: string;
   drivingHoursText: string;
   tips: string;
@@ -101,6 +131,10 @@ export interface DayViewModel {
     name: string;
     address: string;
     feature: string;
+    images: Array<{
+      src: string;
+      alt: string;
+    }>;
   }>;
   activities: ActivityViewModel[];
 }

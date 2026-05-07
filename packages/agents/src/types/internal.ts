@@ -39,6 +39,31 @@ export interface TravelIntent {
   preferences?: string[]
 }
 
+/** 用户意图字段名 — 用于标记本轮用户明确补充了哪些字段 */
+export type IntentField =
+  | "destination"
+  | "departurePoint"
+  | "days"
+  | "month"
+  | "travelType"
+  | "budget"
+  | "travelers"
+  | "preferences"
+
+/**
+ * 旅行意图增量。
+ *
+ * IntentAgent 只把用户本轮明确表达的信息写进 patch，不再提前补默认值。
+ * 这样多轮合并时可以精准地区分“用户真的改了”和“模型/系统默认补齐”。
+ */
+export type TravelIntentPatch = Partial<TravelIntent>
+
+/** IntentAgent 的结构化输出：本轮增量 + 本轮明确字段 */
+export interface TravelIntentExtraction {
+  intentPatch: TravelIntentPatch
+  explicitFields: IntentField[]
+}
+
 /** 缺少必要旅行信息时返回给调用方的追问信息 */
 export interface TravelClarification {
   /** 面向用户的自然语言追问 */

@@ -1,0 +1,71 @@
+.plannerHeader {
+  padding: 15px;
+  display: grid;
+}
+
+.planTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  h2 {
+    color: #111827;
+    font-size: 26px;
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+.actionRow {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}
+
+.actionBtn,
+.actionBtnPrimary {
+  min-height: 34px;
+  border-radius: 10px;
+  border: 1px solid #dae1ef;
+  background: #fff;
+  color: #374151;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 11px;
+}
+
+.actionIcon {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2;
+}
+
+.actionBtnPrimary {
+  border-color: #2a64e7;
+  background: linear-gradient(140deg, #4386ff 0%, #235ee5 100%);
+  color: #fff;
+}
+
+.metaPillRow {
+  display: flex;
+  gap: 8px;
+  margin-top: 5px;
+}
+
+.metaPill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 10px;
+  border: 1px solid #dae1ef;
+  background: #f8faff;
+  color: #374151;
+  font-size: 12px;
+  padding: 3px 6px;
+}

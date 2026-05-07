@@ -1,0 +1,17 @@
+.plannerPanel {
+  background: #fff;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.plannerContent {
+  padding: 0 15px 15px 15px;
+  overflow-y: auto;
+  align-content: start;
+}
+
+.plannerEmptyPanel{
+  display: flex;
+  align-items: center;
+  // justify-content: center;
+}
