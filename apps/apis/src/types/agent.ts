@@ -1,11 +1,12 @@
 import type { ApiResponse } from "@repo/shared-types/api"
 import type { ITravelPlan } from "@repo/shared-types/travel"
+import type {
+  AgentStreamEvent as SharedAgentStreamEvent,
+  AgentStreamEventName as SharedAgentStreamEventName,
+  SharedTravelClarification,
+} from "@repo/shared-types/agent-stream"
 
-export interface TravelClarificationResponse {
-  prompt: string
-  missingFields: string[]
-  examples?: string[]
-}
+export type TravelClarificationResponse = SharedTravelClarification
 
 export interface CreatePlanRequest {
   userInput: string
@@ -33,19 +34,9 @@ export interface CreateChatStreamRequest {
   debug?: boolean
 }
 
-export type AgentStreamEventName =
-  | "start"
-  | "state"
-  | "clarification_required"
-  | "plan_ready"
-  | "summary_start"
-  | "summary_delta"
-  | "summary_done"
-  | "done"
-  | "error"
-  | "heartbeat"
-
-export interface AgentStreamEvent {
-  event: AgentStreamEventName
-  data: Record<string, unknown>
-}
+export type AgentStreamEventName = SharedAgentStreamEventName
+export type AgentStreamEvent = SharedAgentStreamEvent<
+  ITravelPlan,
+  TravelClarificationResponse | null,
+  unknown
+>

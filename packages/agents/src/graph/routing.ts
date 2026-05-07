@@ -22,19 +22,25 @@ export function getMissingRequiredFields(
 
 /**
  * requirement_guard 之后的路由：
- * - 信息完整：进入 route_planner
- * - 信息缺失：进入 ask_clarification
+ * - 需要补充：进入 ask_clarification
+ * - 信息完整：进入 prepare_planner_intent（补齐默认值后再进 route_planner）
  */
 export function routeAfterRequirementGuard(
   state: typeof TravelStateAnnotation.State,
-): "ask_clarification" | "route_planner" {
+): "ask_clarification" | "prepare_planner_intent" {
+  // 优先使用 merge_collected_intent 已写好的 needUserInput。
+  // 这样可覆盖“软缺失持续补问”场景，而不只依赖 missingFields（硬缺失）。
+  if (state.needUserInput) {
+    return "ask_clarification"
+  }
+
   // missingFields 通常由 merge_collected_intent 写入；这里兜底重新计算，
-  // 避免未来新增入口节点时忘记写 missingFields 导致误进规划。
+  // 避免未来新增入口节点时忘记写 needUserInput 导致误进规划。
   const missing = state.missingFields.length > 0
     ? state.missingFields
     : getMissingRequiredFields(state)
 
-  return missing.length > 0 ? "ask_clarification" : "route_planner"
+  return missing.length > 0 ? "ask_clarification" : "prepare_planner_intent"
 }
 
 /**

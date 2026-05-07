@@ -36,17 +36,18 @@ export interface IWeather {
   clothing: string
 }
 
+export interface IActivityImage {
+  description: string
+  imgSrc: string
+}
+
 export interface IAccommodation {
   name: string
   address: string
   feature: string
+  images: IActivityImage[]
   booking?: string
   price?: number
-}
-
-export interface IActivityImage {
-  description: string
-  imgSrc: string
 }
 
 export interface IActivity {

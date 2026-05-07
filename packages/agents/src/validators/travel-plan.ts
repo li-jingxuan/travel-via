@@ -97,6 +97,7 @@ const accommodationSchema = z
     name: z.string(),
     address: z.string(),
     feature: z.string(),
+    images: z.array(activityImageSchema),
     booking: z.string().optional(),
     price: z.number().optional(),
   })

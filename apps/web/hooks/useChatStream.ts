@@ -3,7 +3,9 @@
 import { useMemo, useRef, useState } from "react";
 import { requestStream, type ParsedSseEvent } from "../lib/request";
 import { normalizeFinalPlanData } from "../lib/travel-plan/normalize-final-plan";
+import { AGENT_STAGE } from "../types/agent-stream";
 import type {
+  AgentStage,
   AgentStreamEvent,
   AgentStreamEventMap,
   AgentStreamEventName,
@@ -51,25 +53,14 @@ const NODE_LABEL_MAP: Record<string, string> = {
   pre_formatter_guard: "正在检查数据完整性",
   formatter: "正在整理行程结果",
   validator: "正在完成最后整理",
+  prepare_planner_intent: '正在整理已补充的信息',
 };
 
 const PLAN_READY_LABEL = "路径规划完成";
-const PLANNING_STAGE_NODES = [
-  "route_planner",
-  "route_enrich_entry",
-  "driving_distance",
-  "poi_enricher",
-  "hotel_enricher",
-  "pre_formatter_guard",
-  "formatter",
-  "validator",
-] as const;
-const PLANNING_STAGE_LABELS = new Set(
-  PLANNING_STAGE_NODES.map((node) => NODE_LABEL_MAP[node] ?? node),
-);
 const supportedEvents: AgentStreamEventName[] = [
   "start",
   "heartbeat",
+  "stage",
   "state",
   "clarification_required",
   "plan_ready",
@@ -97,10 +88,6 @@ function mapUpdatedNodesToLabels(updatedNodes: string[] | undefined): string[] {
 
   const mapped = updatedNodes.map((node) => NODE_LABEL_MAP[node] ?? node);
   return Array.from(new Set(mapped));
-}
-
-function isPlanningStageInProgress(progressNodes: string[]): boolean {
-  return progressNodes.some((node) => PLANNING_STAGE_LABELS.has(node));
 }
 
 function toAgentEvent(raw: ParsedSseEvent): AgentStreamEvent | null {
@@ -136,6 +123,8 @@ export function useChatStream(options: UseChatStreamOptions = {}) {
   const [progressNodes, setProgressNodes] = useState<string[]>([]);
   const [plan, setPlan] = useState<TravelPlanViewModel | null>(null);
   const [needUserInput, setNeedUserInput] = useState(false);
+  // 记录后端当前阶段语义，右侧面板状态切换优先依据该字段。
+  const [streamStage, setStreamStage] = useState<AgentStage | null>(null);
   // 保存当前追问信息，用于页面展示快捷示例；prompt 本身会进入聊天消息流。
   const [clarification, setClarification] = useState<TravelClarification | null>(null);
   const [sessionId, setSessionId] = useState<string | undefined>(options.initialSessionId);
@@ -169,6 +158,7 @@ export function useChatStream(options: UseChatStreamOptions = {}) {
       // 每次新问题开始时重置“过程态”，但保留历史消息与当前 plan。
       setProgressNodes([]);
       setNeedUserInput(false);
+      setStreamStage(null);
       setClarification(null);
       lastClarificationPromptRef.current = null;
     },
@@ -177,6 +167,12 @@ export function useChatStream(options: UseChatStreamOptions = {}) {
         // 以服务端返回为准，避免前后端 session 认知不一致。
         setSessionId(event.data.sessionId);
         options.onSessionIdChange?.(event.data.sessionId);
+        return;
+      }
+
+      if (event.event === "stage") {
+        // 统一使用后端 stage 事件驱动业务阶段，避免前端反推节点语义。
+        setStreamStage(event.data.stage);
         return;
       }
 
@@ -379,12 +375,12 @@ export function useChatStream(options: UseChatStreamOptions = {}) {
     if (
       streamRequest.loading
       && !needUserInput
-      && isPlanningStageInProgress(progressNodes)
+      && streamStage === AGENT_STAGE.Planning
     ) {
       return ROUTE_PANEL_PHASE.Skeleton;
     }
     return ROUTE_PANEL_PHASE.Empty;
-  }, [plan, streamRequest.loading, needUserInput, progressNodes]);
+  }, [needUserInput, plan, streamRequest.loading, streamStage]);
 
   return {
     messages,

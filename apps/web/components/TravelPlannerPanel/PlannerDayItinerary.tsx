@@ -92,7 +92,8 @@ const PlannerDayItineraryComponent: React.FC<PlannerDayItineraryProps> = ({
           <header className={styles.dayHeader}>
             <div>
               <h3>
-                第{activeDay.day}天 ｜ {activeDay.title}
+                {/* 第{activeDay.day}天 ｜  */}
+                {activeDay.title}
               </h3>
               <p>{activeDay.description}</p>
             </div>

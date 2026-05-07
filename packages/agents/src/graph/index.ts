@@ -15,11 +15,11 @@ import {
   routerPlannerNode,
   drivingDistanceNode,
   poiEnricherNode,
-  // weatherEnricherNode,
   hotelEnricherNode,
   formatterNode,
   preFormatterGuardNode,
   askClarificationNode,
+  preparePlannerIntentNode,
   routePlannerFailedNode,
   routeEnrichEntryNode,
 } from "../nodes/index.js"
@@ -60,6 +60,8 @@ function registerNodes(graph: TravelGraphBuilder): TravelGraphBuilder {
     .addNode("merge_collected_intent", mergeCollectedIntentNode)
     // 条件节点
     .addNode("ask_clarification", askClarificationNode)
+    // 在进入 route_planner 前统一补齐默认值，避免污染需求收集阶段。
+    .addNode("prepare_planner_intent", preparePlannerIntentNode)
     // 规划 骨架
     .addNode("route_planner", routerPlannerNode)
     // 条件节点
@@ -71,8 +73,6 @@ function registerNodes(graph: TravelGraphBuilder): TravelGraphBuilder {
     .addNode("driving_distance", drivingDistanceNode)
     // 景点增强
     .addNode("poi_enricher", poiEnricherNode)
-    // 天气增强
-    // .addNode("weather_enricher", weatherEnricherNode)
     // 酒店增强
     .addNode("hotel_enricher", hotelEnricherNode)
     // formatter 前置守卫
@@ -86,7 +86,8 @@ function registerNodes(graph: TravelGraphBuilder): TravelGraphBuilder {
 
 /**
  * 连接入口阶段：
- * START -> intent_agent -> merge_collected_intent -> (ask_clarification | route_planner)
+ * START -> intent_agent -> merge_collected_intent -> (ask_clarification | prepare_planner_intent)
+ * prepare_planner_intent -> route_planner
  */
 function connectEntry(graph: TravelGraphBuilder): TravelGraphBuilder {
   return graph
@@ -95,10 +96,12 @@ function connectEntry(graph: TravelGraphBuilder): TravelGraphBuilder {
     .addEdge("intent_agent", "merge_collected_intent")
     .addConditionalEdges("merge_collected_intent", routeAfterRequirementGuard, {
       ask_clarification: "ask_clarification",
-      route_planner: "route_planner",
+      prepare_planner_intent: "prepare_planner_intent",
     })
     // 缺参时本轮对话结束，等待用户下一轮输入继续同一 thread_id。
     .addEdge("ask_clarification", END)
+    // 只有确认无需补问后，才补齐默认值并进入 route_planner。
+    .addEdge("prepare_planner_intent", "route_planner")
 }
 
 /**
@@ -119,17 +122,15 @@ function connectRoutePlannerStage(
 
 /**
  * 连接增强阶段（Fan-out / Fan-in）：
- * route_enrich_entry -> driving/poi/weather/hotel -> pre_formatter_guard
+ * route_enrich_entry -> driving/poi/hotel -> pre_formatter_guard
  */
 function connectEnrichment(graph: TravelGraphBuilder): TravelGraphBuilder {
   return graph
     .addEdge("route_enrich_entry", "driving_distance")
     .addEdge("route_enrich_entry", "poi_enricher")
-    // .addEdge("route_enrich_entry", "weather_enricher")
     .addEdge("route_enrich_entry", "hotel_enricher")
     .addEdge("driving_distance", "pre_formatter_guard")
     .addEdge("poi_enricher", "pre_formatter_guard")
-    // .addEdge("weather_enricher", "pre_formatter_guard")
     .addEdge("hotel_enricher", "pre_formatter_guard")
 }
 

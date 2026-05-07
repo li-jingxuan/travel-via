@@ -21,6 +21,7 @@ const EMPTY_HOTEL: DayViewModel["accommodations"][number] = {
   name: "暂未提供",
   address: "暂未提供",
   feature: "暂未提供",
+  images: [],
 };
 const EMPTY_DAYS: DayViewModel[] = [];
 
@@ -45,8 +46,16 @@ const TravelPlannerPanelComponent: React.FC<TravelPlannerPanelProps> = ({
     return plannerDays[activeDayIndex] ?? plannerDays[0] ?? null;
   }, [activeDayIndex, plannerDays]);
 
-  const featuredHotel = activeDay?.accommodations[0] ?? EMPTY_HOTEL;
-  const featuredHotelImage = activeDay?.activities[0]?.images[0]?.src ?? "";
+  // 住宿卡片优先展示酒店图，活动图只作为兜底，避免语义错位。
+  const featuredHotel = useMemo(
+    () => activeDay?.accommodations[0] ?? EMPTY_HOTEL,
+    [activeDay],
+  );
+  const featuredHotelImage = useMemo(() => {
+    const hotelImage = featuredHotel.images[0]?.src ?? "";
+    if (hotelImage) return hotelImage;
+    return activeDay?.activities[0]?.images[0]?.src ?? "";
+  }, [activeDay, featuredHotel.images]);
 
   const summaryStats = useMemo<SummaryStatItem[]>(
     () => [

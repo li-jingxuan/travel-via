@@ -56,6 +56,7 @@ import type {
   IAccommodation,
 } from "@repo/shared-types/travel"
 import type {
+  IntentField,
   TravelIntent,
   TravelIntentExtraction,
   TravelIntentPatch,
@@ -139,6 +140,38 @@ export const TravelStateAnnotation = Annotation.Root({
   clarification: Annotation<TravelClarification | null>({
     reducer: (_, update) => update,
     default: () => null,
+  }),
+
+  /**
+   * 当前软缺失字段（如 days/month/departurePoint/travelType）。
+   *
+   * 说明：
+   * - 这些字段不是硬性必填
+   * - 但会影响规划质量，因此在 destination 已有时会持续补问
+   */
+  softMissingFields: Annotation<IntentField[]>({
+    reducer: (_, update) => update,
+    default: () => [],
+  }),
+
+  /**
+   * 用户是否明确拒绝继续补充可选信息。
+   *
+   * 业务约束：
+   * - true  时，即使仍有 softMissingFields，也不再追问，直接进入规划
+   * - false 时，只要 softMissingFields 非空，就继续 ask_clarification
+   */
+  userDeclinedOptionalInfo: Annotation<boolean>({
+    reducer: (_, update) => update,
+    default: () => false,
+  }),
+
+  /**
+   * 软补问累计次数（仅用于日志与观测，不参与停止条件）。
+   */
+  softClarificationCount: Annotation<number>({
+    reducer: (_, update) => update,
+    default: () => 0,
   }),
 
   // ==================== 规划数据层 ====================

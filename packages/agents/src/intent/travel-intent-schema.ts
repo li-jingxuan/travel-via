@@ -152,6 +152,7 @@ export function finalizeTravelIntent(raw: TravelIntentPatch | null | undefined):
     destination,
     departurePoint,
     days: patch.days ?? 5,
+    // 缺省月份统一回退到“未指定”，保证下游提示语与测试语义一致。
     month: patch.month || "未指定",
     travelType: patch.travelType ?? DEFAULT_TRAVEL_TYPE,
     ...(patch.budget ? { budget: patch.budget } : {}),

@@ -79,6 +79,7 @@ export interface RawAccommodation {
   name: string;
   address: string;
   feature: string;
+  images: RawImage[];
 }
 
 export interface RawActivity {
@@ -130,6 +131,10 @@ export interface DayViewModel {
     name: string;
     address: string;
     feature: string;
+    images: Array<{
+      src: string;
+      alt: string;
+    }>;
   }>;
   activities: ActivityViewModel[];
 }
