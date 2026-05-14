@@ -14,3 +14,4 @@ export type {
   TravelClarification,
   RouteSkeletonDay,
 } from "./types/internal.js"
+export type { ConversationRecord } from "@repo/shared-types/history"

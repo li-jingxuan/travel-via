@@ -28,6 +28,7 @@
  */
 
 import { SystemMessage, HumanMessage } from "@langchain/core/messages"
+import type { ConversationRecord } from "@repo/shared-types/history"
 import { createDeepSeekV3 } from "../lib/llm.js"
 import { agentLog } from "../lib/logger.js"
 import type { TravelStateAnnotation } from "../graph/state.js"
@@ -39,6 +40,16 @@ import { normalizeIntentExtraction } from "../intent/travel-intent-schema.js"
 const llm = createDeepSeekV3({ temperature: 0.3 })
 // 强制 LLM 输出纯 JSON，减少解析错误风险
 llm.withConfig({ response_format: { type: "json_object" } })
+
+function buildRecentConversationContext(
+  records: ConversationRecord[],
+) {
+  if (!records.length) return "无"
+
+  return records
+    .map((record) => `${record.role}: ${record.content}`)
+    .join("\n")
+}
 
 /**
  * IntentAgent 节点函数
@@ -53,8 +64,13 @@ llm.withConfig({ response_format: { type: "json_object" } })
 export async function intentAgentNode(
   state: typeof TravelStateAnnotation.State,
 ) {
+  const recentConversation = buildRecentConversationContext(
+    state.conversationRecords,
+  )
+
   agentLog("意图识别", "开始识别用户意图", {
     userInput: state.userInput,
+    recentConversation,
   })
 
   // 构造 LLM 调用的消息序列：
@@ -62,7 +78,15 @@ export async function intentAgentNode(
   // 2. HumanMessage: 用户的原始输入文本
   const response = await llm.invoke([
     new SystemMessage(INTENT_SYSTEM_PROMPT),
-    new HumanMessage(state.userInput),
+    new HumanMessage(
+      [
+        "最近对话上下文：",
+        recentConversation,
+        "",
+        "本轮用户输入：",
+        state.userInput,
+      ].join("\n"),
+    ),
   ])
 
   // 从 LLM 返回的 content 中提取结构化 JSON

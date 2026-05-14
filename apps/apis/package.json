@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@repo/agents": "workspace:*",
+    "@repo/db": "workspace:*",
     "@repo/shared-types": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@types/koa": "^3.0.2",

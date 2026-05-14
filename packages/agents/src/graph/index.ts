@@ -7,7 +7,8 @@
  * 3. 在不改变行为的前提下提高可读性与可维护性
  */
 
-import { StateGraph, START, END, MemorySaver } from "@langchain/langgraph"
+import { StateGraph, START, END } from "@langchain/langgraph"
+import { getGraphCheckpointer } from "@repo/db/checkpointer"
 import { TravelStateAnnotation } from "./state.js"
 import {
   intentAgentNode,
@@ -164,10 +165,10 @@ function connectValidationLoop(graph: TravelGraphBuilder): TravelGraphBuilder {
     })
 }
 
-// V1 会话记忆（短期记忆）：
-// - 使用 LangGraph 内存型 checkpointer 保存同一 thread_id 的状态快照
-// - 后续可无缝替换为 Redis/Postgres 等持久化 checkpointer
-export const graphCheckpointer = new MemorySaver()
+// 统一改为 PostgresSaver：
+// - 让同一个 session_id/thread_id 可以跨进程、跨重启恢复
+// - Graph 的“短期记忆”与业务 history 同步落在 PostgreSQL 中
+export const graphCheckpointer = await getGraphCheckpointer()
 
 const travelPlannerGraph = connectValidationLoop(
   connectPreFormatterGuard(

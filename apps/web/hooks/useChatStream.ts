@@ -1,7 +1,13 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  DEFAULT_TRAVEL_ASSISTANT_GREETING,
+  HISTORY_STATUS,
+  type HistoryDetail,
+} from "@repo/shared-types/history";
 import { requestStream, type ParsedSseEvent } from "../lib/request";
+import { fetchHistoryDetail } from "../lib/history";
 import { normalizeFinalPlanData } from "../lib/travel-plan/normalize-final-plan";
 import { AGENT_STAGE } from "../types/agent-stream";
 import type {
@@ -75,8 +81,26 @@ function createId(prefix: string): string {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
+function createDefaultAssistantMessage(): ChatMessage {
+  return {
+    id: createId("assistant"),
+    role: "assistant",
+    content: DEFAULT_TRAVEL_ASSISTANT_GREETING,
+    time: formatNow(),
+  };
+}
+
 function formatNow(): string {
   return new Date().toTimeString().slice(0, 5);
+}
+
+function formatHistoryTime(value: number | string): string {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return formatNow();
+  }
+
+  return date.toTimeString().slice(0, 5);
 }
 
 function isObject(value: unknown): value is Record<string, unknown> {
@@ -88,6 +112,19 @@ function mapUpdatedNodesToLabels(updatedNodes: string[] | undefined): string[] {
 
   const mapped = updatedNodes.map((node) => NODE_LABEL_MAP[node] ?? node);
   return Array.from(new Set(mapped));
+}
+
+function mapHistoryDetailToMessages(detail: HistoryDetail): ChatMessage[] {
+  if (!detail.messages.length) {
+    return [createDefaultAssistantMessage()];
+  }
+
+  return detail.messages.map((message) => ({
+    id: message.id,
+    role: message.role,
+    content: message.content,
+    time: formatHistoryTime(message.createdAt),
+  }));
 }
 
 function toAgentEvent(raw: ParsedSseEvent): AgentStreamEvent | null {
@@ -113,12 +150,7 @@ function toAgentEvent(raw: ParsedSseEvent): AgentStreamEvent | null {
 // 业务层 Hook：将流式事件映射为“消息列表 + 行程 + 进度”三类状态。
 export function useChatStream(options: UseChatStreamOptions = {}) {
   const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: createId("assistant"),
-      role: "assistant",
-      content: "告诉我你的出发地、目的地和出行方式，我会实时规划您的旅行路线。",
-      time: formatNow(),
-    },
+    createDefaultAssistantMessage(),
   ]);
   const [progressNodes, setProgressNodes] = useState<string[]>([]);
   const [plan, setPlan] = useState<TravelPlanViewModel | null>(null);
@@ -132,6 +164,43 @@ export function useChatStream(options: UseChatStreamOptions = {}) {
   const activeAssistantIdRef = useRef<string | null>(null);
   // SSE 的 clarification_required 和 done 都可能携带 prompt，用 ref 避免重复插入同一条追问。
   const lastClarificationPromptRef = useRef<string | null>(null);
+  const hydratedSessionIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!options.initialSessionId) {
+      hydratedSessionIdRef.current = null;
+      return;
+    }
+
+    if (hydratedSessionIdRef.current === options.initialSessionId) {
+      return;
+    }
+
+    hydratedSessionIdRef.current = options.initialSessionId;
+    let cancelled = false;
+
+    void fetchHistoryDetail(options.initialSessionId)
+      .then((detail) => {
+        if (cancelled) return;
+        setMessages(mapHistoryDetailToMessages(detail));
+        setPlan(detail.finalPlan ? normalizeFinalPlanData(detail.finalPlan) : null);
+        setProgressNodes([]);
+        setNeedUserInput(detail.status === HISTORY_STATUS.NeedsInput);
+        setStreamStage(null);
+        setClarification(null);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        // 若历史详情不存在或拉取失败，则退回默认欢迎语，不阻塞用户继续新建会话。
+        setMessages([createDefaultAssistantMessage()]);
+        setPlan(null);
+        setNeedUserInput(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [options.initialSessionId]);
 
   const streamRequest = useRequest<void, StreamParams, AgentStreamEvent>({
     mode: "stream",

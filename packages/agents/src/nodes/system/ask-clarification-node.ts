@@ -5,6 +5,7 @@ import { createDeepSeekV3 } from "../../lib/llm.js"
 import { SystemMessage, HumanMessage } from "@langchain/core/messages"
 import { z } from "zod"
 import { SKIP_SUPPLEMENT_EXAMPLE } from "../../constants/intent-clarification.js"
+import { HISTORY_MESSAGE_KIND, HISTORY_MESSAGE_ROLE } from "@repo/shared-types/history"
 
 // 追问只负责“怎么问得自然”，缺什么仍由确定性代码判断。
 const clarificationLlm = createDeepSeekV3({ temperature: 0.4 })
@@ -68,6 +69,7 @@ async function createClarification(
     userInput: state.userInput,
     missingFields: missing,
     knownIntent: state.collectedIntent ?? state.intent,
+    recentConversation: state.conversationRecords,
     clarificationType,
     skipSupplementExample: SKIP_SUPPLEMENT_EXAMPLE,
   }
@@ -162,5 +164,13 @@ export async function askClarificationNode(
         ? state.softClarificationCount + 1
         : state.softClarificationCount,
     clarification,
+    conversationRecords: [
+      {
+        role: HISTORY_MESSAGE_ROLE.Assistant,
+        kind: HISTORY_MESSAGE_KIND.Clarification,
+        content: clarification.prompt,
+        createdAt: Date.now(),
+      },
+    ],
   }
 }

@@ -62,7 +62,7 @@ export interface RawDayPlan {
   description: string;
   accommodation: RawAccommodation[];
   foodRecommendation: string[];
-  commentTips: string;
+  commentTips?: string;
   activities: RawActivity[];
   distance: number;
   drivingHours: number;

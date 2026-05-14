@@ -62,7 +62,7 @@ export function normalizeFinalPlanData(plan: RawFinalPlan): TravelPlanViewModel 
       })),
       distanceText: formatDistanceKm(day.distance),
       drivingHoursText: formatDrivingHours(day.drivingHours),
-      tips: day.commentTips,
+      tips: day.commentTips ?? "",
       foods: day.foodRecommendation,
       // 住宿图片在这里统一做结构归一，页面层直接消费 src/alt。
       accommodations: (day.accommodation ?? []).map((item) => ({

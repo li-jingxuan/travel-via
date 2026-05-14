@@ -23,3 +23,23 @@ export type {
   ITravel,
   ITravelPlan,
 } from './travel.js'
+export {
+  DEFAULT_TRAVEL_ASSISTANT_GREETING,
+  HISTORY_STATUS,
+  HISTORY_MESSAGE_ROLE,
+  HISTORY_MESSAGE_KIND,
+} from './history.js'
+export type {
+  HistoryStatus,
+  HistoryMessageRole,
+  HistoryMessageKind,
+  ConversationRecord,
+  HistoryMessage,
+  HistoryListItem,
+  HistoryDetail,
+  DeleteHistoryRequest,
+  DeleteHistoryResponseData,
+  GetHistoryListResponse,
+  GetHistoryDetailResponse,
+  DeleteHistoryResponse,
+} from './history.js'

@@ -55,6 +55,7 @@ import type {
   IActivity,
   IAccommodation,
 } from "@repo/shared-types/travel"
+import type { ConversationRecord } from "@repo/shared-types/history"
 import type {
   IntentField,
   TravelIntent,
@@ -64,6 +65,8 @@ import type {
   RouteSkeletonDay,
 } from "../types/internal.js"
 import type { IssueItem } from "../constants/error-code.js"
+
+const MAX_CONVERSATION_RECORDS = 16
 
 export const TravelStateAnnotation = Annotation.Root({
   // ==================== 输入层 ====================
@@ -134,6 +137,25 @@ export const TravelStateAnnotation = Annotation.Root({
   needUserInput: Annotation<boolean>({
     reducer: (_, update) => update,
     default: () => false,
+  }),
+
+  /**
+   * 轻量最近对话记录。
+   *
+   * 设计目标：
+   * - 给续聊时的 Agent 提供最近几轮原始语境
+   * - 不把完整历史都塞进 Graph state，避免 checkpoint 与提示词无限膨胀
+   *
+   * 数据来源：
+   * - 每轮请求开始时由 service 注入本轮 user_input
+   * - ask_clarification 节点会把追问文本追加进来
+   */
+  conversationRecords: Annotation<ConversationRecord[]>({
+    reducer: (current, update) => {
+      const merged = [...(current ?? []), ...(update ?? [])]
+      return merged.slice(-MAX_CONVERSATION_RECORDS)
+    },
+    default: () => [],
   }),
 
   /** 面向用户的追问信息，由 ask_clarification 节点生成。 */
